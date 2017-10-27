@@ -59,3 +59,7 @@ You need to assign it to a `make` variable. (JSX calls this function under the h
    })
  </Apollo>
  ```
+ 
+
+ 
+ [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is an repository using the package
