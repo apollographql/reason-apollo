@@ -1,6 +1,6 @@
-#### Reason-apollo
+## Reason-apollo
 
-##### easily use the Apollo client with ReasonML
+Easily use the Apollo client with ReasonML
 
 #### Install
 
