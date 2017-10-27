@@ -1,0 +1,9 @@
+{
+  "name" : "reason-apollo",
+  "sources": [
+    "src"
+  ],
+  "bs-dependencies": [
+    "reason-react"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "reason-apollo",
+  "version": "0.0.62",
+  "license": "MIT",
+  "description": "Using Apollo client with Reason",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gregoirevda/reason-apollo.git"
+  },
+  "peerDependencies": {
+    "react-apollo": "^1.4.15"
+  }
+}
