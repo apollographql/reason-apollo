@@ -49,7 +49,7 @@ module Create = fun (CreationConfig:CreationConfig) => fun (ClientConfig:ClientC
           | Result result => ReasonReact.Update {...state, result: { "loading": false, "data": result}}
           | Error error => ReasonReact.Update {...state, error}
         },
-      didMount: fun {reduce, state} => {
+      didMount: fun {reduce} => {
         let _ = Js.Promise.(
           resolve (apolloClient##query {"query": ClientConfig.query})
           |> then_ (fun value => {
