@@ -25,16 +25,13 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
 
 ##### Create your Client
 
-Create a new file:
 
 Apollo.re
 ```
-let make = ReasonApollo.create uri::"http://localhost:3010/graphql";
+module Client = ReasonApollo.Create { let uri = "http://localhost:3010/graphql"};
 
 ```
 
-The name of the file will be the name of your ApolloClient module.  
-You need to assign it to a `make` variable. (JSX calls this function under the hood)
  
  ##### Fetching data
  
@@ -48,18 +45,42 @@ You need to assign it to a `make` variable. (JSX calls this function under the h
      }
    |} [@bs];
  ```
+ ##### Defining the data structure of the result
+ ```
+ type getUser = Js.t {.name: string};
+ type data = Js.t {.getUser: getUser};
+ ```
+ 
+ ##### All in a module
+ data structure of the response and the query should be represented in a module 
+ ```
+ module Config = {
+   type responseType = data;
+   let query = query;
+ };
+
+ ```
+ 
+ ##### Passing the configuration to the Apollo Client
+ ```
+ module FetchUserName = Apollo.Client Config;
+ ```
  
  ##### Executing the query
  someFile.re
  ```
  render: fun _ =>
- <Apollo query>
+ <FetchUserName>
    (fun response => {
      /* The response of your query is available here */
    })
- </Apollo>
+ </FetchUserName>
  ```
  
-
+ [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is a repository showing the usage of the package
  
- [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is an repository using the package
+ 
+ ### Todo
+ If you think this is too verbose, I have good news for you:   
+ Using Apollo Client in Reason will be much easier and less verbose compared to ReactJS.  
+ More to come in the next weeks.
