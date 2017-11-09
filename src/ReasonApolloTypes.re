@@ -1,2 +1,3 @@
 type queryString;
-type gql = (string => queryString) [@bs];
+
+type gql = [@bs] (string => queryString);

@@ -1,74 +1,54 @@
-open ReasonApolloTypes;
+module type CreationConfig = {let uri: string;};
 
-type queryObj = Js.t {. query: queryString};
-type generatedApolloClient = Js.t {. query: (queryObj => string)[@bs.meth]};
-type generatedNetworkInterface;
-type networkInterface = Js.t {. uri: string};
-type apolloClient = Js.t {. networkInterface: generatedNetworkInterface};
+module type ClientConfig = {type responseType; let query: ReasonApolloTypes.queryString;};
 
-external createNetworkInterface: networkInterface => generatedNetworkInterface = "createNetworkInterface" [@@bs.module "react-apollo"];
-external createApolloClient: apolloClient => generatedApolloClient = "ApolloClient" [@@bs.new] [@@bs.module "react-apollo"];
-
-module type CreationConfig = {
-  let uri: string;
-};
-
-module type ClientConfig = {
-  type responseType;
-  let query: ReasonApolloTypes.queryString;
-};
-
-module Create = fun (CreationConfig:CreationConfig) => fun (ClientConfig:ClientConfig) => {
-  external cast: string => Js.t {. data: ClientConfig.responseType, loading: bool } = "%identity";
-
+module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => {
+  external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
   type action =
-    | Result string
-    | Error string;
-
+    | Result(string)
+    | Error(string);
   type state = {
-    result: Js.t {. data: string, loading: bool},
+    result: {. "data": string, "loading": bool},
     error: string
   };
-
-  let networkInterface = createNetworkInterface {"uri": CreationConfig.uri};
-  let apolloClient = createApolloClient { "networkInterface": networkInterface };
-
-  let component = ReasonReact.reducerComponent "ReasonApollo";
-
-  let make children => {
-      ...component,
-      initialState: fun () => {
-        result: {
-          "data": "",
-          "loading": true
-        },
-        error: ""
+  let httpLinkOptions: ApolloClient.linkOptions = {"uri": CreationConfig.uri};
+  let apolloClientOptions: ApolloClient.clientOptions = {
+    "cache": ApolloClient.inMemoryCache()##restore(),
+    "link": ApolloClient.httpLink(httpLinkOptions)
+  };
+  let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
+  let component = ReasonReact.reducerComponent("ReasonApollo");
+  let make = (children) => {
+    ...component,
+    initialState: () => {result: {"data": "", "loading": true}, error: ""},
+    reducer: (action, state) =>
+      switch action {
+      | Result(result) =>
+        ReasonReact.Update({...state, result: {"loading": false, "data": result}})
+      | Error(error) => ReasonReact.Update({...state, error})
       },
-      reducer: fun action state =>
-        switch action {
-          | Result result => ReasonReact.Update {...state, result: { "loading": false, "data": result}}
-          | Error error => ReasonReact.Update {...state, error}
-        },
-      didMount: fun {reduce} => {
-        let _ = Js.Promise.(
-          resolve (apolloClient##query {"query": ClientConfig.query})
-          |> then_ (fun value => {
-              reduce (fun () => Result value) ();
-              resolve ();
-            })
-          |> catch (fun _value => {
-             reduce (fun () => Error "an error happened") ();
-             resolve ();
-           })
+    didMount: ({reduce}) => {
+      let _ =
+        Js.Promise.(
+          resolve(apolloClient##query({"query": ClientConfig.query}))
+          |> then_(
+               (value) => {
+                 reduce(() => Result(value), ());
+                 resolve()
+               }
+             )
+          |> catch(
+               (_value) => {
+                 reduce(() => Error("an error happened"), ());
+                 resolve()
+               }
+             )
         );
-        ReasonReact.NoUpdate;
-      },
-      render: fun {state} => {
-        let result = {
-          "loading": state.result##loading,
-          "data": (cast state.result##data)##data
-        };
-        children.(0) result;
-      }
-    };
+      ReasonReact.NoUpdate
+    },
+    render: ({state}) => {
+      let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
+      children[0](result)
+    }
+  };
 };
