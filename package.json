@@ -8,6 +8,9 @@
     "url": "https://github.com/Gregoirevda/reason-apollo.git"
   },
   "peerDependencies": {
-    "react-apollo": "^1.4.15"
+    "apollo-cache-inmemory": "^1.0.0",
+    "apollo-client": "^2.0.2",
+    "apollo-link-http": "^1.0.0",
+    "react-apollo": "^2.0.0"
   }
 }

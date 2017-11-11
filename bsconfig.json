@@ -1,9 +1,10 @@
 {
-  "name" : "reason-apollo",
+  "name": "reason-apollo",
   "sources": [
     "src"
   ],
   "bs-dependencies": [
     "reason-react"
-  ]
+  ],
+  "refmt": 3
 }
