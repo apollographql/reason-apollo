@@ -13,7 +13,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   };
   let httpLinkOptions: ApolloClient.linkOptions = {"uri": CreationConfig.uri};
   let apolloClientOptions: ApolloClient.clientOptions = {
-    "cache": ApolloClient.inMemoryCache()##restore(),
+    "cache": ApolloClient.inMemoryCache(),
     "link": ApolloClient.httpLink(httpLinkOptions)
   };
   let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
