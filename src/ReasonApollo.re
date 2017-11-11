@@ -22,7 +22,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   };
   let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
   let component = ReasonReact.reducerComponent("ReasonApollo");
-  let make = (children) => {
+  let make = (_children) => {
     ...component,
     initialState: () => {result: {"data": "", "loading": true}, error: ""},
     reducer: (action, state) =>
@@ -52,7 +52,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     },
     render: ({state}) => {
       let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
-      ClientConfig.render(result)
+      ClientConfig.render(result);
     }
   };
 };
