@@ -47,8 +47,8 @@ module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql"}
  ```
  ##### Defining the data structure of the result
  ```
- type getUser = {. name: string};
- type data = {. getUser: getUser};
+ type getUser = {. "name": string};
+ type data = {. "getUser": getUser};
  ```
  
  ##### All in a module
