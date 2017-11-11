@@ -28,7 +28,7 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
 
 Apollo.re
 ```
-module Client = ReasonApollo.Create { let uri = "http://localhost:3010/graphql"};
+module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql"});
 
 ```
 
@@ -47,8 +47,8 @@ module Client = ReasonApollo.Create { let uri = "http://localhost:3010/graphql"}
  ```
  ##### Defining the data structure of the result
  ```
- type getUser = Js.t {.name: string};
- type data = Js.t {.getUser: getUser};
+ type getUser = {. name: string};
+ type data = {. getUser: getUser};
  ```
  
  ##### All in a module
@@ -63,15 +63,15 @@ module Client = ReasonApollo.Create { let uri = "http://localhost:3010/graphql"}
  
  ##### Passing the configuration to the Apollo Client
  ```
- module FetchUserName = Apollo.Client Config;
+ module FetchUserName = Apollo.Client(Config);
  ```
  
  ##### Executing the query
  someFile.re
  ```
- render: fun _ =>
+ render: (_) =>
  <FetchUserName>
-   (fun response => {
+   ((response) => {
      /* The response of your query is available here */
    })
  </FetchUserName>
