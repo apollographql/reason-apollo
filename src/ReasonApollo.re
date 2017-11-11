@@ -1,6 +1,11 @@
 module type CreationConfig = {let uri: string;};
 
-module type ClientConfig = {type responseType; let query: ReasonApolloTypes.queryString;};
+module type ClientConfig = {
+type responseType;
+let query: ReasonApolloTypes.queryString;
+let render: {. "data": responseType, "loading": bool }  =>
+  ReasonReact.reactElement;
+};
 
 module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => {
   external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
@@ -18,6 +23,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   };
   let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
   let component = ReasonReact.reducerComponent("ReasonApollo");
+
   let make = (children) => {
     ...component,
     initialState: () => {result: {"data": "", "loading": true}, error: ""},
@@ -48,7 +54,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     },
     render: ({state}) => {
       let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
-      children[0](result)
+      ClientConfig.render result;
     }
   };
 };
