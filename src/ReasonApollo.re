@@ -29,7 +29,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       },
     didMount: ({reduce}) => {
       switch query {
-        | Some query => {
+        | Some(query) => {
           let _ =
             Js.Promise.(
               resolve(apolloClient##query({"query": query}))
