@@ -3,7 +3,7 @@ open ReasonApolloTypes;
 module type ApolloClientConfig = {type variables};
 
 module Get = (ApolloClientConfig: ApolloClientConfig) => {
-  type queryObj = {. "query": queryString, "variables": option(ApolloClientConfig.variables)};
+  type queryObj = {. "query": queryString, "variables": ApolloClientConfig.variables};
 
   type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
 

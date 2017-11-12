@@ -29,23 +29,28 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       | Error(error) => ReasonReact.Update({...state, error})
       },
     didMount: ({reduce}) => {
-      let _ =
-        Js.Promise.(
-          resolve(apolloClient##query({"query": query, "variables": variables}))
-          |> then_(
-               (value) => {
-                 reduce(() => Result(value), ());
-                 resolve()
-               }
-             )
-          |> catch(
-               (_value) => {
-                 reduce(() => Error("an error happened"), ());
-                 resolve()
-               }
-             )
-        );
-      ReasonReact.NoUpdate;
+      switch variables {
+        | Some(variables) => {
+          let _ =
+            Js.Promise.(
+              resolve(apolloClient##query({"query": query, "variables": variables}))
+              |> then_(
+                   (value) => {
+                     reduce(() => Result(value), ());
+                     resolve()
+                   }
+                 )
+              |> catch(
+                   (_value) => {
+                     reduce(() => Error("an error happened"), ());
+                     resolve()
+                   }
+                 )
+            );
+            ReasonReact.NoUpdate;
+        }
+        | None => ReasonReact.NoUpdate
+      };
     },
     render: ({state}) => {
       let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
