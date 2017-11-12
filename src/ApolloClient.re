@@ -1,18 +1,22 @@
 open ReasonApolloTypes;
-type variables;
-type queryObj = {. "query": queryString, "variables": option(variables)};
 
-type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
+module type ApolloClientConfig = {type variables};
 
-type clientOptions = {. "cache": unit, "link": unit};
+module Get = (ApolloClientConfig: ApolloClientConfig) => {
+  type queryObj = {. "query": queryString, "variables": option(ApolloClientConfig.variables)};
 
-type linkOptions = {. "uri": string};
+  type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
 
-[@bs.module "apollo-client"] [@bs.new]
-external apolloClient : clientOptions => generatedApolloClient =
-  "ApolloClient";
+  type clientOptions = {. "cache": unit, "link": unit};
 
-[@bs.module "apollo-link-http"] [@bs.new] external httpLink : linkOptions => 'a = "HttpLink";
+  type linkOptions = {. "uri": string};
 
-[@bs.module "apollo-cache-inmemory"] [@bs.new] external inMemoryCache : unit => 'a =
-  "InMemoryCache";
+  [@bs.module "apollo-client"] [@bs.new]
+  external apolloClient : clientOptions => generatedApolloClient =
+    "ApolloClient";
+
+  [@bs.module "apollo-link-http"] [@bs.new] external httpLink : linkOptions => 'a = "HttpLink";
+
+  [@bs.module "apollo-cache-inmemory"] [@bs.new] external inMemoryCache : unit => 'a =
+    "InMemoryCache";
+}

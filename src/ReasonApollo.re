@@ -1,6 +1,6 @@
 module type CreationConfig = {let uri: string;};
 
-module type ClientConfig = {type responseType;};
+module type ClientConfig = {type responseType; type variables;};
 
 module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => {
   external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
@@ -11,12 +11,13 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     result: {. "data": string, "loading": bool},
     error: string
   };
-  let httpLinkOptions: ApolloClient.linkOptions = {"uri": CreationConfig.uri};
-  let apolloClientOptions: ApolloClient.clientOptions = {
-    "cache": ApolloClient.inMemoryCache(),
-    "link": ApolloClient.httpLink(httpLinkOptions)
+  module ConfiguredApolloClient = ApolloClient.Get({ type variables = ClientConfig.variables });
+  let httpLinkOptions: ConfiguredApolloClient.linkOptions = {"uri": CreationConfig.uri};
+  let apolloClientOptions: ConfiguredApolloClient.clientOptions = {
+    "cache": ConfiguredApolloClient.inMemoryCache(),
+    "link": ConfiguredApolloClient.httpLink(httpLinkOptions)
   };
-  let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
+  let apolloClient = ConfiguredApolloClient.apolloClient(apolloClientOptions);
   let component = ReasonReact.reducerComponent("ReasonApollo");
   let make = (~query, ~variables=?, children) => {
     ...component,
