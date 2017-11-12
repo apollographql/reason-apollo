@@ -1,6 +1,6 @@
 {
   "name": "reason-apollo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "description": "Using Apollo client 2 with Reason",
   "repository": {
@@ -9,8 +9,6 @@
   },
   "peerDependencies": {
     "apollo-cache-inmemory": "^1.0.0",
-    "apollo-client": "^2.0.2",
-    "apollo-link-http": "^1.0.0",
-    "react-apollo": "^2.0.0"
+    "apollo-link-http": "^1.0.0"
   }
 }

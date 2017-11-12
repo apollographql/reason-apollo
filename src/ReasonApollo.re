@@ -1,6 +1,6 @@
 module type CreationConfig = {let uri: string;};
 
-module type ClientConfig = {type responseType; let query: ReasonApolloTypes.queryString;};
+module type ClientConfig = {type responseType; type variables;};
 
 module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => {
   external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
@@ -11,14 +11,15 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     result: {. "data": string, "loading": bool},
     error: string
   };
-  let httpLinkOptions: ApolloClient.linkOptions = {"uri": CreationConfig.uri};
-  let apolloClientOptions: ApolloClient.clientOptions = {
-    "cache": ApolloClient.inMemoryCache(),
-    "link": ApolloClient.httpLink(httpLinkOptions)
+  module ConfiguredApolloClient = ApolloClient.Get({ type variables = ClientConfig.variables });
+  let httpLinkOptions: ConfiguredApolloClient.linkOptions = {"uri": CreationConfig.uri};
+  let apolloClientOptions: ConfiguredApolloClient.clientOptions = {
+    "cache": ConfiguredApolloClient.inMemoryCache(),
+    "link": ConfiguredApolloClient.httpLink(httpLinkOptions)
   };
-  let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
+  let apolloClient = ConfiguredApolloClient.apolloClient(apolloClientOptions);
   let component = ReasonReact.reducerComponent("ReasonApollo");
-  let make = (children) => {
+  let make = (~query, ~variables=?, children) => {
     ...component,
     initialState: () => {result: {"data": "", "loading": true}, error: ""},
     reducer: (action, state) =>
@@ -28,23 +29,28 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       | Error(error) => ReasonReact.Update({...state, error})
       },
     didMount: ({reduce}) => {
-      let _ =
-        Js.Promise.(
-          resolve(apolloClient##query({"query": ClientConfig.query}))
-          |> then_(
-               (value) => {
-                 reduce(() => Result(value), ());
-                 resolve()
-               }
-             )
-          |> catch(
-               (_value) => {
-                 reduce(() => Error("an error happened"), ());
-                 resolve()
-               }
-             )
-        );
-      ReasonReact.NoUpdate
+      switch variables {
+        | Some(variables) => {
+          let _ =
+            Js.Promise.(
+              resolve(apolloClient##query({"query": query, "variables": variables}))
+              |> then_(
+                   (value) => {
+                     reduce(() => Result(value), ());
+                     resolve()
+                   }
+                 )
+              |> catch(
+                   (_value) => {
+                     reduce(() => Error("an error happened"), ());
+                     resolve()
+                   }
+                 )
+            );
+            ReasonReact.NoUpdate;
+        }
+        | None => ReasonReact.NoUpdate
+      };
     },
     render: ({state}) => {
       let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
