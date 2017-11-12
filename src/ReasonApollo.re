@@ -18,7 +18,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   };
   let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
   let component = ReasonReact.reducerComponent("ReasonApollo");
-  let make = (~query=?, children) => {
+  let make = (~query=?, ~variables=?, children) => {
     ...component,
     initialState: () => {result: {"data": "", "loading": true}, error: ""},
     reducer: (action, state) =>
@@ -28,11 +28,15 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       | Error(error) => ReasonReact.Update({...state, error})
       },
     didMount: ({reduce}) => {
+      let queryVariables = switch variables {
+        | Some(variables) => variables
+        | None => {}
+      };
       switch query {
         | Some(query) => {
           let _ =
             Js.Promise.(
-              resolve(apolloClient##query({"query": query}))
+              resolve(apolloClient##query({"query": query, "variables": queryVariables}))
               |> then_(
                    (value) => {
                      reduce(() => Result(value), ());
