@@ -28,15 +28,11 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       | Error(error) => ReasonReact.Update({...state, error})
       },
     didMount: ({reduce}) => {
-      let queryVariables = switch variables {
-        | Some(variables) => variables
-        | None => {}
-      };
       switch query {
         | Some(query) => {
           let _ =
             Js.Promise.(
-              resolve(apolloClient##query({"query": query, "variables": queryVariables}))
+              resolve(apolloClient##query({"query": query, "variables": variables}))
               |> then_(
                    (value) => {
                      reduce(() => Result(value), ());

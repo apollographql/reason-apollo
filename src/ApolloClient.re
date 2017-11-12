@@ -1,6 +1,6 @@
 open ReasonApolloTypes;
-type queryVariables;
-type queryObj = {. "query": queryString, "variables": queryVariables};
+type variables;
+type queryObj = {. "query": queryString, "variables": option(variables)};
 
 type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
 
