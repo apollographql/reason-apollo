@@ -49,7 +49,24 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
             );
             ReasonReact.NoUpdate;
         }
-        | None => ReasonReact.NoUpdate
+        | None => {
+          Js.Promise.(
+            resolve(apolloClient##query({"query": query}))
+            |> then_(
+                 (value) => {
+                   reduce(() => Result(value), ());
+                   resolve()
+                 }
+               )
+            |> catch(
+                 (_value) => {
+                   reduce(() => Error("an error happened"), ());
+                   resolve()
+                 }
+               )
+          );
+          ReasonReact.NoUpdate;
+        }
       };
     },
     render: ({state}) => {
