@@ -54,11 +54,19 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   type data = {. "user": user};
   ```
   
+  ##### Optional variables passed to the query
+  ```
+  let variables = {
+    "limit": 2
+  };
+  ```
+  
   ##### All in a module
-  data structure of the response and the query should be represented in a module 
+  data structure of the response and optional variables should be represented in a module 
   ```
   module Config = {
     type responseType = data;
+    type variables = {. limit: int}; /* or `type variables;` if none are used */
   };
  
   ```
@@ -72,7 +80,7 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   someFile.re
   ```
   render: (_) =>
-  <FetchUserName query>
+  <FetchUserName query variables>
     ((response) => {
       /* The response of your query is available here */
     })
