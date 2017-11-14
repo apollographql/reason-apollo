@@ -29,13 +29,15 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       | Error(error) => ReasonReact.Update({...state, error})
       },
     didMount: ({reduce}) => {
-      let variables = switch variables {
-        | Some(variables) => variables
-        | None => Js.Nullable.null
-      };
+      let queryConfig =
+        switch variables {
+          | Some(variables) =>
+            ConfiguredApolloClient.getJSQueryConfig(~query=query, ~variables=variables, ())
+          | None => ConfiguredApolloClient.getJSQueryConfig(~query=query, ())
+        };
       let _ =
       Js.Promise.(
-        resolve(apolloClient##query({"query": query, "variables": variables}))
+        resolve(apolloClient##query(queryConfig))
         |> then_(
              (value) => {
                reduce(() => Result(value), ());

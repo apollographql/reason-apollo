@@ -11,6 +11,8 @@ module Get = (ApolloClientConfig: ApolloClientConfig) => {
 
   type linkOptions = {. "uri": string};
 
+  [@bs.obj] external getJSQueryConfig : (~query: queryString, ~variables: ApolloClientConfig.variables=?, unit) => queryObj = "";
+
   [@bs.module "apollo-client"] [@bs.new]
   external apolloClient : clientOptions => generatedApolloClient =
     "ApolloClient";
