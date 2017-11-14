@@ -6,7 +6,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
   type state =
     | Loading
-    | Loaded(string)
+    | Loaded(ClientConfig.responseType)
     | Failed(string);
 
   type action =
@@ -27,8 +27,11 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     initialState: Loading,
     reducer: (action, state) =>
       switch action {
-      | Result(result) => ReasonReact.Update(Loaded(result))
-      | Error(error) => ReasonReact.Update(Failed(error))
+        | Result(result) => {
+          let typedResult = cast(result)##data;
+          ReasonReact.Update(Loaded(typedResult))
+        }
+        | Error(error) => ReasonReact.Update(Failed(error))
       },
     didMount: ({reduce}) => {
       let queryConfig =
@@ -56,12 +59,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       ReasonReact.NoUpdate;
     },
     render: ({state}) => {
-      let response = switch state {
-        | Loading => Loading
-        | Failed(error) => Failed(error)
-        | Loaded(result) => Loaded(cast(result)##data)
-      };
-      children[0](response);
+      children[0](state);
     }
   };
 };
