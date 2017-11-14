@@ -82,7 +82,10 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   render: (_) =>
   <FetchUserName query variables>
     ((response) => {
-      /* The response of your query is available here */
+      switch response {
+         | Loading => <div> (Utils.ste("Loading")) </div>
+         | Failed(error) => <div> (Utils.ste(error)) </div>
+         | Loaded(result) =><div> (Utils.ste(result##user##name)) </div>
     })
   </FetchUserName>
   ```
