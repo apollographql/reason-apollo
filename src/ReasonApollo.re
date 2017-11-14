@@ -4,14 +4,17 @@ module type ClientConfig = {type responseType; type variables;};
 
 module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => {
   external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
+  type state =
+    | Loading
+    | Loaded(string)
+    | Failed(string);
+
   type action =
     | Result(string)
     | Error(string);
-  type state = {
-    result: {. "data": string, "loading": bool},
-    error: string
-  };
+
   module ConfiguredApolloClient = ApolloClient.Get({ type variables = ClientConfig.variables });
+
   let httpLinkOptions: ConfiguredApolloClient.linkOptions = {"uri": CreationConfig.uri};
   let apolloClientOptions: ConfiguredApolloClient.clientOptions = {
     "cache": ConfiguredApolloClient.inMemoryCache(),
@@ -21,12 +24,11 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   let component = ReasonReact.reducerComponent("ReasonApollo");
   let make = (~query, ~variables=?, children) => {
     ...component,
-    initialState: () => {result: {"data": "", "loading": true}, error: ""},
+    initialState: Loading,
     reducer: (action, state) =>
       switch action {
-      | Result(result) =>
-        ReasonReact.Update({...state, result: {"loading": false, "data": result}})
-      | Error(error) => ReasonReact.Update({...state, error})
+      | Result(result) => ReasonReact.Update(Loaded(result))
+      | Error(error) => ReasonReact.Update(Failed(error))
       },
     didMount: ({reduce}) => {
       let queryConfig =
@@ -54,8 +56,12 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
       ReasonReact.NoUpdate;
     },
     render: ({state}) => {
-      let result = {"loading": state.result##loading, "data": cast(state.result##data)##data};
-      children[0](result)
+      let response = switch state {
+        | Loading => Loading
+        | Error(error) => Error(error)
+        | Loaded(result) => Loaded(cast(result)##data)
+      };
+      children[0](response);
     }
   };
 };
