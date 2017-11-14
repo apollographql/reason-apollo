@@ -24,7 +24,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   let component = ReasonReact.reducerComponent("ReasonApollo");
   let make = (~query, ~variables=?, children) => {
     ...component,
-    initialState: Loading,
+    initialState: () => Loading,
     reducer: (action, state) =>
       switch action {
         | Result(result) => {
