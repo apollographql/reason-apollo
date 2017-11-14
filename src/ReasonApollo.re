@@ -58,7 +58,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
     render: ({state}) => {
       let response = switch state {
         | Loading => Loading
-        | Error(error) => Error(error)
+        | Failed(error) => Failed(error)
         | Loaded(result) => Loaded(cast(result)##data)
       };
       children[0](response);
