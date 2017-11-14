@@ -25,7 +25,7 @@ module Create = (CreationConfig: CreationConfig, ClientConfig: ClientConfig) => 
   let make = (~query, ~variables=?, children) => {
     ...component,
     initialState: () => Loading,
-    reducer: (action, state) =>
+    reducer: (action) =>
       switch action {
         | Result(result) => {
           let typedResult = cast(result)##data;
