@@ -4,6 +4,6 @@ node_js:
 install:
   - npm i -g bs-platform
   - npm link bs-platform
-  - yarn
+  - npm install
 script:
-  - yarn test:ci
+  - npm test:ci
