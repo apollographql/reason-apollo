@@ -1,6 +1,6 @@
 language: node_js
 node_js:
   - "7"
-install: true
+install: npm i -g bs-platform
 script:
   - yarn test:ci
