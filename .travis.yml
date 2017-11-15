@@ -1,9 +1,10 @@
+sudo: false
 language: node_js
 node_js:
-  - "7"
-install:
-  - npm i -g bs-platform
-  - npm link bs-platform
-  - npm install
+  - "8"
+cache:
+  yarn: true
+  directories:
+    - node_modules
 script:
   - npm run test:ci
