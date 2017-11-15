@@ -30,9 +30,9 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
  
  
  Apollo.re
- ```
- module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql"});
- 
+ ```reason
+ module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql" });
+
  ```
  
   
@@ -40,7 +40,7 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   
   ###### Query
   Create a query with the `graphql-tag`
-  ```
+  ```reason
   let query =
     gql {|
       query getUser {
@@ -49,13 +49,13 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
     |} [@bs];
   ```
   ##### Defining the data structure of the result
-  ```
+  ```reason
   type user = {. "name": string};
   type data = {. "user": user};
   ```
   
   ##### Optional variables passed to the query
-  ```
+  ```reason
   let variables = {
     "limit": 2
   };
@@ -63,7 +63,7 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   
   ##### All in a module
   data structure of the response and optional variables should be represented in a module 
-  ```
+  ```reason
   module Config = {
     type responseType = data;
     type variables = {. limit: int}; /* or `type variables;` if none are used */
@@ -72,13 +72,13 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   ```
   
   ##### Passing the configuration to the Apollo Client
-  ```
+  ```reason
   module FetchUserName = Apollo.Client(Config);
   ```
   
   ##### Executing the query
   someFile.re
-  ```
+  ```reason
   render: (_) =>
   <FetchUserName query variables>
     ((response) => {
