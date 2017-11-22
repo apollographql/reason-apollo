@@ -72,8 +72,8 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   ```
   
   ##### Passing the configuration to the Apollo Client
-  ```reason
-  module FetchUserName = Apollo.Client(Config);
+  ```
+  module FetchUserName = Apollo.Client.Query(Config);
   ```
   
   ##### Executing the query
