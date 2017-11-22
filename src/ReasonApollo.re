@@ -12,7 +12,7 @@ module Create = (CreationConfig: CreationConfig) => {
 
   module Query = (ClientConfig: ClientConfig) => {
     module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
-    apolloClient = CastApolloClient.cast(apolloClient);
+    let apolloClient = CastApolloClient.castClient(apolloClient);
 
     external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
     type state =

@@ -20,7 +20,7 @@ module type ApolloClientCast = {
 /* Cast the apolloClient, with the known variable type when called */
 module Cast = (ApolloClientCast:ApolloClientCast) => {
   type queryObj = {. "query": queryString, "variables": ApolloClientCast.variables};
-  external castClient: generatedApolloClient => {. "query": [@bs.meth] (queryObj => string)} "%identity";
-  [@bs.obj] external getJSQueryConfig : (~query: queryString, ~variables: variableTypeToBeDefined=?, unit) => queryObj = "";
+  external castClient: generatedApolloClient => {. "query": [@bs.meth] (queryObj => string)} = "%identity";
+  [@bs.obj] external getJSQueryConfig : (~query: queryString, ~variables: ApolloClientCast.variables=?, unit) => queryObj = "";
 };
 
