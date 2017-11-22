@@ -3,26 +3,27 @@ module type CreationConfig = {let uri: string;};
 module type ClientConfig = {type responseType; type variables;};
 
 module Create = (CreationConfig: CreationConfig) => {
-  external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
-  type state =
-    | Loading
-    | Loaded(ClientConfig.responseType)
-    | Failed(string);
-
-  type action =
-    | Result(string)
-    | Error(string);
-
-  module ConfiguredApolloClient = ApolloClient.Get({ type variables = ClientConfig.variables });
-
-  let httpLinkOptions: ConfiguredApolloClient.linkOptions = {"uri": CreationConfig.uri};
-  let apolloClientOptions: ConfiguredApolloClient.clientOptions = {
-    "cache": ConfiguredApolloClient.inMemoryCache(),
-    "link": ConfiguredApolloClient.httpLink(httpLinkOptions)
+  let httpLinkOptions: ApolloClient.linkOptions = {"uri": CreationConfig.uri};
+  let apolloClientOptions: ApolloClient.clientOptions = {
+    "cache": ApolloClient.inMemoryCache(),
+    "link": ApolloClient.httpLink(httpLinkOptions)
   };
-  let apolloClient = ConfiguredApolloClient.apolloClient(apolloClientOptions);
+  let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
 
   module Query = (ClientConfig: ClientConfig) => {
+    module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
+    apolloClient = CastApolloClient.cast(apolloClient);
+
+    external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
+    type state =
+      | Loading
+      | Loaded(ClientConfig.responseType)
+      | Failed(string);
+  
+    type action =
+      | Result(string)
+      | Error(string);
+        
     let component = ReasonReact.reducerComponent("ReasonApollo");
     let make = (~query, ~variables=?, children) => {
       ...component,
@@ -39,8 +40,8 @@ module Create = (CreationConfig: CreationConfig) => {
         let queryConfig =
           switch variables {
             | Some(variables) =>
-              ConfiguredApolloClient.getJSQueryConfig(~query=query, ~variables=variables, ())
-            | None => ConfiguredApolloClient.getJSQueryConfig(~query=query, ())
+              CastApolloClient.getJSQueryConfig(~query=query, ~variables=variables, ())
+            | None => CastApolloClient.getJSQueryConfig(~query=query, ())
           };
         let _ =
         Js.Promise.(
