@@ -24,7 +24,7 @@
   "devDependencies": {
     "reason-react": "^0.2.4"
   },
-  "dependencies": {
+  "peerDependencies": {
     "bs-platform": "^2.0.0"
   }
 }
