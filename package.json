@@ -8,7 +8,8 @@
     "url": "https://github.com/Gregoirevda/reason-apollo.git"
   },
   "scripts": {
-    "test:ci": "bsb -make-world"
+    "test:ci": "bsb -make-world",
+    "prepare": "npm link bs-platform"
   },
   "peerDependencies": {
     "apollo-cache-inmemory": "^1.0.0",
