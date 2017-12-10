@@ -5,7 +5,7 @@
   "description": "Using Apollo client 2 with Reason",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Gregoirevda/reason-apollo.git"
+    "url": "https://github.com/apollographql/reason-apollo"
   },
   "scripts": {
     "test:ci": "bsb -make-world",
