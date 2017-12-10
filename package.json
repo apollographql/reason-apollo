@@ -8,11 +8,13 @@
     "url": "https://github.com/Gregoirevda/reason-apollo.git"
   },
   "scripts": {
-    "test:ci": "bsb -make-world"
+    "test:ci": "bsb -make-world",
+    "prepare": "npm link bs-platform"
   },
   "peerDependencies": {
     "apollo-cache-inmemory": "^1.0.0",
-    "apollo-link-http": "^1.0.0"
+    "apollo-link-http": "^1.0.0",
+    "bs-platform": "^2.0.0"
   },
   "keywords": [
     "Reason",
@@ -23,8 +25,5 @@
   "author": "Grégoire Van der Auwermeulen <gregoirevandera@gmail.com>",
   "devDependencies": {
     "reason-react": "^0.2.4"
-  },
-  "dependencies": {
-    "bs-platform": "^2.0.0"
   }
 }
