@@ -41,12 +41,12 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   ###### Query
   Create a query with the `graphql-tag`
   ```reason
-  let query =
-    gql {|
-      query getUser {
-        name
-      }
-    |} [@bs];
+  let query = [@bs] gql({|
+    query getUser {
+      name
+    }
+  |});
+
   ```
   ##### Defining the data structure of the result
   ```reason
@@ -66,9 +66,8 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   ```reason
   module Config = {
     type responseType = data;
-    type variables = {. limit: int}; /* or `type variables;` if none are used */
+    type variables = {. "limit": int}; /* or `type variables;` if none are used */
   };
- 
   ```
   
   ##### Passing the configuration to the Apollo Client
@@ -81,11 +80,11 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
   ```reason
   render: (_) =>
   <FetchUserName query variables>
-    ((response) => {
+    (response => {
       switch response {
          | Loading => <div> (Utils.ste("Loading")) </div>
          | Failed(error) => <div> (Utils.ste(error)) </div>
-         | Loaded(result) =><div> (Utils.ste(result##user##name)) </div>
+         | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
     })
   </FetchUserName>
   ```
