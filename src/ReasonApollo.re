@@ -10,5 +10,5 @@ module Create = (CreationConfig: CreationConfig) => {
   };
   let apolloClient = ApolloClient.apolloClient(apolloClientOptions);
 
-  module ReasonApolloQuery;
+  module ReasonApolloQuery.Query;
 };
