@@ -2,7 +2,11 @@ open ReasonApolloTypes;
 
 type variableTypeToBeDefined;
 type queryObj = {. "query": queryString, "variables": variableTypeToBeDefined};
-type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
+type mutateObj = {. "mutation": queryString, "variables": variableTypeToBeDefined};
+type generatedApolloClient = {.
+  "query": [@bs.meth] (queryObj => string),
+  "mutate": [@bs.meth] (mutateObj => string)
+};
 type clientOptions = {. "cache": unit, "link": unit};
 type linkOptions = {. "uri": string};
 
@@ -20,7 +24,12 @@ module type ApolloClientCast = {
 /* Cast the apolloClient, with the known variable type when called */
 module Cast = (ApolloClientCast:ApolloClientCast) => {
   type queryObj = {. "query": queryString, "variables": ApolloClientCast.variables};
-  external castClient: generatedApolloClient => {. "query": [@bs.meth] (queryObj => string)} = "%identity";
+  type mutateObj = {. "mutation": queryString, "variables": ApolloClientCast.variables};
+  external castClient: generatedApolloClient => {.
+    "query": [@bs.meth] (queryObj => string),
+    "mutate": [@bs.meth] (mutateObj => string)
+  } = "%identity";
   [@bs.obj] external getJSQueryConfig : (~query: queryString, ~variables: ApolloClientCast.variables=?, unit) => queryObj = "";
+  [@bs.obj] external getJSMutateConfig : (~mutation: queryString, ~variables: ApolloClientCast.variables=?, unit) => mutateObj = "";
 };
 
