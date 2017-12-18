@@ -1,6 +1,9 @@
-module Query = (ClientConfig: ClientConfig) => {
+module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
+module type ClientConfig = {type responseType; type variables;};
+
+module QueryFactory = (InternalConfig:InternalConfig) => (ClientConfig: ClientConfig) => {
     module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
-    let apolloClient = CastApolloClient.castClient(apolloClient);
+    let apolloClient = CastApolloClient.castClient(InternalConfig.apolloClient);
 
     external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
     type state =
