@@ -1,15 +1,15 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
-module type ClientConfig = {type responseType; type variables;};
+module type ClientConfig = {type response; type variables; let mutation: ReasonApolloTypes.queryString;};
 
 module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: ClientConfig) => {
     module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
     let apolloClient = CastApolloClient.castClient(InternalConfig.apolloClient);
 
-    external cast : string => {. "data": ClientConfig.responseType, "loading": bool} = "%identity";
+    external cast : string => {. "data": ClientConfig.response, "loading": bool} = "%identity";
     type state =
       | NotCalled
       | Loading
-      | Loaded(ClientConfig.responseType)
+      | Loaded(ClientConfig.response)
       | Failed(string);
 
     type action =
@@ -43,7 +43,7 @@ module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: Clien
     };
 
     let component = ReasonReact.reducerComponent("ReasonApollo");
-    let make = (~mutation, children) => {
+    let make = (children) => {
       ...component,
       initialState: () => NotCalled,
       reducer: (action, _state) =>
@@ -56,7 +56,7 @@ module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: Clien
         },
       render: ({reduce, state}) => {
         let mutation = (~variables=?, ()) => {
-          sendMutation(~mutation, ~variables, ~reduce);
+          sendMutation(~mutation=ClientConfig.mutation, ~variables, ~reduce);
         };
         children[0](mutation, state);
       }
