@@ -45,7 +45,7 @@ module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: Clien
     let component = ReasonReact.reducerComponent("ReasonApollo");
     let make = (~mutation, children) => {
       ...component,
-      initialState: () => Loading,
+      initialState: () => NotCalled,
       reducer: (action, _state) =>
         switch action {
           | Result(result) => {
