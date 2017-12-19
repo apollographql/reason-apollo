@@ -1,18 +1,18 @@
-## Reason-apollo
+# Reason-apollo
 
 [![npm version](https://badge.fury.io/js/reason-apollo.svg)](https://badge.fury.io/js/reason-apollo)
 [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 
-Easily use the Apollo Client 2 with ReasonML
+Easily use the Apollo Client 2 with Reason
 
-### Install and setup
+## Install and setup
 
-##### yarn
+#### yarn
 ```
 yarn add reason-apollo
 ```
 
-##### bsconfig
+#### bsconfig
 Add `reason-apollo` to your `bs-dependencies`:
 **bsconfig.json**
 ```
@@ -23,12 +23,12 @@ Add `reason-apollo` to your `bs-dependencies`:
 ```
 
 
-### Usage 
+## Usage 
  
  [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is a repository showing the usage of the package.
  
  
- #### Create the Apollo Client
+ ### Create the Apollo Client
  
  **Apollo.re**
  ```reason
@@ -36,9 +36,9 @@ Add `reason-apollo` to your `bs-dependencies`:
 
  ```
   
-  ### Query
+  ## Query
   
-  #### Query Configuration
+  ### Query Configuration
   **QueryConfig.re**
   ```reason
   /* Create a query with the `graphql-tag` */
@@ -59,7 +59,7 @@ Add `reason-apollo` to your `bs-dependencies`:
   ```
 
   
-  ##### Executing the Query
+  #### Executing the Query
   **YourQuery.re**
   ```reason
   module FetchUserName = Apollo.Client.Query(QueryConfig);
@@ -82,9 +82,9 @@ Add `reason-apollo` to your `bs-dependencies`:
   }
   ```
 
-  ### Mutation
+  ## Mutation
   
-  #### Mutation Configuration
+  ### Mutation Configuration
   
   **MutationConfig.re**
   ```reason
@@ -109,7 +109,7 @@ Add `reason-apollo` to your `bs-dependencies`:
   ```
 
   
-  ##### Executing the Mutation
+  #### Executing the Mutation
   **YourMutation.re**
   ```reason
   module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
