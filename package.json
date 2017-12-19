@@ -14,6 +14,7 @@
   "peerDependencies": {
     "apollo-cache-inmemory": "^1.0.0",
     "apollo-link-http": "^1.0.0",
+    "apollo-client": "^2.0.4",
     "bs-platform": "^2.0.0"
   },
   "keywords": [
