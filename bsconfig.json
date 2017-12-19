@@ -1,7 +1,8 @@
 {
   "name": "reason-apollo",
   "sources": [
-    "src"
+    "src",
+    "src/graphql-types"
   ],
   "bs-dependencies": [
     "reason-react"
