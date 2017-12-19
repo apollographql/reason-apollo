@@ -1,21 +1,20 @@
-## Reason-apollo
+# Reason-apollo
 
 [![npm version](https://badge.fury.io/js/reason-apollo.svg)](https://badge.fury.io/js/reason-apollo)
 [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 
-Easily use the Apollo Client 2 with ReasonML
+Easily use the Apollo Client 2 with Reason
 
-#### Install
+## Install and setup
 
-##### npm || yarn
+#### yarn
 ```
 yarn add reason-apollo
-or
-npm install reason-apollo
 ```
 
-##### bsconfig
-In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
+#### bsconfig
+Add `reason-apollo` to your `bs-dependencies`:
+**bsconfig.json**
 ```
 "bs-dependencies": [
   "reason-react",
@@ -24,70 +23,122 @@ In bsconfig.json, add `reason-apollo` to your `bs-dependencies`:
 ```
 
 
-#### Usage 
+## Usage 
  
  [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is a repository showing the usage of the package.
  
  
- ##### Create your Client
+ ### Create the Apollo Client
  
- 
- Apollo.re
+ **Apollo.re**
  ```reason
  module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql" });
 
  ```
- 
   
-  ##### Fetching data
+  ## Query
   
-  ###### Query
-  Create a query with the `graphql-tag`
+  ### Query Configuration
+  **QueryConfig.re**
   ```reason
+  /* Create a query with the `graphql-tag` */
+  
   let query = [@bs] gql({|
     query getUser {
       name
     }
-  |});
-
-  ```
-  ##### Defining the data structure of the result
-  ```reason
-  type user = {. "name": string};
-  type data = {. "user": user};
-  ```
+  |});  
   
-  ##### Optional variables passed to the query
+  /* Describe the result type */
+    type user = {. "name": string};
+    type data = {. "user": user};
+    type response = data;
+    
+  /* Optional variables passed to the query */
+    type variables = {. "limit": int}; /* or `type variables;` if none */
+  ```
+
+  
+  #### Executing the Query
+  **YourQuery.re**
   ```reason
+  module FetchUserName = Apollo.Client.Query(QueryConfig);
+  
   let variables = {
     "limit": 2
   };
-  ```
   
-  ##### All in a module
-  data structure of the response and optional variables should be represented in a module 
-  ```reason
-  module Config = {
-    type responseType = data;
-    type variables = {. "limit": int}; /* or `type variables;` if none are used */
-  };
-  ```
-  
-  ##### Passing the configuration to the Apollo Client
-  ```reason
-  module FetchUserName = Apollo.Client.Query(Config);
-  ```
-  
-  ##### Executing the query
-  someFile.re
-  ```reason
+  let make = (_children) => {
+  /* ... */
   render: (_) =>
-  <FetchUserName query variables>
-    (response => {
-      switch response {
-         | Loading => <div> (Utils.ste("Loading")) </div>
-         | Failed(error) => <div> (Utils.ste(error)) </div>
-         | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
-    })
-  </FetchUserName>
+    <FetchUserName variables>
+      (response => {
+        switch response {
+           | Loading => <div> (Utils.ste("Loading")) </div>
+           | Failed(error) => <div> (Utils.ste(error)) </div>
+           | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
+      })
+    </FetchUserName>
+  }
+  ```
+
+  ## Mutation
+  
+  ### Mutation Configuration
+  
+  **MutationConfig.re**
+  ```reason
+  /* Create a mutation with the `graphql-tag` */
+  
+  let mutation = [@bs] gql({|
+    mutation deleteTodo($id: ID!) {
+        deleteTodo(id: $id) {
+          id
+          name
+        }
+      }
+  |});  
+  
+  /* Describe the result type */
+  type todo = {. "name": string, "id": string};
+  type data = {. "deleteTodo": todo};
+  type response = data;
+    
+  /* Optional variables passed to the mutation */
+    type variables = {. "id": string}; /* or `type variables;` if none */
+  ```
+
+  
+  ### Executing the Mutation
+  **YourMutation.re**
+  ```reason
+  module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
+  
+  let variables = {
+    "id": "uuid-1"
+  };
+  
+  let make = (_children) => {
+  /* ... */
+  render: (_) =>
+    <DeleteTodo>
+      ((
+        deleteTodo /* Mutation to call */, 
+        result /* Result of your mutation */
+      ) => {
+          let mutationResponse = switch result {
+            | NotCalled => <div>  (Utils.ste("Not Called")) </div>
+            | Loading => <div> (Utils.ste("Loading")) </div>
+            | Loaded(response) => <div> (Utils.ste(response##deleteTodo##name ++ " deleted")) </div>
+            | Failed(error) => <div> (Utils.ste(error)) </div>
+          };
+        <div>
+          <button onClick=((_mouseEvent) => deleteTodo(~variables, ()))> 
+            (Utils.ste("Delete Todo")) 
+          </button>
+          <div> (mutationResponse) </div>
+        </div>
+      })
+    </DeleteTodo>
+  }
   ```
