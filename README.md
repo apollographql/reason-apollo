@@ -109,7 +109,7 @@ Add `reason-apollo` to your `bs-dependencies`:
   ```
 
   
-  #### Executing the Mutation
+  ### Executing the Mutation
   **YourMutation.re**
   ```reason
   module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
