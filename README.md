@@ -32,7 +32,36 @@ Add `reason-apollo` to your `bs-dependencies`:
  
  **Apollo.re**
  ```reason
- module Client = ReasonApollo.Create({ let uri = "http://localhost:3010/graphql" });
+ module InMemoryCache =
+  ApolloInMemoryCache.CreateInMemoryCache(
+    {
+      type dataObject;
+      let inMemoryCacheObject = Js.Nullable.undefined;
+    }
+  );
+
+/* Create an HTTP Link */
+module HttpLink =
+  ApolloHttpLink.CreateHttpLink(
+    {
+      let uri = "http://localhost:3010/graphql";
+    }
+  );
+
+let apolloClientOptions =
+  ApolloClient.clientOptions(
+    ~ssrMode=Js.Boolean.to_js_boolean(true),
+    ~cache=InMemoryCache.cache,
+    ~link=HttpLink.link,
+    ()
+  );
+
+module Client =
+  ReasonApollo.Create(
+    {
+      let createApolloClient = ApolloClient.apolloClient(apolloClientOptions);
+    }
+  );
 
  ```
   
