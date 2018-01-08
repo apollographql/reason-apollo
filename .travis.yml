@@ -8,4 +8,4 @@ cache:
     - node_modules
 install: npm install
 script:
-  - npm run test:ci
+  - npm run build
