@@ -48,19 +48,11 @@ module HttpLink =
     }
   );
 
-let apolloClientOptions =
-  ApolloClient.clientOptions(
-    ~ssrMode=Js.Boolean.to_js_boolean(true),
+let createApolloClient =
+  InitApolloClient.createClient(
     ~cache=InMemoryCache.cache,
-    ~link=HttpLink.link,
+    ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
     ()
-  );
-
-module Client =
-  ReasonApollo.Create(
-    {
-      let createApolloClient = ApolloClient.apolloClient(apolloClientOptions);
-    }
   );
 
  ```
