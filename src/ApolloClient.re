@@ -10,10 +10,10 @@ type clientOptions = {
   .
   "link": apolloLink,
   "cache": apolloCache,
-  "ssrMode": Js.boolean,
-  "ssrForceFetchDelay": int,
+  "ssrMode": Js.Nullable.t(Js.boolean),
+  "ssrForceFetchDelay": Js.Nullable.t(int),
   "connectToDevTools": Js.Nullable.t(Js.boolean),
-  "queryDeduplication": Js.boolean
+  "queryDeduplication": Js.Nullable.t(Js.boolean)
 };
 
 type linkOptions = {. "uri": string};

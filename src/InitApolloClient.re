@@ -2,19 +2,19 @@ let createClient =
     (
       ~cache,
       ~link,
-      ~ssrMode=false,
-      ~ssrForceFetchDelay=0,
-      ~connectToDevTools=Js.Nullable.undefined,
-      ~queryDeduplication=true,
+      ~ssrMode=?,
+      ~ssrForceFetchDelay=?,
+      ~connectToDevTools=?,
+      ~queryDeduplication=?,
       ()
     ) => {
   let apolloClientOptions = {
     "link": link,
     "cache": cache,
-    "ssrMode": Js.Boolean.to_js_boolean(ssrMode),
-    "ssrForceFetchDelay": ssrForceFetchDelay,
-    "connectToDevTools": connectToDevTools,
-    "queryDeduplication": Js.Boolean.to_js_boolean(queryDeduplication)
+    "ssrMode": Js.Nullable.from_opt(ssrMode),
+    "ssrForceFetchDelay": Js.Nullable.from_opt(ssrForceFetchDelay),
+    "connectToDevTools": Js.Nullable.from_opt(connectToDevTools),
+    "queryDeduplication": Js.Nullable.from_opt(queryDeduplication)
   };
   ApolloClient.apolloClient(apolloClientOptions)
 };
