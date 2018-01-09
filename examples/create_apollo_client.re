@@ -11,7 +11,7 @@ let logout = () => ();
 module HttpLink =
   CreateHttpLink(
     {
-      let uri = "https://api.graph.cool/simple/v1/PHRESHR";
+      let uri = "http://localhost:3010/graphql";
     }
   );
 
