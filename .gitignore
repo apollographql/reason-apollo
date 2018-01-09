@@ -20,5 +20,6 @@ node_modules/
 .merlin
 
 lib
+*.bs.js
 
 

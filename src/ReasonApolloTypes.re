@@ -21,6 +21,10 @@ type apolloLink;
 type apolloCache;
 
 /**
- * An abstract type to describe an Apollo Client options.
+ * Describe the options needed to construct an ApolloClient object.
  */
-type clientOptions;
+type clientOptions = {
+  .
+  "cache": apolloCache,
+  "link": apolloLink
+};
