@@ -6,19 +6,17 @@ type queryObj = {. "query": queryString, "variables": variableTypeToBeDefined};
 
 type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
 
-type linkOptions = {. "uri": string};
+type clientOptions = {
+  .
+  "link": apolloLink,
+  "cache": apolloCache,
+  "ssrMode": Js.boolean,
+  "ssrForceFetchDelay": int,
+  "connectToDevTools": Js.Nullable.t(Js.boolean),
+  "queryDeduplication": Js.boolean
+};
 
-[@bs.obj]
-external clientOptions :
-  (
-    ~ssrMode: Js.boolean=?,
-    ~ssrForceFetchDelay: int=?,
-    ~link: apolloLink,
-    ~cache: apolloCache,
-    unit
-  ) =>
-  'a =
-  "";
+type linkOptions = {. "uri": string};
 
 [@bs.module "apollo-client"] [@bs.new]
 external apolloClient : clientOptions => generatedApolloClient =

@@ -1,5 +1,7 @@
 open ApolloLinks;
 
+open ApolloInMemoryCache;
+
 /* Fake some methods, for the sake of the example */
 let getAccessToken = () => "123";
 
@@ -9,7 +11,7 @@ let logout = () => ();
 module HttpLink =
   CreateHttpLink(
     {
-      let uri = "http://localhost:3999";
+      let uri = "https://api.graph.cool/simple/v1/PHRESHR";
     }
   );
 
@@ -19,12 +21,8 @@ module AuthLink =
     {
       let contextHandler = () => {
         let token = getAccessToken();
-        let headers = {
-          "headers": {
-            "authorization": {j|Bearer $token|j}
-          }
-        };
-        asJsObject(headers);
+        let headers = {"headers": {"authorization": {j|Bearer $token|j}}};
+        asJsObject(headers)
       };
     }
   );
@@ -33,13 +31,13 @@ module AuthLink =
 module ErrorLink =
   CreateErrorLink(
     {
-      let errorHandler = errorResponse =>
+      let errorHandler = (errorResponse) =>
         switch errorResponse##networkError {
         | Some(error) =>
           if (error##statusCode == 401) {
-            logout();
+            logout()
           } else {
-            ();
+            ()
           }
         | None => ()
         };
@@ -48,21 +46,16 @@ module ErrorLink =
 
 /* Create an InMemoryCache */
 module InMemoryCache =
-  ReasonApollo.CreateInMemoryCache(
+  CreateInMemoryCache(
     {
-      type dataObject = {
-        .
-        "__typename": string,
-        "id": string,
-        "key": string
-      };
+      type dataObject = {. "__typename": string, "id": string, "key": string};
       let inMemoryCacheObject =
         Js_null_undefined.return({
           "dataIdFromObject": (obj: dataObject) =>
             if (obj##__typename === "Organization") {
-              obj##key;
+              obj##key
             } else {
-              obj##id;
+              obj##id
             }
         });
     }
@@ -71,20 +64,17 @@ module InMemoryCache =
 /* Alternatively if you want to use the default values of InMemoryCache: */
 /*
  module InMemoryCache =
-   ReasonApollo.CreateInMemoryCache(
+   CreateInMemoryCache(
      {
        type dataObject;
        let inMemoryCacheObject = Js_null_undefined.undefined;
      }
    );
  */
-/* Create the ApolloClient */
-module Client =
-  ReasonApollo.CreateClient(
-    {
-      let links = [|AuthLink.link, ErrorLink.link, HttpLink.link|];
-      let cache = InMemoryCache.cache;
-    }
+let createApolloClient =
+  InitApolloClient.createClient(
+    ~ssrMode=true,
+    ~cache=InMemoryCache.cache,
+    ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+    ()
   );
-
-let apolloClient = Client.apolloClient;

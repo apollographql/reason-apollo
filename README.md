@@ -91,7 +91,7 @@ module Client =
   #### Executing the Query
   **YourQuery.re**
   ```reason
-  module FetchUserName = Apollo.Client.Query(QueryConfig);
+  module FetchUserName = ReasonApollo.Query(QueryConfig);
   
   let variables = {
     "limit": 2
@@ -141,7 +141,7 @@ module Client =
   ### Executing the Mutation
   **YourMutation.re**
   ```reason
-  module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
+  module DeleteTodo = ReasonApollo.Mutation(MutationConfig);
   
   let variables = {
     "id": "uuid-1"
