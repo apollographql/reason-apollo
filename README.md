@@ -48,11 +48,16 @@ module HttpLink =
     }
   );
 
-let createApolloClient =
-  InitApolloClient.createClient(
-    ~cache=InMemoryCache.cache,
-    ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
-    ()
+module Client =
+  ReasonApollo.CreateClient(
+    {
+      let createApolloClient =
+        ReasonApollo.createApolloClient(
+          ~cache=InMemoryCache.cache,
+          ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+          ()
+        );
+    }
   );
 
  ```
@@ -83,7 +88,7 @@ let createApolloClient =
   #### Executing the Query
   **YourQuery.re**
   ```reason
-  module FetchUserName = ReasonApollo.Query(QueryConfig);
+  module FetchUserName = Apollo.Client.Query(QueryConfig);
   
   let variables = {
     "limit": 2
@@ -133,7 +138,7 @@ let createApolloClient =
   ### Executing the Mutation
   **YourMutation.re**
   ```reason
-  module DeleteTodo = ReasonApollo.Mutation(MutationConfig);
+  module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
   
   let variables = {
     "id": "uuid-1"
