@@ -1,9 +1,13 @@
 open ReasonApolloTypes;
 
+/* Bind the method `from`, used to compose links together */
+[@bs.module "apollo-link"] external from : array(apolloLink) => apolloLink = "from";
+
 /**
  * A convenience method to cast a generic type to a record object.
  */
-external asJsObject : 'a => Js.t({..}) = "%identity";
+external asJsObject : 'a => Js.t({..}) =
+  "%identity";
 
 /**
  * CreateHttpLink

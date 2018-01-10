@@ -1,5 +1,7 @@
 open ApolloLinks;
 
+open ApolloInMemoryCache;
+
 /* Fake some methods, for the sake of the example */
 let getAccessToken = () => "123";
 
@@ -9,7 +11,7 @@ let logout = () => ();
 module HttpLink =
   CreateHttpLink(
     {
-      let uri = "http://localhost:3999";
+      let uri = "http://localhost:3010/graphql";
     }
   );
 
@@ -19,12 +21,8 @@ module AuthLink =
     {
       let contextHandler = () => {
         let token = getAccessToken();
-        let headers = {
-          "headers": {
-            "authorization": {j|Bearer $token|j}
-          }
-        };
-        asJsObject(headers);
+        let headers = {"headers": {"authorization": {j|Bearer $token|j}}};
+        asJsObject(headers)
       };
     }
   );
@@ -48,14 +46,9 @@ module ErrorLink =
 
 /* Create an InMemoryCache */
 module InMemoryCache =
-  ReasonApollo.CreateInMemoryCache(
+  CreateInMemoryCache(
     {
-      type dataObject = {
-        .
-        "__typename": string,
-        "id": string,
-        "key": string
-      };
+      type dataObject = {. "__typename": string, "id": string, "key": string};
       let inMemoryCacheObject =
         Js_null_undefined.return({
           "dataIdFromObject": (obj: dataObject) =>
@@ -71,20 +64,24 @@ module InMemoryCache =
 /* Alternatively if you want to use the default values of InMemoryCache: */
 /*
  module InMemoryCache =
-   ReasonApollo.CreateInMemoryCache(
+   CreateInMemoryCache(
      {
        type dataObject;
        let inMemoryCacheObject = Js_null_undefined.undefined;
      }
    );
  */
+
+
 /* Create the ApolloClient */
 module Client =
   ReasonApollo.CreateClient(
     {
-      let links = [|AuthLink.link, ErrorLink.link, HttpLink.link|];
-      let cache = InMemoryCache.cache;
+      let apolloClient =
+        ReasonApollo.createApolloClient(
+          ~cache=InMemoryCache.cache,
+          ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+          ()
+        );
     }
   );
-
-let apolloClient = Client.apolloClient;
