@@ -103,7 +103,7 @@ module Client =
            | Loading => <div> (Utils.ste("Loading")) </div>
            | Failed(error) => <div> (Utils.ste(error)) </div>
            | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
-      })
+      }})
     </FetchUserName>
   }
   ```
