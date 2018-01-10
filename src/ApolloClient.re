@@ -19,7 +19,7 @@ type clientOptions = {
 type linkOptions = {. "uri": string};
 
 [@bs.module "apollo-client"] [@bs.new]
-external apolloClient : clientOptions => generatedApolloClient =
+external createApolloClient : clientOptions => generatedApolloClient =
   "ApolloClient";
 
 module type ApolloClientCast = {type variables;};

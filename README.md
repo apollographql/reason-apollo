@@ -42,7 +42,7 @@ Add `reason-apollo` to your `bs-dependencies`:
 
 /* Create an HTTP Link */
 module HttpLink =
-  ApolloHttpLink.CreateHttpLink(
+  ApolloLinks.CreateHttpLink(
     {
       let uri = "http://localhost:3010/graphql";
     }
@@ -51,7 +51,7 @@ module HttpLink =
 module Client =
   ReasonApollo.CreateClient(
     {
-      let createApolloClient =
+      let apolloClient =
         ReasonApollo.createApolloClient(
           ~cache=InMemoryCache.cache,
           ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),

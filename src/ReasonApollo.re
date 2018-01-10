@@ -16,19 +16,27 @@ let createApolloClient =
     "connectToDevTools": Js.Nullable.from_opt(connectToDevTools),
     "queryDeduplication": Js.Nullable.from_opt(queryDeduplication)
   };
-  ApolloClient.apolloClient(apolloClientOptions)
+  ApolloClient.createApolloClient(apolloClientOptions)
 };
 
-module type ApolloClientConfig = {let createApolloClient: ApolloClient.generatedApolloClient;};
+module type ApolloClientConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
 
 module CreateClient = (Config: ApolloClientConfig) => {
-  let apolloClient = Config.createApolloClient;
+  let apolloClient = Config.apolloClient;
+
+  /*
+  * Expose a module to perform "query" operations for the given client
+  */
   module Query =
     ReasonApolloQuery.QueryFactory(
       {
         let apolloClient = apolloClient;
       }
     );
+    
+  /*
+  * Expose a module to perform "mutation" operations for the given client
+  */
   module Mutation =
     ReasonApolloMutation.MutationFactory(
       {

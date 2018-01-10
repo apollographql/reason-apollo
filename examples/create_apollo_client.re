@@ -31,13 +31,13 @@ module AuthLink =
 module ErrorLink =
   CreateErrorLink(
     {
-      let errorHandler = (errorResponse) =>
+      let errorHandler = errorResponse =>
         switch errorResponse##networkError {
         | Some(error) =>
           if (error##statusCode == 401) {
-            logout()
+            logout();
           } else {
-            ()
+            ();
           }
         | None => ()
         };
@@ -53,9 +53,9 @@ module InMemoryCache =
         Js_null_undefined.return({
           "dataIdFromObject": (obj: dataObject) =>
             if (obj##__typename === "Organization") {
-              obj##key
+              obj##key;
             } else {
-              obj##id
+              obj##id;
             }
         });
     }
@@ -71,10 +71,13 @@ module InMemoryCache =
      }
    );
  */
+
+
+/* Create the ApolloClient */
 module Client =
   ReasonApollo.CreateClient(
     {
-      let createApolloClient =
+      let apolloClient =
         ReasonApollo.createApolloClient(
           ~cache=InMemoryCache.cache,
           ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
