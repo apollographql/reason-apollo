@@ -71,10 +71,14 @@ module InMemoryCache =
      }
    );
  */
-let createApolloClient =
-  InitApolloClient.createClient(
-    ~ssrMode=true,
-    ~cache=InMemoryCache.cache,
-    ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
-    ()
+module Client =
+  ReasonApollo.CreateClient(
+    {
+      let createApolloClient =
+        ReasonApollo.createApolloClient(
+          ~cache=InMemoryCache.cache,
+          ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+          ()
+        );
+    }
   );
