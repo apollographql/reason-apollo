@@ -40,11 +40,11 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
     };
 
     let component = ReasonReact.reducerComponent("ReasonApollo");
-    let make = (~query, children) => {
+    let make = (~query as q, children) => {
       ...component,
       initialState: () => {
         response: Loading,
-        variables: query()##variables
+        variables: q##variables
       },
       reducer: (action, state) =>
         switch action {
@@ -61,19 +61,19 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
           })
         },
       willReceiveProps: ({state, reduce}) => {
-        if(query()##variables !== state.variables) {
-          sendQuery(~query=query(), ~reduce);
+        if(q##variables !== state.variables) {
+          sendQuery(~query=q, ~reduce);
           state;
         } else {
           state;
         }
       },
       didMount: ({reduce}) => {
-        sendQuery(~query=query(), ~reduce);
+        sendQuery(~query=q, ~reduce);
         ReasonReact.NoUpdate;
       },
       render: ({state}) => {
-        children[0](state.response, query()##parse);
+        children[0](state.response, q##parse);
       }
     };
   };

@@ -1,5 +1,5 @@
 
-module HeroQuery = [%graphql {|
+module PokemonQuery = [%graphql {|
     query getPokemon($name: String!){
         pokemon(name: $name) {
             name
@@ -15,7 +15,8 @@ let make = (_children) => {
 ...component,
 render: (_) => {
     let unexpectedError = <div> (ReasonReact.stringToElement("There was an internal error")) </div>;
-    <Query query=(() => HeroQuery.make(~name="Pikachu", ()))>
+    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
+    <Query query=pokemonQuery>
     ((response, parse) => {
       switch response {
          | Loading => <div> (ReasonReact.stringToElement("Loading")) </div>
