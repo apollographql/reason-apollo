@@ -67,44 +67,33 @@ module Client =
   ### Query Configuration
   **QueryConfig.re**
   ```reason
-  /* Create a query with the `graphql-tag` */
-  
-  let query = [@bs] gql({|
-    query getUser {
-      name
+  /* Create a GraphQL Query by using the graphql_ppx */ 
+  module HeroQuery = [%graphql {|
+    query getPokemon($name: String!){
+        pokemon(name: $name) {
+            name
+        }
     }
-  |});  
-  
-  /* Describe the result type */
-    type user = {. "name": string};
-    type data = {. "user": user};
-    type response = data;
-    
-  /* Optional variables passed to the query */
-    type variables = {. "limit": int}; /* or `type variables;` if none */
+  |}]; 
   ```
 
   
   #### Executing the Query
   **YourQuery.re**
   ```reason
-  module FetchUserName = Apollo.Client.Query(QueryConfig);
-  
-  let variables = {
-    "limit": 2
-  };
-  
+  let Query = Client.Instance.Query;
+
   let make = (_children) => {
   /* ... */
   render: (_) =>
-    <FetchUserName variables>
+    <Query query=(() => HeroQuery.make(~name="Pikachu", ()))>
       (response => {
         switch response {
            | Loading => <div> (Utils.ste("Loading")) </div>
            | Failed(error) => <div> (Utils.ste(error)) </div>
            | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
       }})
-    </FetchUserName>
+    </Query>
   }
   ```
 
