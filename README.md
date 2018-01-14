@@ -68,7 +68,7 @@ module Client =
   **QueryConfig.re**
   ```reason
   /* Create a GraphQL Query by using the graphql_ppx */ 
-  module HeroQuery = [%graphql {|
+  module PokemonQuery = [%graphql {|
     query getPokemon($name: String!){
         pokemon(name: $name) {
             name
@@ -85,8 +85,9 @@ module Client =
 
   let make = (_children) => {
   /* ... */
-  render: (_) =>
-    <Query query=(() => HeroQuery.make(~name="Pikachu", ()))>
+  render: (_) => {
+    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
+    <Query query=pokemonQuery>
       (response => {
         switch response {
            | Loading => <div> (Utils.ste("Loading")) </div>
@@ -94,6 +95,7 @@ module Client =
            | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
       }})
     </Query>
+  }
   }
   ```
 

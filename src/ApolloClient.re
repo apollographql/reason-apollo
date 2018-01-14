@@ -1,8 +1,12 @@
 open ReasonApolloTypes;
 
 type queryObj = {. "query": string, "variables": Js.Json.t };
+type mutationObj = {. "mutation": string, "variables": Js.Json.t};
 
-type generatedApolloClient = {. "query": [@bs.meth] (queryObj => string)};
+type generatedApolloClient = {. 
+  "query": [@bs.meth] (queryObj => string),
+  "mutate": [@bs.meth] (mutationObj => string)
+};
 
 type clientOptions = {
   .
