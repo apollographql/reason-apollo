@@ -7,19 +7,34 @@ Easily use the Apollo Client 2 with Reason
 
 ## Install and setup
 
-#### yarn
+#### Install
 ```
 yarn add reason-apollo
+
+# Add graphql_ppx
+opam install graphql_ppx
+yarn add --dev graphql_ppx
 ```
 
 #### bsconfig
-Add `reason-apollo` to your `bs-dependencies`:
+Add `reason-apollo` to your `bs-dependencies` and
+`graphql_ppx/ppx` to your `ppx_flags`
+
 **bsconfig.json**
 ```
 "bs-dependencies": [
   "reason-react",
   "reason-apollo"
+],
+"ppx-flags": [
+    "graphql_ppx/ppx"
 ]
+```
+
+#### send introspection query
+This will generate a `schema.json` which will be used to safely type your GraphQL queries/mutations.
+```
+yarn send-introspection-query http://my-api.example.com/api
 ```
 
 
@@ -64,107 +79,82 @@ module Client =
   
   ## Query
   
-  ### Query Configuration
-  **QueryConfig.re**
+  **MyComponent.re**
   ```reason
-  /* Create a query with the `graphql-tag` */
-  
-  let query = [@bs] gql({|
-    query getUser {
-      name
+  /* Create a GraphQL Query by using the graphql_ppx */ 
+  module PokemonQuery = [%graphql {|
+    query getPokemon($name: String!){
+        pokemon(name: $name) {
+            name
+        }
     }
-  |});  
-  
-  /* Describe the result type */
-    type user = {. "name": string};
-    type data = {. "user": user};
-    type response = data;
-    
-  /* Optional variables passed to the query */
-    type variables = {. "limit": int}; /* or `type variables;` if none */
-  ```
+  |}]; 
 
-  
-  #### Executing the Query
-  **YourQuery.re**
-  ```reason
-  module FetchUserName = Apollo.Client.Query(QueryConfig);
-  
-  let variables = {
-    "limit": 2
-  };
-  
+  module Query = Client.Instance.Query;
+
   let make = (_children) => {
   /* ... */
-  render: (_) =>
-    <FetchUserName variables>
+  render: (_) => {
+    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
+    <Query query=pokemonQuery>
       (response => {
         switch response {
            | Loading => <div> (Utils.ste("Loading")) </div>
            | Failed(error) => <div> (Utils.ste(error)) </div>
            | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
-      })
-    </FetchUserName>
+      }})
+    </Query>
+  }
   }
   ```
 
   ## Mutation
   
-  ### Mutation Configuration
-  
-  **MutationConfig.re**
+  **MyMutation.re**
   ```reason
-  /* Create a mutation with the `graphql-tag` */
-  
-  let mutation = [@bs] gql({|
-    mutation deleteTodo($id: ID!) {
-        deleteTodo(id: $id) {
-          id
-          name
+  module PokemonMutation = [%graphql {|
+    mutation addPokemon($name: String!) {
+        addPokemon(name: $name) {
+            name
         }
-      }
-  |});  
-  
-  /* Describe the result type */
-  type todo = {. "name": string, "id": string};
-  type data = {. "deleteTodo": todo};
-  type response = data;
-    
-  /* Optional variables passed to the mutation */
-    type variables = {. "id": string}; /* or `type variables;` if none */
-  ```
+    }
+  |}];
 
-  
-  ### Executing the Mutation
-  **YourMutation.re**
-  ```reason
-  module DeleteTodo = Apollo.Client.Mutation(MutationConfig);
-  
-  let variables = {
-    "id": "uuid-1"
-  };
+  module Mutation = Client.Instance.Mutation;
   
   let make = (_children) => {
   /* ... */
-  render: (_) =>
-    <DeleteTodo>
+  initialState: {
+    parse
+  },
+  reducer: (action, state) =>
+    switch (action) {
+    | AddParser(parse) => ReasonReact.Update({...state, parse})
+  },
+  render: ({reduce, state: {parse}}) => {  
+    <Mutation>
       ((
-        deleteTodo /* Mutation to call */, 
+        mutate /* Mutation to call */, 
         result /* Result of your mutation */
       ) => {
           let mutationResponse = switch result {
             | NotCalled => <div>  (Utils.ste("Not Called")) </div>
             | Loading => <div> (Utils.ste("Loading")) </div>
-            | Loaded(response) => <div> (Utils.ste(response##deleteTodo##name ++ " deleted")) </div>
+            | Loaded(response) => <div> (Utils.ste(parse(result)##addPokemon##name ++ " addded")) </div>
             | Failed(error) => <div> (Utils.ste(error)) </div>
           };
         <div>
-          <button onClick=((_mouseEvent) => deleteTodo(~variables, ()))> 
-            (Utils.ste("Delete Todo")) 
+          <button onClick=((_mouseEvent) => {
+              let pokemonMutation = PokemonMutation.make(~name="Reason", ());
+              mutate(pokemonMutation);
+              reduce(() => AddParser(pokemonMutation##parse), ());
+            })> 
+            (Utils.ste("Add Pokemon")) 
           </button>
           <div> (mutationResponse) </div>
         </div>
       })
-    </DeleteTodo>
+    </Mutation>
+  }
   }
   ```

@@ -1,32 +1,25 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
-module type ClientConfig = {type response; type variables; let mutation: ReasonApolloTypes.queryString;};
 
-module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: ClientConfig) => {
-    module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
-    let apolloClient = CastApolloClient.castClient(InternalConfig.apolloClient);
+module MutationFactory = (InternalConfig:InternalConfig) => {
+    external cast : string => {. "data": Js.Json.t, "loading": bool} = "%identity";
 
-    external cast : string => {. "data": ClientConfig.response, "loading": bool} = "%identity";
     type state =
       | NotCalled
       | Loading
-      | Loaded(ClientConfig.response)
+      | Loaded(Js.Json.t)
       | Failed(string);
 
     type action =
       | Result(string)
       | Error(string);
 
-    let sendMutation = (~mutation, ~variables, ~reduce) => {
-      let mutationConfig =
-        switch variables {
-          | Some(variables) =>
-            CastApolloClient.getJSMutationConfig(~mutation=mutation, ~variables=variables, ())
-          | None => CastApolloClient.getJSMutationConfig(~mutation=mutation, ())
-        };
-
+    let sendMutation = (~mutation, ~reduce) => {
       let _ =
       Js.Promise.(
-        resolve(apolloClient##mutate(mutationConfig))
+        resolve(InternalConfig.apolloClient##mutate({
+          "mutation": mutation##query,
+          "variables": mutation##variables
+        }))
         |> then_(
              (value) => {
                reduce(() => Result(value), ());
@@ -55,10 +48,10 @@ module MutationFactory = (InternalConfig:InternalConfig) => (ClientConfig: Clien
           | Error(error) => ReasonReact.Update(Failed(error))
         },
       render: ({reduce, state}) => {
-        let mutation = (~variables=?, ()) => {
-          sendMutation(~mutation=ClientConfig.mutation, ~variables, ~reduce);
+        let mutate = (mutationFactory) => {
+          sendMutation(~mutation=mutationFactory, ~reduce);
         };
-        children[0](mutation, state);
+        children[0](mutate, state);
       }
     };
   };

@@ -1,32 +1,29 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
-module type ClientConfig = {type response; type variables; let query: ReasonApolloTypes.queryString;};
 
-module QueryFactory = (InternalConfig:InternalConfig) => (ClientConfig: ClientConfig) => {
-    module CastApolloClient = ApolloClient.Cast({type variables = ClientConfig.variables});
-    let apolloClient = CastApolloClient.castClient(InternalConfig.apolloClient);
+module QueryFactory = (InternalConfig:InternalConfig) => {
+    external castResponse : string => {. "data": Js.Json.t } = "%identity";            
 
-    external cast : string => {. "data": ClientConfig.response, "loading": bool} = "%identity";
-    type state =
+    type response =
       | Loading
-      | Loaded(ClientConfig.response)
+      | Loaded(Js.Json.t)
       | Failed(string);
+
+    type state = { 
+      response: response, 
+      variables: Js.Json.t
+    };
 
     type action =
       | Result(string)
       | Error(string);
 
-    type retainedProps = {variables: option(ClientConfig.variables)};
-
-    let sendQuery = (~query, ~variables, ~reduce) => {
-      let queryConfig =
-        switch variables {
-          | Some(variables) =>
-            CastApolloClient.getJSQueryConfig(~query=query, ~variables=variables, ())
-          | None => CastApolloClient.getJSQueryConfig(~query=query, ())
-        };
+    let sendQuery = (~query, ~reduce) => {
       let _ =
       Js.Promise.(
-        resolve(apolloClient##query(queryConfig))
+        resolve(InternalConfig.apolloClient##query({
+          "query": query##query,
+          "variables": query##variables
+        }))
         |> then_(
              (value) => {
                reduce(() => Result(value), ());
@@ -42,38 +39,41 @@ module QueryFactory = (InternalConfig:InternalConfig) => (ClientConfig: ClientCo
       );
     };
 
-    let component = ReasonReact.reducerComponentWithRetainedProps("ReasonApollo");
-    let make = (~variables=?, children) => {
+    let component = ReasonReact.reducerComponent("ReasonApollo");
+    let make = (~query as q, children) => {
       ...component,
-      initialState: () => Loading,
-      reducer: (action, _state) =>
+      initialState: () => {
+        response: Loading,
+        variables: q##variables
+      },
+      reducer: (action, state) =>
         switch action {
           | Result(result) => {
-            let typedResult = cast(result)##data;
-            ReasonReact.Update(Loaded(typedResult))
+            let typedResult = castResponse(result)##data;
+            ReasonReact.Update({
+              ...state,
+              response: Loaded(typedResult)
+            })
           }
-          | Error(error) => ReasonReact.Update(Failed(error))
+          | Error(error) => ReasonReact.Update({
+            ...state,
+            response: Failed(error)
+          })
         },
-      retainedProps: {variables: variables},
-      willReceiveProps: ({retainedProps, state, reduce}) => {
-        switch (variables, retainedProps.variables) {
-          | (Some(_variables), Some(retainedVariables)) => {
-            if(_variables !== retainedVariables) {
-              sendQuery(~query=ClientConfig.query, ~variables, ~reduce);
-              state;
-            } else {
-              state;
-            }
-          }
-          | _ => state
+      willReceiveProps: ({state, reduce}) => {
+        if(q##variables != state.variables) {
+          sendQuery(~query=q, ~reduce);
+          state;
+        } else {
+          state;
         }
       },
       didMount: ({reduce}) => {
-        sendQuery(~query=ClientConfig.query, ~variables, ~reduce);
+        sendQuery(~query=q, ~reduce);
         ReasonReact.NoUpdate;
       },
       render: ({state}) => {
-        children[0](state);
+        children[0](state.response, q##parse);
       }
     };
   };

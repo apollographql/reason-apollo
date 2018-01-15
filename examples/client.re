@@ -74,7 +74,7 @@ module InMemoryCache =
 
 
 /* Create the ApolloClient */
-module Client =
+module Instance =
   ReasonApollo.CreateClient(
     {
       let apolloClient =
