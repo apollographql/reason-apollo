@@ -7,19 +7,34 @@ Easily use the Apollo Client 2 with Reason
 
 ## Install and setup
 
-#### yarn
+#### Install
 ```
 yarn add reason-apollo
+
+# Add graphql_ppx
+opam install graphql_ppx
+yarn add --dev graphql_ppx
 ```
 
 #### bsconfig
-Add `reason-apollo` to your `bs-dependencies`:
+Add `reason-apollo` to your `bs-dependencies` and
+`graphql_ppx/ppx` to your `ppx_flags`
+
 **bsconfig.json**
 ```
 "bs-dependencies": [
   "reason-react",
   "reason-apollo"
+],
+"ppx-flags": [
+    "graphql_ppx/ppx"
 ]
+```
+
+#### send introspection query
+This will generate a `schema.json` which will be used to safely type your GraphQL queries/mutations.
+```
+yarn send-introspection-query http://my-api.example.com/api
 ```
 
 
