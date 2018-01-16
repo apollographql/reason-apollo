@@ -47,6 +47,9 @@ yarn send-introspection-query http://my-api.example.com/api
  
  **Apollo.re**
  ```reason
+ open ApolloLinks;
+ open ApolloInMemoryCache;
+
  module InMemoryCache =
   ApolloInMemoryCache.CreateInMemoryCache(
     {
