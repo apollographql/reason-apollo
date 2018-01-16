@@ -2,7 +2,8 @@ module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClie
 
 module MutationFactory = (InternalConfig:InternalConfig) => {
     external cast : string => {. "data": Js.Json.t, "loading": bool} = "%identity";
-
+    [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+    
     type state =
       | NotCalled
       | Loading
@@ -17,7 +18,7 @@ module MutationFactory = (InternalConfig:InternalConfig) => {
       let _ =
       Js.Promise.(
         resolve(InternalConfig.apolloClient##mutate({
-          "mutation": mutation##query,
+          "mutation": [@bs] gql(mutation##query),
           "variables": mutation##variables
         }))
         |> then_(

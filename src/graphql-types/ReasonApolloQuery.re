@@ -2,7 +2,8 @@ module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClie
 
 module QueryFactory = (InternalConfig:InternalConfig) => {
     external castResponse : string => {. "data": Js.Json.t } = "%identity";            
-
+    [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+    
     type response =
       | Loading
       | Loaded(Js.Json.t)
@@ -21,7 +22,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
       let _ =
       Js.Promise.(
         resolve(InternalConfig.apolloClient##query({
-          "query": query##query,
+          "query": [@bs] gql(query##query),
           "variables": query##variables
         }))
         |> then_(
