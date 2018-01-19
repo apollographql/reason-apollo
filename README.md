@@ -68,7 +68,7 @@ module Client =
       let apolloClient =
         ReasonApollo.createApolloClient(
           ~cache=InMemoryCache.cache,
-          ~link=from([|httpLink|]),
+          ~link=httpLink,
           ()
         );
     }
