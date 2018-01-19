@@ -17,7 +17,7 @@ type restoreData;
  * Define the object to pass to the InMemoryCache constructor.
  * If you don't want to pass any object, simply return `Js_null_undefined.undefined`.
  */
-let inMemoryCacheObject:
+type inMemoryCacheObject =
   /* TODO: define missing fields */
   Js.Nullable.t({. "dataIdFromObject": dataObject => string});
 
@@ -31,10 +31,10 @@ type inMemoryCacheRestoreData = Js.Nullable.t(restoreData);
  * CreateInMemoryCache
  * https://github.com/apollographql/apollo-client/tree/master/packages/apollo-cache-inmemory
  */
-
 /* Bind the InMemoryCache class */
-[@bs.module "apollo-cache-inmemory"] [@bs.new]
-external createInMemoryCache : inMemoryCacheObject => apolloCache =
+[@bs.module "apollo-cache-inmemory"]
+[@bs.new]
+external apolloInMemoryCache : inMemoryCacheObject => apolloCache =
   "InMemoryCache";
 
 /* Bind the restore method */
