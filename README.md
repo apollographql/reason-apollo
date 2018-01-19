@@ -59,12 +59,8 @@ yarn send-introspection-query http://my-api.example.com/api
   );
 
 /* Create an HTTP Link */
-module HttpLink =
-  ApolloLinks.CreateHttpLink(
-    {
-      let uri = "http://localhost:3010/graphql";
-    }
-  );
+let httpLink =
+  ApolloLinks.createHttpLink(~uri="http://localhost:3010/graphql");
 
 module Client =
   ReasonApollo.CreateClient(
@@ -72,7 +68,7 @@ module Client =
       let apolloClient =
         ReasonApollo.createApolloClient(
           ~cache=InMemoryCache.cache,
-          ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+          ~link=from([|httpLink|]),
           ()
         );
     }
