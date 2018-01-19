@@ -18,7 +18,17 @@ type clientOptions = {
   "queryDeduplication": Js.Nullable.t(Js.boolean)
 };
 
-type linkOptions = {. "uri": string};
+type fetch;
+
+type linkOptions = {
+  .
+  "uri": string,
+  "includeExtensions": Js.Nullable.t(Js.boolean),
+  "fetch": Js.Nullable.t(fetch),
+  "headers": Js.Nullable.t(Js.Json.t),
+  "credentials": Js.Nullable.t(string),
+  "fetchOptions": Js.Nullable.t(Js.Json.t)
+};
 
 [@bs.module "apollo-client"] [@bs.new]
 external createApolloClient : clientOptions => generatedApolloClient =
