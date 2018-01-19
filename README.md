@@ -96,11 +96,11 @@ module Client =
   render: (_) => {
     let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
     <Query query=pokemonQuery>
-      (response => {
+      (response, parse) => {
         switch response {
            | Loading => <div> (Utils.ste("Loading")) </div>
            | Failed(error) => <div> (Utils.ste(error)) </div>
-           | Loaded(result) => <div> (Utils.ste(result##user##name)) </div>
+           | Loaded(result) => <div> (Utils.ste(parse(result)##user##name)) </div>
       }})
     </Query>
   }
