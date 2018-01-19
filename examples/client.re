@@ -8,41 +8,30 @@ let getAccessToken = () => "123";
 let logout = () => ();
 
 /* Create an HTTP Link */
-module HttpLink =
-  CreateHttpLink(
-    {
-      let uri = "http://localhost:3010/graphql";
-    }
-  );
+let httpLink = createHttpLink(~uri="http://localhost:3010/graphql", ());
 
 /* Create a Link that puts an Authorization header in context */
-module AuthLink =
-  CreateContextLink(
-    {
-      let contextHandler = () => {
-        let token = getAccessToken();
-        let headers = {"headers": {"authorization": {j|Bearer $token|j}}};
-        asJsObject(headers)
-      };
-    }
-  );
+let contextHandler = () => {
+  let token = getAccessToken();
+  let headers = {"headers": {"authorization": {j|Bearer $token|j}}};
+  asJsObject(headers)
+};
+
+let authLink = createContextLink(contextHandler);
 
 /* Create a Link that handles 401 error responses */
-module ErrorLink =
-  CreateErrorLink(
-    {
-      let errorHandler = errorResponse =>
-        switch errorResponse##networkError {
-        | Some(error) =>
-          if (error##statusCode == 401) {
-            logout();
-          } else {
-            ();
-          }
-        | None => ()
-        };
+let errorHandler = errorResponse =>
+  switch errorResponse##networkError {
+  | Some(error) =>
+    if (error##statusCode == 401) {
+      logout();
+    } else {
+      ();
     }
-  );
+  | None => ()
+};
+
+let errorLink = createErrorLink(errorHandler);
 
 /* Create an InMemoryCache */
 module InMemoryCache =
@@ -80,7 +69,7 @@ module Instance =
       let apolloClient =
         ReasonApollo.createApolloClient(
           ~cache=InMemoryCache.cache,
-          ~link=from([|AuthLink.link, ErrorLink.link, HttpLink.link|]),
+          ~link=from([|authLink, errorLink, httpLink|]),
           ()
         );
     }
