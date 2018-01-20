@@ -37,6 +37,7 @@ This will generate a `schema.json` which will be used to safely type your GraphQ
 yarn send-introspection-query http://my-api.example.com/api
 ```
 
+Remember to run `bsb -clean-world` if run this command again.
 
 ## Usage 
  
