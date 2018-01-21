@@ -17,7 +17,7 @@ render: (_) => {
     let unexpectedError = <div> (ReasonReact.stringToElement("There was an internal error")) </div>;
     let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
     <Query query=pokemonQuery>
-    ((response, parse) => {
+    ...((response, parse) => {
       switch response {
          | Loading => <div> (ReasonReact.stringToElement("Loading")) </div>
          | Failed(error) => <div> (ReasonReact.stringToElement(error)) </div>
