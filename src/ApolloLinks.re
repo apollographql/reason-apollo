@@ -10,11 +10,6 @@ open ReasonApolloTypes;
 [@bs.module "apollo-link-error"] external apolloLinkOnError : (apolloLinkErrorResponse => unit) => apolloLink = "onError";
 
 /**
- * A convenience method to cast a generic type to a record object.
- */
-external asJsObject : 'a => Js.t({..}) = "%identity";
-
-/**
  * CreateHttpLink
  * https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-http
  */

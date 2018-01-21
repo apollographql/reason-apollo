@@ -5,9 +5,6 @@ open ApolloInMemoryCache;
 /* Define type for InMemoryCache's dataIdFromObject option  */
 type dataObject = {. "__typename": string, "id": string, "key": string};
 
-/* Fake some methods, for the sake of the example */
-let getAccessToken = () => "123";
-
 let logout = () => ();
 
 /* Create an HTTP Link */
@@ -15,9 +12,9 @@ let httpLink = createHttpLink(~uri="http://localhost:3010/graphql", ());
 
 /* Create a Link that puts an Authorization header in context */
 let contextHandler = () => {
-  let token = getAccessToken();
+  let token = "123";
   let headers = {"headers": {"authorization": {j|Bearer $token|j}}};
-  asJsObject(headers)
+  headers;
 };
 
 let authLink = createContextLink(contextHandler);
