@@ -48,6 +48,11 @@ let inMemoryCache =
     ()
   );
 
+/*
+  Default in memory cache
+  let inMemoryCache = createInMemoryCache(());
+*/
+
 /* Create the ApolloClient */
 module Instance =
   ReasonApollo.CreateClient(
