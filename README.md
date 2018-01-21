@@ -50,13 +50,8 @@ yarn send-introspection-query http://my-api.example.com/api
  open ApolloLinks;
  open ApolloInMemoryCache;
 
- module InMemoryCache =
-  ApolloInMemoryCache.CreateInMemoryCache(
-    {
-      type dataObject;
-      let inMemoryCacheObject = Js.Nullable.undefined;
-    }
-  );
+ /* Create an InMemoryCache */
+ let inMemoryCache = createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an HTTP Link */
 let httpLink =
@@ -67,7 +62,7 @@ module Client =
     {
       let apolloClient =
         ReasonApollo.createApolloClient(
-          ~cache=InMemoryCache.cache,
+          ~cache=inMemoryCache /* restore method can be piped e.g. inMemoryCache |> restore(window.__APOLLO__) */,
           ~link=httpLink,
           ()
         );
