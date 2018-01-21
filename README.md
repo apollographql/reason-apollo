@@ -50,6 +50,8 @@ yarn send-introspection-query http://my-api.example.com/api
  open ApolloLinks;
  open ApolloInMemoryCache;
 
+ type dataObject = {. "__typename": string, "id": string, "key": string};
+
  /* Create an InMemoryCache */
  let inMemoryCache = createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
