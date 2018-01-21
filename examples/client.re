@@ -2,6 +2,9 @@ open ApolloLinks;
 
 open ApolloInMemoryCache;
 
+/* Define type for InMemoryCache's dataIdFromObject option  */
+type dataObject = {. "__typename": string, "id": string, "key": string};
+
 /* Fake some methods, for the sake of the example */
 let getAccessToken = () => "123";
 
@@ -20,47 +23,30 @@ let contextHandler = () => {
 let authLink = createContextLink(contextHandler);
 
 /* Create a Link that handles 401 error responses */
-let errorHandler = errorResponse =>
+let errorHandler = (errorResponse) =>
   switch errorResponse##networkError {
   | Some(error) =>
     if (error##statusCode == 401) {
-      logout();
+      logout()
     } else {
-      ();
+      ()
     }
   | None => ()
-};
+  };
 
 let errorLink = createErrorLink(errorHandler);
 
-/* Create an InMemoryCache */
-module InMemoryCache =
-  CreateInMemoryCache(
-    {
-      type dataObject = {. "__typename": string, "id": string, "key": string};
-      let inMemoryCacheObject =
-        Js_null_undefined.return({
-          "dataIdFromObject": (obj: dataObject) =>
-            if (obj##__typename === "Organization") {
-              obj##key;
-            } else {
-              obj##id;
-            }
-        });
-    }
+let inMemoryCache =
+  createInMemoryCache(
+    ~dataIdFromObject=
+      (obj: dataObject) =>
+        if (obj##__typename === "Organization") {
+          obj##key
+        } else {
+          obj##id
+        },
+    ()
   );
-
-/* Alternatively if you want to use the default values of InMemoryCache: */
-/*
- module InMemoryCache =
-   CreateInMemoryCache(
-     {
-       type dataObject;
-       let inMemoryCacheObject = Js_null_undefined.undefined;
-     }
-   );
- */
-
 
 /* Create the ApolloClient */
 module Instance =
@@ -68,7 +54,7 @@ module Instance =
     {
       let apolloClient =
         ReasonApollo.createApolloClient(
-          ~cache=InMemoryCache.cache,
+          ~cache=inMemoryCache,
           ~link=from([|authLink, errorLink, httpLink|]),
           ()
         );
