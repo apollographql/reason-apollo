@@ -47,23 +47,11 @@ apollo-client@^2.2.0:
   optionalDependencies:
     "@types/async" "2.0.46"
 
-apollo-link-context@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.3.tgz#9b823e26780a39655a35347f0b0e88b83acdeabe"
-  dependencies:
-    apollo-link "^1.0.6"
-
 apollo-link-dedup@^1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/apollo-link-dedup/-/apollo-link-dedup-1.0.5.tgz#1c213d7ebbe48e74b016fffacd7e6a53dc309e32"
   dependencies:
     apollo-link "^1.0.7"
-
-apollo-link-error@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/apollo-link-error/-/apollo-link-error-1.0.3.tgz#2c679d2e6a2df09a9ae3f70d23c64af922a801a2"
-  dependencies:
-    apollo-link "^1.0.6"
 
 apollo-link-http@^1.3.2:
   version "1.3.2"
@@ -71,7 +59,7 @@ apollo-link-http@^1.3.2:
   dependencies:
     apollo-link "^1.0.7"
 
-apollo-link@^1.0.0, apollo-link@^1.0.6, apollo-link@^1.0.7:
+apollo-link@^1.0.0, apollo-link@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.0.7.tgz#42cd38a7378332fc3e41a214ff6a6e5e703a556f"
   dependencies:
@@ -386,30 +374,30 @@ qs@~6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
 
-react-dom@>=15.0.0:
-  version "16.1.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.1.1.tgz#b2e331b6d752faf1a2d31399969399a41d8d45f8"
+"react-dom@>=15.0.0 || >=16.0.0":
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@>=15.0.0:
-  version "16.1.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.1.1.tgz#d5c4ef795507e3012282dd51261ff9c0e824fe1f"
+"react@>=15.0.0 || >=16.0.0":
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-reason-react@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.2.4.tgz#96d85a533fc93e695818dbb3e6a8ae05fbf0de7d"
+reason-react@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.3.1.tgz#55d5fcd07825299ce5d04f99e763bf2af1f9e0f2"
   dependencies:
-    react ">=15.0.0"
-    react-dom ">=15.0.0"
+    react ">=15.0.0 || >=16.0.0"
+    react-dom ">=15.0.0 || >=16.0.0"
 
 request@^2.81.0:
   version "2.83.0"
