@@ -1,7 +1,7 @@
 
 module PokemonMutation = [%graphql {|
     mutation addPokemon($name: String!) {
-        addPokemon(name: $name) {
+       addPokemon(name: $name) {
             name
         }
     }
@@ -15,7 +15,7 @@ let make = (_children) => {
 ...component,
 render: (_) => {    
     <Mutation>
-    ((mutate, response) => {
+    ...((mutate, response) => {
       let pokemonMutation = PokemonMutation.make(~name="Reason", ());        
       switch response {
          | NotCalled => {

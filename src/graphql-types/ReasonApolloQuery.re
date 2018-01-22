@@ -74,7 +74,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
         ReasonReact.NoUpdate;
       },
       render: ({state}) => {
-        children[0](state.response, q##parse);
+        children(state.response, q##parse);
       }
     };
   };

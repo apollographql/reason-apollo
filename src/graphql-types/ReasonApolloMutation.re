@@ -52,7 +52,7 @@ module MutationFactory = (InternalConfig:InternalConfig) => {
         let mutate = (mutationFactory) => {
           sendMutation(~mutation=mutationFactory, ~reduce);
         };
-        children[0](mutate, state);
+        children(mutate, state);
       }
     };
   };

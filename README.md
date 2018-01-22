@@ -93,7 +93,7 @@ module Client =
   render: (_) => {
     let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
     <Query query=pokemonQuery>
-      (response, parse) => {
+      ...(response, parse) => {
         switch response {
            | Loading => <div> (Utils.ste("Loading")) </div>
            | Failed(error) => <div> (Utils.ste(error)) </div>
@@ -129,7 +129,7 @@ module Client =
   },
   render: ({reduce, state: {parse}}) => {  
     <Mutation>
-      ((
+      ...((
         mutate /* Mutation to call */, 
         result /* Result of your mutation */
       ) => {
