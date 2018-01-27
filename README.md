@@ -38,10 +38,7 @@ yarn send-introspection-query http://my-api.example.com/api
 ```
 
 
-## Usage 
- 
- [here](https://github.com/Gregoirevda/reason-apollo-test-usage) is a repository showing the usage of the package.
- 
+## Usage  
  
  ### Create the Apollo Client
  
