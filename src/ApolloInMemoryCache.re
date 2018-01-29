@@ -19,12 +19,32 @@ type inMemoryCacheRestoreData = Js.Nullable.t(restoreData);
 /* Bind the InMemoryCache class */
 [@bs.module "apollo-cache-inmemory"]
 [@bs.new]
-external apolloInMemoryCache : 'a => apolloCache =
-  "InMemoryCache";
+external apolloInMemoryCache : 'a => apolloCache = "InMemoryCache";
 
 /* Bind the restore method */
-[@bs.send.pipe : 't] external restore : inMemoryCacheRestoreData => apolloCache = "restore";
+[@bs.send.pipe : 't]
+external restore : inMemoryCacheRestoreData => apolloCache = "restore";
+
+/* Fragment matcher */
+type fragmentMatcher;
+
+[@bs.module "apollo-cache-inmemory"] [@bs.new]
+external introspectionFragmentMatcher : 'a => fragmentMatcher =
+  "IntrospectionFragmentMatcher";
+
+let createIntrospectionFragmentMatcher = (~data) =>
+  introspectionFragmentMatcher({"introspectionQueryResultData": data});
 
 /* Instantiate a new cache object */
-let createInMemoryCache = (~dataIdFromObject=?, ()) =>
-  apolloInMemoryCache({"dataIdFromObject": Js.Nullable.from_opt(dataIdFromObject)});
+let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) =>
+  switch fragmentMatcher {
+  | Some(fragmentMatcher) =>
+    apolloInMemoryCache({
+      "dataIdFromObject": Js.Nullable.from_opt(dataIdFromObject),
+      "fragmentMatcher": Js.Nullable.return(fragmentMatcher)
+    })
+  | None =>
+    apolloInMemoryCache({
+      "dataIdFromObject": Js.Nullable.from_opt(dataIdFromObject)
+    })
+  };
