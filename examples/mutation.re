@@ -1,4 +1,4 @@
-
+/*
 module PokemonMutation = [%graphql {|
     mutation addPokemon($name: String!) {
        addPokemon(name: $name) {
@@ -33,3 +33,4 @@ render: (_) => {
   </Mutation>
 }
 };
+*/

@@ -2,7 +2,11 @@ module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClie
 
 module QueryFactory = (InternalConfig:InternalConfig) => {
     external castResponse : string => {. "data": Js.Json.t } = "%identity";            
+    external asJsObject : 'a => Js.t({..}) = "%identity";
+
     [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+    [@bs.module] external shallowEqual : (Js.t({..}), Js.t({..})) => bool = "fbjs/lib/shallowEqual";
+
     
     type response =
       | Loading
@@ -62,7 +66,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
           })
         },
       willReceiveProps: ({state, reduce}) => {
-        if(q##variables != state.variables) {
+        if(!shallowEqual(asJsObject(q##variables), asJsObject(state.variables))) {
           sendQuery(~query=q, ~reduce);
           state;
         } else {
