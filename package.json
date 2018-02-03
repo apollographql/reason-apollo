@@ -39,5 +39,8 @@
     "graphql-tag": "^2.6.1",
     "graphql_ppx": "^0.0.1",
     "reason-react": "^0.3.1"
+  },
+  "dependencies": {
+    "fbjs": "^0.8.16"
   }
 }
