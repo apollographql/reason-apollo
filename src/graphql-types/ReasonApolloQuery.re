@@ -7,7 +7,6 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
     [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
     [@bs.module] external shallowEqual : (Js.t({..}), Js.t({..})) => bool = "fbjs/lib/shallowEqual";
 
-    
     type response =
       | Loading
       | Loaded(Js.Json.t)
@@ -78,7 +77,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
         ReasonReact.NoUpdate;
       },
       render: ({state}) => {
-        children(state.response, q##parse);
+        children(q##parse(state.response));
       }
     };
   };
