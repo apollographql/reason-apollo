@@ -1,7 +1,6 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
 
 module QueryFactory = (InternalConfig:InternalConfig) => {
-    external castResponse : string => {. "data": Js.Json.t } = "%identity";            
     external asJsObject : 'a => Js.t({..}) = "%identity";
 
     [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
@@ -53,6 +52,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
       reducer: (action, state) =>
         switch action {
           | Result(result) => {
+            external castResponse : string => {. "data": q.t } = "%identity";                        
             let typedResult = castResponse(result)##data;
             ReasonReact.Update({
               ...state,
