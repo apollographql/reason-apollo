@@ -1,10 +1,12 @@
-
-module PokemonQuery = [%graphql {|
-    query getPokemon($name: String!){
-        pokemon(name: $name) {
-            name
+let ste = ReasonReact.stringToElement;
+module GetAllPersonsQuery = [%graphql {|
+    query getAllPersons {
+        allPersons {
+          id
+          age
+          name
         }
-    }
+      }
 |}];
       
 let component = ReasonReact.statelessComponent("Greeting");
@@ -14,24 +16,16 @@ module Query = Client.Instance.Query;
 let make = (_children) => {
 ...component,
 render: (_) => {
-    let unexpectedError = <div> (ReasonReact.stringToElement("There was an internal error")) </div>;
-    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
-    <Query query=pokemonQuery>
+    let personsQuery = GetAllPersonsQuery.make(());
+    <Query query=personsQuery>
     ...((response, parse) => {
       switch response {
-         | Loading => <div> (ReasonReact.stringToElement("Loading")) </div>
-         | Failed(error) => <div> (ReasonReact.stringToElement(error)) </div>
+         | Loading => <div> ("Loading" |> ste) </div>
+         | Failed(error) => <div> (error |> ste) </div>
          | Loaded(result) => {
-            let pokemon = parse(result)##pokemon;
-            switch pokemon {
-                | Some(pokemon) => {
-                    switch pokemon##name {
-                    | Some(name) => <div> (ReasonReact.stringToElement(name)) </div>
-                    | None => unexpectedError
-                    }
-                }
-                | None => unexpectedError
-            };             
+            parse(result)##allPersons
+            |> Array.map(person => <div> (person##name |> ste) </div>)
+            |> ReasonReact.arrayToElement             
          }
     }})
   </Query>
