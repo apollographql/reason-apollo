@@ -36,15 +36,22 @@ let createIntrospectionFragmentMatcher = (~data) =>
   introspectionFragmentMatcher({"introspectionQueryResultData": data});
 
 /* Instantiate a new cache object */
-let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) =>
-  switch fragmentMatcher {
-  | Some(fragmentMatcher) =>
+let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) => {
+  /* Apollo Client, looks for key in Object. Doesn't check if value is null  */
+  switch (dataIdFromObject, fragmentMatcher) {
+  | (Some(dataIdFromObject), Some(fragmentMatcher)) => 
     apolloInMemoryCache({
-      "dataIdFromObject": Js.Nullable.from_opt(dataIdFromObject),
+      "dataIdFromObject": Js.Nullable.return(dataIdFromObject),
       "fragmentMatcher": Js.Nullable.return(fragmentMatcher)
     })
-  | None =>
+    | (Some(dataIdFromObject), None) => 
     apolloInMemoryCache({
-      "dataIdFromObject": Js.Nullable.from_opt(dataIdFromObject)
+      "dataIdFromObject": Js.Nullable.return(dataIdFromObject)
     })
+    | (None, Some(fragmentMatcher)) => 
+    apolloInMemoryCache({
+      "fragmentMatcher": Js.Nullable.return(fragmentMatcher)
+    })
+    | (None, None) => apolloInMemoryCache()
   };
+};
