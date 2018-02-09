@@ -21,5 +21,4 @@ node_modules/
 
 lib
 *.bs.js
-graphql_schema.json
 
