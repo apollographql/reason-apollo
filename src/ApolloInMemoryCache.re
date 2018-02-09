@@ -29,7 +29,7 @@ external restore : inMemoryCacheRestoreData => apolloCache = "restore";
 type fragmentMatcher;
 
 [@bs.module "apollo-cache-inmemory"] [@bs.new]
-external introspectionFragmentMatcher : 'a => fragmentMatcher =
+external introspectionFragmentMatcher : Js.t({..}) => fragmentMatcher =
   "IntrospectionFragmentMatcher";
 
 let createIntrospectionFragmentMatcher = (~data) =>
@@ -52,6 +52,6 @@ let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) => {
     apolloInMemoryCache({
       "fragmentMatcher": Js.Nullable.return(fragmentMatcher)
     })
-    | (None, None) => apolloInMemoryCache()
+    | (None, None) => apolloInMemoryCache(Js.Obj.empty())
   };
 };
