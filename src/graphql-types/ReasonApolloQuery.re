@@ -1,84 +1,105 @@
-module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
+[@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
 
-module QueryFactory = (InternalConfig:InternalConfig) => {
-    external castResponse : string => {. "data": Js.Json.t } = "%identity";            
-    external asJsObject : 'a => Js.t({..}) = "%identity";
+[@bs.module]
+external shallowEqual : (Js.Json.t, Js.Json.t) => bool =
+  "fbjs/lib/shallowEqual";
 
-    [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
-    [@bs.module] external shallowEqual : (Js.t({..}), Js.t({..})) => bool = "fbjs/lib/shallowEqual";
+module type InternalConfig = {
+  let apolloClient: ApolloClient.generatedApolloClient;
+};
 
-    
-    type response =
-      | Loading
-      | Loaded(Js.Json.t)
-      | Failed(string);
-
-    type state = { 
-      response: response, 
-      variables: Js.Json.t
+module QueryFactory = (InternalConfig: InternalConfig) => {
+  exception InvalidState;
+  type response =
+    | Loading
+    | Loaded(Js.Json.t)
+    | Failed(string);
+  type state = {
+    response,
+    queryObservable: ref(ApolloClient.watchQueryObservable),
+    subscription: ref(option(ApolloClient.subscription))
+  };
+  type action =
+    | UpdateResponse(response);
+  type retainedProps = {variables: Js.Json.t};
+  let component =
+    ReasonReact.reducerComponentWithRetainedProps("ReasonApollo");
+  let make = (~query as q, children) => {
+    let convertResponse = response =>
+      switch (
+        Js.to_bool(response##loading),
+        Js.Nullable.to_opt(response##data),
+        Js.Nullable.to_opt(response##error)
+      ) {
+      | (true, _, None) => Loading
+      | (false, _, Some(error)) => Failed(error)
+      | (false, Some(data), None) => Loaded(data)
+      | _ => raise(InvalidState) /* Should not happen */
+      };
+    let makeQueryObservable = (~query) =>
+      InternalConfig.apolloClient##watchQuery({
+        "query": [@bs] gql(query##query),
+        "variables": query##variables
+      });
+    let startSubscription = self => {
+      let queryObservable = self.ReasonReact.state.queryObservable^;
+      self.state.subscription :=
+        Some(
+          queryObservable##subscribe({
+            "next": response =>
+              self.send(UpdateResponse(convertResponse(response))),
+            "error": error =>
+              self.send(
+                UpdateResponse(
+                  Failed(Js.Exn.message(error) |> Js.Option.getWithDefault(""))
+                )
+              )
+          })
+        );
+      ();
     };
-
-    type action =
-      | Result(string)
-      | Error(string);
-
-    let sendQuery = (~query, ~reduce) => {
-      let _ =
-      Js.Promise.(
-        resolve(InternalConfig.apolloClient##query({
-          "query": [@bs] gql(query##query),
-          "variables": query##variables
-        }))
-        |> then_(
-             (value) => {
-               reduce(() => Result(value), ());
-               resolve()
-             }
-           )
-        |> catch(
-             (_value) => {
-               reduce(() => Error("an error happened"), ());
-               resolve()
-             }
-           )
-      );
+    let removeSubscription = self => {
+      switch self.ReasonReact.state.subscription^ {
+      | Some(subscription) => subscription##unsubscribe()
+      | None => ()
+      };
+      self.state.subscription := None;
     };
-
-    let component = ReasonReact.reducerComponent("ReasonApollo");
-    let make = (~query as q, children) => {
+    {
       ...component,
       initialState: () => {
-        response: Loading,
+        let queryObservable = makeQueryObservable(~query=q);
+        let response = convertResponse(queryObservable##currentResult());
+        {
+          response,
+          queryObservable: ref(queryObservable),
+          subscription: ref(None)
+        };
+      },
+      retainedProps: {
         variables: q##variables
       },
       reducer: (action, state) =>
         switch action {
-          | Result(result) => {
-            let typedResult = castResponse(result)##data;
-            ReasonReact.Update({
-              ...state,
-              response: Loaded(typedResult)
-            })
-          }
-          | Error(error) => ReasonReact.Update({
-            ...state,
-            response: Failed(error)
-          })
+        | UpdateResponse(response) => Update({...state, response})
         },
-      willReceiveProps: ({state, reduce}) => {
-        if(!shallowEqual(asJsObject(q##variables), asJsObject(state.variables))) {
-          sendQuery(~query=q, ~reduce);
-          state;
-        } else {
-          state;
-        }
-      },
-      didMount: ({reduce}) => {
-        sendQuery(~query=q, ~reduce);
+      didMount: self => {
+        startSubscription(self);
         ReasonReact.NoUpdate;
       },
-      render: ({state}) => {
-        children(state.response, q##parse);
-      }
+      willReceiveProps: self =>
+        if (! shallowEqual(q##variables, self.retainedProps.variables)) {
+          removeSubscription(self);
+          let queryObservable = makeQueryObservable(~query=q);
+          self.state.queryObservable := queryObservable;
+          startSubscription(self);
+          let response = convertResponse(queryObservable##currentResult());
+          {...self.state, response};
+        } else {
+          self.state;
+        },
+      willUnmount: self => removeSubscription(self),
+      render: ({state}) => children(state.response, q##parse)
     };
   };
+};
