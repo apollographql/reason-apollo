@@ -1,0 +1,23 @@
+/* This is the BuckleScript configuration file. Note that this is a comment;
+  BuckleScript comes with a JSON parser that supports comments and trailing
+  comma. If this screws with your editor highlighting, please tell us by filing
+  an issue! */
+{
+  "name": "react-template",
+  "reason": { "react-jsx": 2 },
+  "sources": ["src", "lib"],
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bs-dependencies": ["reason-react", "reason-apollo"],
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "refmt": 3,
+  "ppx-flags": ["graphql_ppx/ppx"]
+}
