@@ -8,7 +8,7 @@ type dataObject = {. "__typename": string, "id": string, "key": string};
 let logout = () => ();
 
 /* Create an HTTP Link */
-let httpLink = createHttpLink(~uri="http://localhost:3010/graphql", ());
+let httpLink = createHttpLink(~uri="https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn", ());
 
 /* Create a Link that puts an Authorization header in context */
 let contextHandler = () => {
