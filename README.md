@@ -12,8 +12,10 @@ Easily use the Apollo Client 2 with Reason
 yarn add reason-apollo
 
 # Add graphql_ppx
-opam install graphql_ppx
 yarn add --dev graphql_ppx
+
+# Add JS dependencies
+yarn add apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
 ```
 
 #### bsconfig
