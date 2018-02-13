@@ -46,6 +46,6 @@ makeApolloInMemoryCacheParams :
 let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) => {
     /* Apollo Client, looks for key in Object. Doesn't check if value is null  */
   apolloInMemoryCache(
-     makeApolloInMemoryCacheParams(~dataIdFromObject=?, ~fragmentMatcher=?)
+     makeApolloInMemoryCacheParams(~dataIdFromObject?, ~fragmentMatcher?)
    );
 };
