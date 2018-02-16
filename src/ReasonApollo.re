@@ -21,7 +21,15 @@ let createApolloClient =
 
 module type ApolloClientConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
 
-module CreateClient = (Config: ApolloClientConfig) => {
+
+module type Client = {
+  let apolloClient: ApolloClient.generatedApolloClient;
+
+  module Query: ReasonApolloQuery.Query;
+  module Mutation: ReasonApolloMutation.Mutation;
+};
+
+module CreateClient = (Config: ApolloClientConfig) : Client => {
   let apolloClient = Config.apolloClient;
 
   /*

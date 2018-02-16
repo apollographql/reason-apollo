@@ -1,19 +1,40 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
 
-module MutationFactory = (InternalConfig:InternalConfig) => {
+type state =
+  | NotCalled
+  | Loading
+  | Loaded(Js.Json.t)
+  | Failed(Js.Promise.error);
+
+type action =
+  | Result(string)
+  | Error(Js.Promise.error);
+
+module type Mutation = {
+  let cast: string => {. "data": Js.Json.t, "loading": bool };
+  let sendMutation: (~mutation:  {. "query": string, "variables": Js.Json.t }, ~reduce: ((unit) => action, unit) => 'a) => unit;
+  let component: ReasonReact.componentSpec(
+    state,
+    ReasonReact.stateless,
+    ReasonReact.noRetainedProps,
+    ReasonReact.noRetainedProps,
+    action
+  );
+  let make: (
+    ({. "query": string, "variables": Js.Json.t} => unit, state) => ReasonReact.reactElement
+  ) => ReasonReact.componentSpec(
+    state,
+    state,
+    ReasonReact.noRetainedProps,
+    ReasonReact.noRetainedProps,
+    action
+  );
+};
+
+module MutationFactory = (InternalConfig:InternalConfig) : Mutation => {
     external cast : string => {. "data": Js.Json.t, "loading": bool} = "%identity";
     [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
     
-    type state =
-      | NotCalled
-      | Loading
-      | Loaded(Js.Json.t)
-      | Failed(Js.Promise.error);
-
-    type action =
-      | Result(string)
-      | Error(Js.Promise.error);
-
     let sendMutation = (~mutation, ~reduce) => {
       let _ =
       Js.Promise.(
