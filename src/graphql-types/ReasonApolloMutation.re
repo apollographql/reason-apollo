@@ -8,11 +8,11 @@ module MutationFactory = (InternalConfig:InternalConfig) => {
       | NotCalled
       | Loading
       | Loaded(Js.Json.t)
-      | Failed(string);
+      | Failed(Js.Promise.error);
 
     type action =
       | Result(string)
-      | Error(string);
+      | Error(Js.Promise.error);
 
     let sendMutation = (~mutation, ~reduce) => {
       let _ =
@@ -28,9 +28,9 @@ module MutationFactory = (InternalConfig:InternalConfig) => {
              }
            )
         |> catch(
-             (_value) => {
-               reduce(() => Error("an error happened"), ());
-               resolve()
+             (error) => {
+              reduce(() => Error(error), ());
+              resolve()
              }
            )
       );
