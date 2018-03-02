@@ -22,12 +22,13 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
       | Result(string)
       | Error(string);
 
-    let sendQuery = (~query, ~reduce) => {
+    let sendQuery = (~query, ~context, ~reduce) => {
       let _ =
       Js.Promise.(
         resolve(InternalConfig.apolloClient##query({
           "query": [@bs] gql(query##query),
-          "variables": query##variables
+          "variables": query##variables,
+          "context": Js.Nullable.from_opt(context)
         }))
         |> then_(
              (value) => {
@@ -45,7 +46,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
     };
 
     let component = ReasonReact.reducerComponent("ReasonApollo");
-    let make = (~query as q, children) => {
+    let make = (~query as q, ~context as c=?, children) => {
       ...component,
       initialState: () => {
         response: Loading,
@@ -67,14 +68,14 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
         },
       willReceiveProps: ({state, reduce}) => {
         if(!shallowEqual(asJsObject(q##variables), asJsObject(state.variables))) {
-          sendQuery(~query=q, ~reduce);
+          sendQuery(~query=q, ~context=c, ~reduce);
           state;
         } else {
           state;
         }
       },
       didMount: ({reduce}) => {
-        sendQuery(~query=q, ~reduce);
+        sendQuery(~query=q, ~context=c, ~reduce);
         ReasonReact.NoUpdate;
       },
       render: ({state}) => {
