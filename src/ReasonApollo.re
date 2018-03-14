@@ -23,22 +23,20 @@ module type ApolloClientConfig = {let apolloClient: ApolloClient.generatedApollo
 
 module CreateClient = (Config: ApolloClientConfig) => {
   let apolloClient = Config.apolloClient;
-
   /*
-  * Expose a module to perform "query" operations for the given client
-  */
+   * Expose a module to perform "query" operations for the given client
+   */
   module Query =
-    ReasonApolloQuery.QueryFactory(
+    ReasonApolloFactories.QueryFactory(
       {
         let apolloClient = apolloClient;
       }
     );
-    
   /*
-  * Expose a module to perform "mutation" operations for the given client
-  */
+   * Expose a module to perform "mutation" operations for the given client
+   */
   module Mutation =
-    ReasonApolloMutation.MutationFactory(
+    ReasonApolloFactories.MutationFactory(
       {
         let apolloClient = apolloClient;
       }
