@@ -68,7 +68,7 @@ module QueryFactory = (InternalConfig:InternalConfig) => {
       willReceiveProps: ({state, reduce}) => {
         if(!shallowEqual(asJsObject(q##variables), asJsObject(state.variables))) {
           sendQuery(~query=q, ~reduce);
-          state;
+          {...state, variables: q##variables};
         } else {
           state;
         }
