@@ -40,7 +40,7 @@ let createIntrospectionFragmentMatcher = (~data) =>
 makeApolloInMemoryCacheParams : 
 (
   ~dataIdFromObject: (Js.t({..}) => string)=?, 
-  ~fragmentMatcher: (Js.t({..}) => string)=?
+  ~fragmentMatcher: fragmentMatcher=?
 ) => _ = "";
 
 let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) => {
