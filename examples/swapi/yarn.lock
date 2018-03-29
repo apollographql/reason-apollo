@@ -1837,9 +1837,8 @@ readdirp@^2.0.0:
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
 
-reason-apollo@^0.6.14:
-  version "0.6.14"
-  resolved "https://registry.yarnpkg.com/reason-apollo/-/reason-apollo-0.6.14.tgz#a27f2a4784954e6c44cca16b89d66cce0dcdbc2b"
+"reason-apollo@file:../..":
+  version "0.6.17"
   dependencies:
     fbjs "^0.8.16"
 

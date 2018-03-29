@@ -1,26 +1,46 @@
 module type InternalConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
 
-module QueryFactory = (InternalConfig:InternalConfig) => {
+type response =
+| Loading
+| Loaded(Js.Json.t)
+| Failed(string);
+
+type state = {
+  response: response,
+  variables: Js.Json.t
+};
+
+type action = 
+  | Result(string)
+  | Error(string);
+
+module type Query = {
+  let sendQuery: (
+    ~query: {. "query": string, "variables": Js.Json.t },
+    ~reduce: (unit => action, unit) => 'a
+  ) => unit;
+
+  let component: ReasonReact.componentSpec(
+    state,
+    ReasonReact.stateless,
+    ReasonReact.noRetainedProps,
+    ReasonReact.noRetainedProps,
+    action
+  );
+
+  let make: (
+    ~query: {. "parse": 'a, "query": string, "variables": Js.Json.t },
+    (response, 'a) => ReasonReact.reactElement
+  ) =>
+    ReasonReact.componentSpec(state, state, ReasonReact.noRetainedProps, ReasonReact.noRetainedProps, action);
+};
+
+module QueryFactory = (InternalConfig:InternalConfig) : Query => {
     external castResponse : string => {. "data": Js.Json.t } = "%identity";            
     external asJsObject : 'a => Js.t({..}) = "%identity";
 
     [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
     [@bs.module] external shallowEqual : (Js.t({..}), Js.t({..})) => bool = "fbjs/lib/shallowEqual";
-
-    
-    type response =
-      | Loading
-      | Loaded(Js.Json.t)
-      | Failed(string);
-
-    type state = { 
-      response: response, 
-      variables: Js.Json.t
-    };
-
-    type action =
-      | Result(string)
-      | Error(string);
 
     let sendQuery = (~query, ~reduce) => {
       let _ =
