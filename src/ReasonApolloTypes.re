@@ -23,4 +23,4 @@ type apolloCache;
 type networkError = {. "statusCode": int};
 
 /* TODO: define missing keys */
-type apolloLinkErrorResponse = {. "networkError": option(networkError)};
+type apolloLinkErrorResponse = {. "networkError": networkError};
