@@ -29,7 +29,3 @@ type linkOptions = {
   "credentials": Js.Nullable.t(string),
   "fetchOptions": Js.Nullable.t(Js.Json.t)
 };
-
-[@bs.module "apollo-client"] [@bs.new]
-external createApolloClient : clientOptions => generatedApolloClient =
-  "ApolloClient";

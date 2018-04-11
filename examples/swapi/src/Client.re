@@ -14,14 +14,11 @@ let inMemoryCache =
 /* Create an HTTP Link */
 let httpLink = ApolloLinks.createHttpLink(~uri="http://swapi.apis.guru/", ());
 
-module Instance =
-  ReasonApollo.CreateClient(
-    {
-      let apolloClient =
-        ReasonApollo.createApolloClient(
-          ~cache=inMemoryCache /* restore method can be piped e.g. inMemoryCache |> restore(window.__APOLLO__) */,
-          ~link=httpLink,
-          ()
-        );
-    }
-  );
+let instance = ReasonApollo.createApolloClient({
+  "link": httpLink,
+  "cache": inMemoryCache,
+  "ssrMode": Js.Nullable.undefined,
+  "ssrForceFetchDelay": Js.Nullable.undefined,
+  "connectToDevTools": Js.Nullable.undefined,
+  "queryDeduplication": Js.Nullable.undefined
+});
