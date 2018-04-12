@@ -66,7 +66,6 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       ~displayName: option(string)=?,
       ~delay: option(bool)=?,
       ~context: option(Js.Json.t)=?,
-      ~skip: option(bool)=?,
       children: renderPropObj => ReasonReact.reactElement
     ) => ReasonReact.wrapJsForReason(
       ~reactClass=queryComponent,
@@ -85,8 +84,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
             |> from_opt,
           "displayName": displayName |> from_opt,
           "delay": delay |> from_opt,
-          "context": context |> from_opt,
-          "skip": skip
+          "context": context |> from_opt
         }
       ),
       apolloData => apolloData |> convertJsInputToReason |> children
