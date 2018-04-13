@@ -12,7 +12,7 @@ let inMemoryCache =
   createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
 
 /* Create an HTTP Link */
-let httpLink = ApolloLinks.createHttpLink(~uri="http://swapi.apis.guru/", ());
+let httpLink = ApolloLinks.createHttpLink(~uri="https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn", ());
 
 let instance = ReasonApollo.createApolloClient({
   "link": httpLink,

@@ -12,8 +12,8 @@ external createApolloClient : clientOptions => generatedApolloClient =
   /*
   * Expose a module to perform "mutation" operations for the given client
   */
-  module CreateMutation =
-    ReasonApolloMutation.MutationFactory();
+  module CreateMutation = (Config:ReasonApolloTypes.Config) =>
+    ReasonApolloMutation.MutationFactory(Config);
 
   module Provider = ApolloProvider;
 
