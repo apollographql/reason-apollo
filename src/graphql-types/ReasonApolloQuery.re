@@ -11,7 +11,10 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       | NoData;
 
     type renderPropObj = {
-      data: response,
+      result: response,
+      data: option(Config.t),
+      error: option(apolloError),
+      loading: bool,
       refetch: option(Js.Json.t) => Js.Promise.t(response),
       fetchMore: (~variables: Js.Json.t) => Js.Promise.t(unit),
       networkStatus: int,
@@ -33,7 +36,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
 
     let graphqlQueryAST = [@bs] gql(Config.query);
 
-    let apolloDataToReason: renderPropObjJS => response =
+    let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
         apolloData##loading |> Js.to_bool,
@@ -47,10 +50,19 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       };
     
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
-      data: apolloDataToReason(apolloData),
+      result: apolloData |> apolloDataToVariant,
+      data: switch (apolloData##data |> Js.Nullable.to_opt) {
+      | Some(data) => Some(Config.parse(data))
+      | None => None
+      },
+      error: switch (apolloData##error |> Js.Nullable.to_opt) {
+      | Some(error) => Some(error)
+      | None => None
+      },
+      loading: apolloData##loading |> Js.to_bool,
       refetch: variables =>
         apolloData##refetch(variables |> Js.Nullable.from_opt)
-        |> Js.Promise.then_(data => data |> apolloDataToReason |> Js.Promise.resolve),
+        |> Js.Promise.then_(data => data |> apolloDataToVariant |> Js.Promise.resolve),
       fetchMore: (~variables) =>
         apolloData##fetchMore({"variables": variables, "query": graphqlQueryAST}),
       networkStatus: apolloData##networkStatus,
