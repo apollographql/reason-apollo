@@ -1859,8 +1859,6 @@ readdirp@^2.0.0:
 
 reason-apollo@../../:
   version "0.6.20"
-  dependencies:
-    fbjs "^0.8.16"
 
 reason-react@>=0.3.0:
   version "0.3.2"

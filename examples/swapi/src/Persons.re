@@ -22,14 +22,16 @@ let make = _children => {
     let getAllPersonsQuery = GetAllPersons.make(());
     <GetAllPersonsQuery variables=getAllPersonsQuery##variables>
       ...(
-        ({data}) =>
+        ({result}) =>
           <div>
             <h1> ("Persons: " |> ste) </h1>
             (
-              switch (data) {
+              switch (result) {
               | NoData => "No Data" |> ste
-              | Error(_) =>
-                "Something Went Wrong" |> ste
+              | Error(e) => {
+                Js.log(e);
+                "Something Went Wrong" |> ste                
+              }
               | Loading => "Loading" |> ste
               | Data(response) =>
                   response##allPersons

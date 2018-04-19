@@ -43,7 +43,7 @@ module MutationFactory = (Config:Config) => {
     type apolloMutation =
       Js.Nullable.t(mutationOptions) => Js.Promise.t(renderPropObjJS);
 
-    let apolloDataToReason: renderPropObjJS => response =
+    let apolloDataToReason: renderPropObjJS => response = 
       apolloData =>
         switch (
           apolloData##called |> Js.to_bool,
