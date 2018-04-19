@@ -158,3 +158,15 @@ module Client =
   }
   }
   ```
+
+## FAQ
+
+### I've added the schema file, but my build fails saying it couldn't find it
+
+In some cases, it seems like there are some differences between the provided `send-introspection-query`
+and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).
+If your build is failing, please make sure to try with the provided script. In your project root, run:
+
+```bash
+$ yarn send-introspection-query <url>
+```
