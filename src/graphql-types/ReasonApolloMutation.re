@@ -48,7 +48,7 @@ module MutationFactory = (Config:Config) => {
         switch (
           apolloData##called |> Js.to_bool,
           apolloData##loading |> Js.to_bool,
-          apolloData##data |> Js.Nullable.to_opt,
+          apolloData##data |> Utils.getNonEmptyObj,
           apolloData##error |> Js.Nullable.to_opt
         ) {
         | (true, false, None, _) => Called

@@ -51,21 +51,13 @@ module Get = (Config:ReasonApolloTypes.Config) => {
     
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
       result: apolloData |> apolloDataToVariant,
-      data: switch (apolloData##data |> Js.Nullable.to_opt) {
+      data: switch (apolloData##data |> Utils.getNonEmptyObj) {
       | None => None
       | Some(data) => 
-        switch (Js.Json.decodeObject(data)) {
-        | None => None
-        | Some(data) => 
-          switch (Array.length(Js.Dict.keys(data))) {
-          | 0 => None
-          | _ => 
-            switch (Config.parse(Js.Json.object_(data))) {
-            | parsedData => Some(parsedData)
-            | exception _ => None
-            }
-          }
-        };
+        switch (Config.parse(data)) {
+        | parsedData => Some(parsedData)
+        | exception _ => None
+        }
       },
       error: switch (apolloData##error |> Js.Nullable.to_opt) {
       | Some(error) => Some(error)

@@ -18,9 +18,9 @@ let make = (_children) => {
         let addPersonMutation = AddPerson.make(~age=42, ~name="John", ());
         <AddPersonMutation variables=addPersonMutation##variables>
             ...(
-                (mutation, {data})  => {
+                (mutation, _)  => {
                     <button onClick=((_) => {
-                        mutation(Js.Nullable.null);
+                        mutation(Js.Nullable.null) |> ignore;
                         Js.log("SEND");
                     })> ("Add a person" |> ReasonReact.stringToElement) </button>
                 }   
