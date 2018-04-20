@@ -15,17 +15,14 @@ module AddPersonMutation = ReasonApollo.CreateMutation(AddPerson);
 let make = (_children) => {
     ...component,
     render: _self => {
-        let dic = Js.Dict.empty();
-        Js.Dict.set(dic, "age", Js.Json.number(24 |> float_of_int));
-        Js.Dict.set(dic, "name", Js.Json.string("Bob"));
-        let variables = Js.Json.object_(dic);
+        let addPersonMutation = AddPerson.make(~name="Bob", ~age=24, ());
 
         <AddPersonMutation>
             ...(
                 (mutation, _)  => {
                     <button onClick=((_) => {
                         mutation({
-                            "variables": Js.Nullable.return(variables),
+                            "variables": Js.Nullable.return(addPersonMutation##variables),
                             "refetchQueries": [|"getAllPersons"|]
                         }) |> ignore;
                         Js.log("SEND");
