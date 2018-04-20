@@ -15,8 +15,8 @@ module MutationFactory = (Config:Config) => {
       | NoData;
 
     type renderPropObj = {
-      data: response,
-      rawData: option(Config.t),
+      result: response,
+      data: option(Config.t),
       loading: bool,
       error: option(apolloError),
       networkStatus: int,
@@ -57,8 +57,8 @@ module MutationFactory = (Config:Config) => {
         };
 
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
-      data: apolloDataToReason(apolloData),
-      rawData:
+      result: apolloDataToReason(apolloData),
+      data:
         switch (apolloData##data |> Utils.getNonEmptyObj) {
         | None => None
         | Some(data) =>
