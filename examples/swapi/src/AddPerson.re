@@ -20,8 +20,7 @@ let make = (_children) => {
         Js.Dict.set(dic, "name", Js.Json.string("Bob"));
         let variables = Js.Json.object_(dic);
 
-        let addPersonMutation = AddPerson.make(~age=42, ~name="John", ());
-        <AddPersonMutation variables=addPersonMutation##variables>
+        <AddPersonMutation>
             ...(
                 (mutation, _)  => {
                     <button onClick=((_) => {
