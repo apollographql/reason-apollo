@@ -9,9 +9,7 @@ module MutationFactory = (Config:Config) => {
 
     type response =
       | Loading
-      | LoadingWithData(Config.t)
       | Called
-      | CalledWithData(Config.t)
       | Error(apolloError)
       | Data(Config.t)
       | NoData;
@@ -37,11 +35,11 @@ module MutationFactory = (Config:Config) => {
     type mutationOptions = {
       .
       "variables": Js.Nullable.t(Js.Json.t),
-      "refetchQueries": Js.Nullable.t(array(string)),
+      "refetchQueries": array(string),
     };
 
     type apolloMutation =
-      Js.Nullable.t(mutationOptions) => Js.Promise.t(renderPropObjJS);
+      mutationOptions => Js.Promise.t(renderPropObjJS);
 
     let apolloDataToReason: renderPropObjJS => response = 
       apolloData =>
@@ -51,18 +49,8 @@ module MutationFactory = (Config:Config) => {
           apolloData##data |> Utils.getNonEmptyObj,
           apolloData##error |> Js.Nullable.to_opt
         ) {
-        | (true, false, None, _) => Called
-        | (true, _, Some(data), _) =>
-          switch (Config.parse(data)) {
-          | parsedData => CalledWithData(parsedData)
-          | exception _ => Called
-          }
-        | (_, true, None, _) => Loading
-        | (false, true, Some(data), _) =>
-          switch (Config.parse(data)) {
-          | parsedData => LoadingWithData(parsedData)
-          | exception _ => Loading
-          }
+        | (true, false, _, _) => Called
+        | (_, true, _, _) => Loading
         | (false, false, Some(data), None) => Data(Config.parse(data))
         | (false, false, _, Some(error)) => Error(error)
         | (false, false, None, None) => NoData
@@ -71,7 +59,7 @@ module MutationFactory = (Config:Config) => {
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
       data: apolloDataToReason(apolloData),
       rawData:
-        switch (apolloData##data |> Js.Nullable.to_opt) {
+        switch (apolloData##data |> Utils.getNonEmptyObj) {
         | None => None
         | Some(data) =>
           switch (Config.parse(data)) {
