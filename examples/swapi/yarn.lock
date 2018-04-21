@@ -1858,7 +1858,7 @@ readdirp@^2.0.0:
     set-immediate-shim "^1.0.1"
 
 reason-apollo@../../:
-  version "0.6.20"
+  version "0.7.0-beta"
 
 reason-react@>=0.3.0:
   version "0.3.2"

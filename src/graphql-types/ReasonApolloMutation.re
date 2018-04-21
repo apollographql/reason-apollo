@@ -32,14 +32,25 @@ module MutationFactory = (Config:Config) => {
       "variables": Js.Null_undefined.t(Js.Json.t),
     };
 
-    type mutationOptions = {
-      .
-      "variables": Js.Nullable.t(Js.Json.t),
-      "refetchQueries": array(string),
-    };
+    type apolloMutation = (
+      ~variables:Js.Json.t=?, 
+      ~refetchQueries:array(string)=?,
+      unit
+    ) => Js.Promise.t(renderPropObjJS);
 
-    type apolloMutation =
-      mutationOptions => Js.Promise.t(renderPropObjJS);
+    [@bs.obj] external
+    makeMutateParams : 
+    (
+      ~variables: (Js.Json.t)=?, 
+      ~refetchQueries: (array(string))=?
+    ) => _ = "";
+
+    let apolloMutationFactory = (~jsMutation) => 
+      (~variables=?, ~refetchQueries=?, ()) => {
+        jsMutation(
+          makeMutateParams(~variables=?variables, ~refetchQueries=?refetchQueries)
+        )
+      };
 
     let apolloDataToReason: renderPropObjJS => response = 
       apolloData =>
@@ -90,6 +101,6 @@ module MutationFactory = (Config:Config) => {
         }
       ),
       (mutation, apolloData) =>
-      children(mutation, convertJsInputToReason(apolloData))
+      children(apolloMutationFactory(~jsMutation=mutation), convertJsInputToReason(apolloData))
     );
 };
