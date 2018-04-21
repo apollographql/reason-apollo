@@ -21,10 +21,7 @@ let make = (_children) => {
             ...(
                 (mutation, _)  => {
                     <button onClick=((_) => {
-                        mutation({
-                            "variables": Js.Nullable.return(addPersonMutation##variables),
-                            "refetchQueries": [|"getAllPersons"|]
-                        }) |> ignore;
+                        mutation(~variables=addPersonMutation##variables, ~refetchQueries=[|"getAllPersons"|], ()) |> ignore;
                         Js.log("SEND");
                     })> ("Add a person" |> ReasonReact.stringToElement) </button>
                 }   
