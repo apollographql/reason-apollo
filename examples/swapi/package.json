@@ -5,7 +5,7 @@
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
-    "webpack": "webpack -w",
+    "webpack": "webpack-dev-server",
     "format": "refmt",
     "get-schema": "yarn send-introspection-query http://swapi.apis.guru/"
   },
@@ -32,6 +32,8 @@
   "devDependencies": {
     "bs-platform": "^2.1.0",
     "graphql_ppx": "^0.2.0",
-    "webpack": "^3.8.1"
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "^3.1.3"
   }
 }
