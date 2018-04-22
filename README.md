@@ -160,3 +160,15 @@ let instance = ReasonApollo.createApolloClient({
   }
   }
   ```
+
+## ApolloConsumer
+
+If you simply wan't to have access to the ApolloClient, you can use the `ApolloConsumer`
+
+```reason
+<ApolloConsumer>
+  ...((apolloClient) => {
+    /* We have access to the client! */
+  })
+</ApolloConsumer>
+```
