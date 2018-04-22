@@ -57,7 +57,7 @@ module MutationFactory = (Config:Config) => {
         switch (
           apolloData##called |> Js.to_bool,
           apolloData##loading |> Js.to_bool,
-          apolloData##data |> Utils.getNonEmptyObj,
+          apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
           apolloData##error |> Js.Nullable.to_opt
         ) {
         | (true, false, _, _) => Called
@@ -70,7 +70,7 @@ module MutationFactory = (Config:Config) => {
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
       result: apolloDataToReason(apolloData),
       data:
-        switch (apolloData##data |> Utils.getNonEmptyObj) {
+        switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
         | None => None
         | Some(data) =>
           switch (Config.parse(data)) {

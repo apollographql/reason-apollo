@@ -51,7 +51,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
     
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
       result: apolloData |> apolloDataToVariant,
-      data: switch (apolloData##data |> Utils.getNonEmptyObj) {
+      data: switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
       | None => None
       | Some(data) => 
         switch (Config.parse(data)) {
