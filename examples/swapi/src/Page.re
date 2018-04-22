@@ -7,5 +7,6 @@ let make = _children => {
       <h1> (ReasonReact.stringToElement("Star Wars")) </h1>
        <Persons /> 
        <AddPerson/>
+       <GetPerson />
     </div>
 };
