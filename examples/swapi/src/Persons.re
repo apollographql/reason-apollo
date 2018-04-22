@@ -19,8 +19,7 @@ let component = ReasonReact.statelessComponent("Query");
 let make = _children => {
   ...component,
   render: _self => {
-    let getAllPersonsQuery = GetAllPersons.make(());
-    <GetAllPersonsQuery variables=getAllPersonsQuery##variables>
+    <GetAllPersonsQuery>
       ...(
         ({result}) =>
           <div>
