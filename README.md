@@ -15,7 +15,7 @@ yarn add reason-apollo
 yarn add --dev graphql_ppx
 
 # Add JS dependencies
-yarn add apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
+yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
 ```
 
 #### bsconfig
@@ -44,11 +44,11 @@ Watch it's usage in this video:
 
 [![Watch reason-apollo usage here](https://i.ytimg.com/vi/yMqE37LqRLA/hqdefault.jpg?sqp=-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLD9rxIyXtckkxmGAxRn_Uv2mDcXcQ)](https://www.youtube.com/watch?v=yMqE37LqRLA)
 
-## Usage  
+# Usage  
  
- ### Create the Apollo Client
+ ## Create the Apollo Client
  
- **Apollo.re**
+ **Client.re**
  ```reason
 
  /* Create an InMemoryCache */
@@ -69,6 +69,23 @@ let instance = ReasonApollo.createApolloClient({
 
  ```
   
+  ## ApolloProvider
+
+  ***Index.re***
+  ```reason
+
+    /* 
+      Enhance your application with the `ReasonApollo.Provider` 
+      passing him your client instance 
+    */
+    ReactDOMRe.renderToElementWithId(
+      <ReasonApollo.Provider client=Client.instance>
+          <App />
+      </ReasonApollo.Provider>
+    , "index");
+
+  ```
+
   ## Query
   
   **MyComponent.re**
