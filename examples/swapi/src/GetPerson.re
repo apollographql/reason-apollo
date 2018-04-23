@@ -47,5 +47,5 @@ let make = _children => {
              </div>
          )
     </GetPersonQuery>;
-  },
+  }
 };

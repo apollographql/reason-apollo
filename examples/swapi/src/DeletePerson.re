@@ -31,7 +31,7 @@ let make = _children => {
                    mutation(
                      ~variables=deletePersonMutation##variables,
                      ~refetchQueries=[|"getAllPersons"|],
-                     (),
+                     ()
                    )
                    |> ignore;
                    Js.log("SEND");
@@ -40,6 +40,6 @@ let make = _children => {
                ("Delete a person" |> ReasonReact.stringToElement)
              </button>
          )
-    </DeletePersonMutation>;
-  },
+    </DeletePersonMutation>
+  }
 };

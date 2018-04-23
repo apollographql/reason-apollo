@@ -8,16 +8,6 @@ type generatedApolloClient = {.
   "mutate": [@bs.meth] (mutationObj => string)
 };
 
-type clientOptions = {
-  .
-  "link": apolloLink,
-  "cache": apolloCache,
-  "ssrMode": Js.Nullable.t(Js.boolean),
-  "ssrForceFetchDelay": Js.Nullable.t(int),
-  "connectToDevTools": Js.Nullable.t(Js.boolean),
-  "queryDeduplication": Js.Nullable.t(Js.boolean)
-};
-
 type fetch;
 
 type linkOptions = {
@@ -29,3 +19,18 @@ type linkOptions = {
   "credentials": Js.Nullable.t(string),
   "fetchOptions": Js.Nullable.t(Js.Json.t)
 };
+
+[@bs.module "apollo-client"] [@bs.new]
+external createApolloClientJS : 'a => generatedApolloClient =
+  "ApolloClient";  
+
+[@bs.obj] external
+  apolloClientObjectParam : 
+  (
+    ~link: apolloLink,
+    ~cache: apolloCache,
+    ~ssrMode: Js.boolean=?,
+    ~ssrForceFetchDelay: int=?,
+    ~connectToDevTools: Js.boolean=?,
+    ~queryDeduplication: Js.boolean=?
+  ) => _ = "";

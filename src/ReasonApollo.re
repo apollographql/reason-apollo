@@ -1,8 +1,29 @@
 open ApolloClient;
 
-[@bs.module "apollo-client"] [@bs.new]
-external createApolloClient : clientOptions => generatedApolloClient =
-  "ApolloClient";  
+  /*
+  * Expose a createApolloClient function that has to be passed to the ApolloProvider
+  */
+  let createApolloClient = (
+    ~link,
+    ~cache,
+    ~ssrMode=?,
+    ~ssrForceFetchDelay=?,
+    ~connectToDevTools=?,
+    ~queryDeduplication=?,
+    ()
+  ) => {
+    createApolloClientJS(
+      apolloClientObjectParam(
+        ~link,
+        ~cache,
+        ~ssrMode=?ssrMode,
+        ~ssrForceFetchDelay=?ssrForceFetchDelay,
+        ~connectToDevTools=?connectToDevTools,
+        ~queryDeduplication=?queryDeduplication
+      )
+    );
+  };
+
   /*
   * Expose a module to perform "query" operations for the given client
   */

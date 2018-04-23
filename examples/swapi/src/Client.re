@@ -14,11 +14,4 @@ let inMemoryCache =
 /* Create an HTTP Link */
 let httpLink = ApolloLinks.createHttpLink(~uri="https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn", ());
 
-let instance = ReasonApollo.createApolloClient({
-  "link": httpLink,
-  "cache": inMemoryCache,
-  "ssrMode": Js.Nullable.undefined,
-  "ssrForceFetchDelay": Js.Nullable.undefined,
-  "connectToDevTools": Js.Nullable.undefined,
-  "queryDeduplication": Js.Nullable.undefined
-});
+let instance = ReasonApollo.createApolloClient(~link=httpLink, ~cache=inMemoryCache, ());
