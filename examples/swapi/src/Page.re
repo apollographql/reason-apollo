@@ -8,5 +8,6 @@ let make = _children => {
        <Persons /> 
        <AddPerson/>
        <GetPerson />
+       <DeletePerson />
     </div>
 };
