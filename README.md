@@ -101,7 +101,7 @@ let instance = ReasonApollo.createApolloClient(
   let make = (_children) => {
   /* ... */,
   render: (_) => {
-    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
+    let pokemonQuery = GetPokemon.make(~name="Pikachu", ());
     <GetPokemonQuery variables=pokemonQuery##variables>
       ...(({result}) => {
         switch result {
