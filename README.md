@@ -73,7 +73,7 @@ let instance = ReasonApollo.createApolloClient(
 
     /* 
       Enhance your application with the `ReasonApollo.Provider` 
-      passing him your client instance 
+      passing it your client instance 
     */
     ReactDOMRe.renderToElementWithId(
       <ReasonApollo.Provider client=Client.instance>
@@ -101,7 +101,7 @@ let instance = ReasonApollo.createApolloClient(
   let make = (_children) => {
   /* ... */,
   render: (_) => {
-    let pokemonQuery = GetPokemon.make(~name="Pikachu", ());
+    let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
     <GetPokemonQuery variables=pokemonQuery##variables>
       ...(({result}) => {
         switch result {
@@ -160,7 +160,7 @@ let instance = ReasonApollo.createApolloClient(
 
 ## ApolloConsumer
 
-If you simply wan't to have access to the ApolloClient, you can use the `ApolloConsumer`
+If you simply want to have access to the ApolloClient, you can use the `ApolloConsumer`
 
 ```reason
 <ApolloConsumer>
@@ -171,7 +171,7 @@ If you simply wan't to have access to the ApolloClient, you can use the `ApolloC
 ```
 ## FAQ
 
-### I've added the schema file, but my build fails saying it couldn't find it
+### I've added the schema file, but my build fails saying it couldn't be found
 
 In some cases, it seems like there are some differences between the provided `send-introspection-query`
 and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).
