@@ -13,7 +13,6 @@
   ],
   "bs-dependencies": ["reason-react"],
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": ["graphql_ppx/ppx"],  
   "reason": {
     "react-jsx": 2
   },

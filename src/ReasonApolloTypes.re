@@ -24,3 +24,13 @@ type networkError = {. "statusCode": int};
 
 /* TODO: define missing keys */
 type apolloLinkErrorResponse = {. "networkError": option(networkError)};
+
+module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
+
+type apolloError;
+
+type apolloOptions = {
+    .
+    "query": queryString,
+    "variables": Js.Json.t,
+};

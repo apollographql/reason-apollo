@@ -15,7 +15,7 @@ yarn add reason-apollo
 yarn add --dev graphql_ppx
 
 # Add JS dependencies
-yarn add apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
+yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
 ```
 
 #### bsconfig
@@ -44,44 +44,51 @@ Watch it's usage in this video:
 
 [![Watch reason-apollo usage here](https://i.ytimg.com/vi/yMqE37LqRLA/hqdefault.jpg?sqp=-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLD9rxIyXtckkxmGAxRn_Uv2mDcXcQ)](https://www.youtube.com/watch?v=yMqE37LqRLA)
 
-## Usage  
+# Usage  
  
- ### Create the Apollo Client
+ ## Create the Apollo Client
  
- **Apollo.re**
+ **Client.re**
  ```reason
- open ApolloLinks;
- open ApolloInMemoryCache;
-
- type dataObject = {. "__typename": string, "id": string, "key": string};
 
  /* Create an InMemoryCache */
- let inMemoryCache = createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
+ let inMemoryCache = ApolloInMemoryCache.createInMemoryCache(());
 
 /* Create an HTTP Link */
 let httpLink =
   ApolloLinks.createHttpLink(~uri="http://localhost:3010/graphql", ());
 
-module Client =
-  ReasonApollo.CreateClient(
-    {
-      let apolloClient =
-        ReasonApollo.createApolloClient(
-          ~cache=inMemoryCache /* restore method can be piped e.g. inMemoryCache |> restore(window.__APOLLO__) */,
-          ~link=httpLink,
-          ()
-        );
-    }
-  );
+let instance = ReasonApollo.createApolloClient(
+  ~link=httpLink, 
+  ~cache=inMemoryCache, 
+  ()
+);
 
  ```
   
+  ## ApolloProvider
+
+  ***Index.re***
+  ```reason
+
+    /* 
+      Enhance your application with the `ReasonApollo.Provider` 
+      passing him your client instance 
+    */
+    ReactDOMRe.renderToElementWithId(
+      <ReasonApollo.Provider client=Client.instance>
+          <App />
+      </ReasonApollo.Provider>
+    , "index");
+
+  ```
+
   ## Query
   
   **MyComponent.re**
   ```reason
   /* Create a GraphQL Query by using the graphql_ppx */ 
-  module PokemonQuery = [%graphql {|
+  module GetPokemon = [%graphql {|
     query getPokemon($name: String!){
         pokemon(name: $name) {
             name
@@ -89,21 +96,22 @@ module Client =
     }
   |}]; 
 
-  module Query = Client.Instance.Query;
+  module GetPokemonQuery = ReasonApollo.CreateQuery(GetPokemon);
 
   let make = (_children) => {
-  /* ... */
+  /* ... */,
   render: (_) => {
     let pokemonQuery = PokemonQuery.make(~name="Pikachu", ());
-    <Query query=pokemonQuery>
-      ...((response, parse) => {
-        switch response {
+    <GetPokemonQuery variables=pokemonQuery##variables>
+      ...(({result}) => {
+        switch result {
+           | NoData => <div> (Utils.ste("No Data")) </div>
            | Loading => <div> (Utils.ste("Loading")) </div>
-           | Failed(error) => <div> (Utils.ste(error)) </div>
-           | Loaded(result) => <div> (Utils.ste(parse(result)##user##name)) </div>
+           | Error(error) => <div> (Utils.ste(error)) </div>
+           | Data(response) => <div> (Utils.ste(response##pokemon##name)) </div>
         }
       })
-    </Query>
+    </GetPokemonQuery>
   }
   }
   ```
@@ -112,7 +120,7 @@ module Client =
   
   **MyMutation.re**
   ```reason
-  module PokemonMutation = [%graphql {|
+  module AddPokemon = [%graphql {|
     mutation addPokemon($name: String!) {
         addPokemon(name: $name) {
             name
@@ -120,45 +128,47 @@ module Client =
     }
   |}];
 
-  module Mutation = Client.Instance.Mutation;
-  
+  module AddPokemonMutation = ReasonApollo.CreateMutation(AddPokemon);
+
   let make = (_children) => {
-  /* ... */
-  initialState: {
-    parse
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | AddParser(parse) => ReasonReact.Update({...state, parse})
-  },
-  render: ({reduce, state: {parse}}) => {  
-    <Mutation>
+  /* ... */,
+  render: (_) => {  
+    <AddPokemonMutation>
       ...((
-        mutate /* Mutation to call */, 
-        result /* Result of your mutation */
+        mutation /* Mutation to call */, 
+        _ /* Result of your mutation */
       ) => {
-          let mutationResponse = switch result {
-            | NotCalled => <div>  (Utils.ste("Not Called")) </div>
-            | Loading => <div> (Utils.ste("Loading")) </div>
-            | Loaded(response) => <div> (Utils.ste(parse(result)##addPokemon##name ++ " addded")) </div>
-            | Failed(error) => <div> (Utils.ste(error)) </div>
-          };
+        let dic = Js.Dict.empty();
+        Js.Dict.set(dic, "name", Js.Json.string("Bob"));
+        let newPokemon = Js.Json.object_(dic);
+
         <div>
           <button onClick=((_mouseEvent) => {
-              let pokemonMutation = PokemonMutation.make(~name="Reason", ());
-              mutate(pokemonMutation);
-              reduce(() => AddParser(pokemonMutation##parse), ());
+              mutation({
+                  "variables": Js.Nullable.return(newPokemon),
+                  "refetchQueries": [|"getAllPokemons"|]
+              }) |> ignore;
             })> 
             (Utils.ste("Add Pokemon")) 
           </button>
-          <div> (mutationResponse) </div>
         </div>
       })
-    </Mutation>
+    </AddPokemonMutation>
   }
   }
   ```
 
+## ApolloConsumer
+
+If you simply wan't to have access to the ApolloClient, you can use the `ApolloConsumer`
+
+```reason
+<ApolloConsumer>
+  ...((apolloClient) => {
+    /* We have access to the client! */
+  })
+</ApolloConsumer>
+```
 ## FAQ
 
 ### I've added the schema file, but my build fails saying it couldn't find it

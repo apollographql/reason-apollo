@@ -1,46 +1,41 @@
-let createApolloClient =
-    (
-      ~cache,
-      ~link,
-      ~ssrMode=?,
-      ~ssrForceFetchDelay=?,
-      ~connectToDevTools=?,
-      ~queryDeduplication=?,
-      ()
-    ) => {
-  let apolloClientOptions = {
-    "link": link,
-    "cache": cache,
-    "ssrMode": Js.Nullable.from_opt(ssrMode),
-    "ssrForceFetchDelay": Js.Nullable.from_opt(ssrForceFetchDelay),
-    "connectToDevTools": Js.Nullable.from_opt(connectToDevTools),
-    "queryDeduplication": Js.Nullable.from_opt(queryDeduplication)
+open ApolloClient;
+
+  /*
+  * Expose a createApolloClient function that has to be passed to the ApolloProvider
+  */
+  let createApolloClient = (
+    ~link,
+    ~cache,
+    ~ssrMode=?,
+    ~ssrForceFetchDelay=?,
+    ~connectToDevTools=?,
+    ~queryDeduplication=?,
+    ()
+  ) => {
+    createApolloClientJS(
+      apolloClientObjectParam(
+        ~link,
+        ~cache,
+        ~ssrMode=?ssrMode,
+        ~ssrForceFetchDelay=?ssrForceFetchDelay,
+        ~connectToDevTools=?connectToDevTools,
+        ~queryDeduplication=?queryDeduplication
+      )
+    );
   };
-  ApolloClient.createApolloClient(apolloClientOptions)
-};
-
-module type ApolloClientConfig = {let apolloClient: ApolloClient.generatedApolloClient;};
-
-module CreateClient = (Config: ApolloClientConfig) => {
-  let apolloClient = Config.apolloClient;
 
   /*
   * Expose a module to perform "query" operations for the given client
   */
-  module Query =
-    ReasonApolloQuery.QueryFactory(
-      {
-        let apolloClient = apolloClient;
-      }
-    );
+  module CreateQuery = (Config:ReasonApolloTypes.Config) =>
+    ReasonApolloQuery.Get(Config);
     
   /*
   * Expose a module to perform "mutation" operations for the given client
   */
-  module Mutation =
-    ReasonApolloMutation.MutationFactory(
-      {
-        let apolloClient = apolloClient;
-      }
-    );
-};
+  module CreateMutation = (Config:ReasonApolloTypes.Config) =>
+    ReasonApolloMutation.MutationFactory(Config);
+
+  module Provider = ApolloProvider;
+
+  module Consumer = ApolloConsumer;
