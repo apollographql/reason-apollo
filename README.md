@@ -138,16 +138,14 @@ let instance = ReasonApollo.createApolloClient(
         mutation /* Mutation to call */, 
         _ /* Result of your mutation */
       ) => {
-        let dic = Js.Dict.empty();
-        Js.Dict.set(dic, "name", Js.Json.string("Bob"));
-        let newPokemon = Js.Json.object_(dic);
-
+        let newPokemon = AddPokemon.make(~name="Bob", ());
         <div>
           <button onClick=((_mouseEvent) => {
-              mutation({
-                  "variables": Js.Nullable.return(newPokemon),
-                  "refetchQueries": [|"getAllPokemons"|]
-              }) |> ignore;
+              mutation(
+                 ~variables=newPokemon##variables, 
+                 ~refetchQueries=[|"getAllPokemons"|], 
+                 ()
+              ) |> ignore;
             })> 
             (Utils.ste("Add Pokemon")) 
           </button>
