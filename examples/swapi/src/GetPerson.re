@@ -1,4 +1,4 @@
-let ste = ReasonReact.stringToElement;
+let ste = ReasonReact.string;
 
 /* alias Person as person because compiler doesn't like uppercase key names */
 module GetPerson = [%graphql
