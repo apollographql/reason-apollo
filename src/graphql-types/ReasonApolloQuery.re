@@ -1,7 +1,7 @@
 open ReasonApolloTypes;
 
 module Get = (Config:ReasonApolloTypes.Config) => {    
-    [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+    [@bs.module "graphql-tag"] external gql : ReasonApolloTypes.gql = "default";
     [@bs.module "react-apollo"] external queryComponent : ReasonReact.reactClass = "Query";
     
     type response =
