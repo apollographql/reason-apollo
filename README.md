@@ -105,10 +105,10 @@ let instance = ReasonApollo.createApolloClient(
     <GetPokemonQuery variables=pokemonQuery##variables>
       ...(({result}) => {
         switch result {
-           | NoData => <div> (Utils.ste("No Data")) </div>
-           | Loading => <div> (Utils.ste("Loading")) </div>
-           | Error(error) => <div> (Utils.ste(error)) </div>
-           | Data(response) => <div> (Utils.ste(response##pokemon##name)) </div>
+           | NoData => <div> (ReasonReact.string("No Data")) </div>
+           | Loading => <div> (ReasonReact.string("Loading")) </div>
+           | Error(error) => <div> (ReasonReact.string(error)) </div>
+           | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>
         }
       })
     </GetPokemonQuery>
@@ -149,7 +149,7 @@ let instance = ReasonApollo.createApolloClient(
                   "refetchQueries": [|"getAllPokemons"|]
               }) |> ignore;
             })> 
-            (Utils.ste("Add Pokemon")) 
+            (ReasonReact.string("Add Pokemon")) 
           </button>
         </div>
       })
