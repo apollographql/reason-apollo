@@ -8,6 +8,7 @@ module MutationFactory = (Config:Config) => {
     let graphqlMutationAST = [@bs] gql(Config.query);
 
     type response =
+      | NotCalled
       | Loading
       | Called
       | Error(apolloError)
@@ -60,11 +61,12 @@ module MutationFactory = (Config:Config) => {
           apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
           apolloData##error |> Js.Nullable.to_opt
         ) {
-        | (true, false, _, _) => Called
+        | (false, false, _, _) => NotCalled
+        | (true, false, Some(data), _) => Data(Config.parse(data))
+        | (true, false, _, Some(error)) => Error(error)
+        | (true, false, None, None) => NoData
+        | (true, _, _, _) => Called
         | (_, true, _, _) => Loading
-        | (false, false, Some(data), None) => Data(Config.parse(data))
-        | (false, false, _, Some(error)) => Error(error)
-        | (false, false, None, None) => NoData
         };
 
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
