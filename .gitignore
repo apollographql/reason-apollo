@@ -22,3 +22,4 @@ node_modules/
 lib
 *.bs.js
 
+examples/swapi/.bsb.lock
