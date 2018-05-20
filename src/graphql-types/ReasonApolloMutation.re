@@ -61,7 +61,7 @@ module MutationFactory = (Config:Config) => {
         ) {
         | (true, false, _, _) => Called
         | (_, true, _, _) => Loading
-        | (false, false, Some(data), None) => Data(Config.parse(data))
+        | (false, false, Some(data), _) => Data(Config.parse(data))
         | (false, false, _, Some(error)) => Error(error)
         | (false, false, None, None) => Error("No data")
         };
