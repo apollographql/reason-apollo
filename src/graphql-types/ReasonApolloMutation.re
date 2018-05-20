@@ -63,7 +63,7 @@ module MutationFactory = (Config:Config) => {
         | (_, true, _, _) => Loading
         | (false, false, Some(data), _) => Data(Config.parse(data))
         | (false, false, _, Some(error)) => Error(error)
-        | (false, false, None, None) => Error("No data")
+        | (false, false, None, None) => Error({"message": "No data", "graphQLErrors": Js.Nullable.null, "networkError": Js.Nullable.null})
         };
 
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
