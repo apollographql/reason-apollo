@@ -105,7 +105,6 @@ let instance = ReasonApollo.createApolloClient(
     <GetPokemonQuery variables=pokemonQuery##variables>
       ...(({result}) => {
         switch result {
-           | NoData => <div> (ReasonReact.string("No Data")) </div>
            | Loading => <div> (ReasonReact.string("Loading")) </div>
            | Error(error) => <div> (ReasonReact.string(error)) </div>
            | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>

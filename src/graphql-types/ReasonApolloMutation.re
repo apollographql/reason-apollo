@@ -11,8 +11,7 @@ module MutationFactory = (Config:Config) => {
       | Loading
       | Called
       | Error(apolloError)
-      | Data(Config.t)
-      | NoData;
+      | Data(Config.t);
 
     type renderPropObj = {
       result: response,
@@ -64,7 +63,6 @@ module MutationFactory = (Config:Config) => {
         | (_, true, _, _) => Loading
         | (false, false, Some(data), None) => Data(Config.parse(data))
         | (false, false, _, Some(error)) => Error(error)
-        | (false, false, None, None) => NoData
         };
 
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
