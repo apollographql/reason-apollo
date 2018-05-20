@@ -45,6 +45,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       | (true, _, _) => Loading
       | (false, Some(response), _) => Data(Config.parse(response))
       | (false, _, Some(error)) => Error(error)
+      | (false), None, None) => Error("No data")
       };
     
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {
