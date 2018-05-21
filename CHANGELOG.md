@@ -9,3 +9,6 @@ Features:
 Fixes:
   - Mutation result pattern matching
 
+v 0.9.0
+  Breaking changes:
+  - Mutation: added `NotCalled` tag to result variant 
