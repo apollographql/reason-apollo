@@ -19,11 +19,25 @@ let make = (_children) => {
 
         <AddPersonMutation>
             ...(
-                (mutation, _)  => {
+                (mutation, {result})  => {
+                  <div>
                     <button onClick=((_) => {
                         mutation(~variables=addPersonMutation##variables, ~refetchQueries=[|"getAllPersons"|], ()) |> ignore;
                         Js.log("SEND");
-                    })> ("Add a person" |> ReasonReact.stringToElement) </button>
+                    })> 
+                      ("Add a person" |> ste) 
+                    </button>
+                    <span>
+                    {
+                      switch result {
+                        | NotCalled => { Js.log("Not called"); "" |> ste }
+                        | Data(d) => {Js.log2("data", d); ("Bob has been added") |> ste}
+                        | Error(e) => { Js.log2("error", e); "ERROR" |> ste }
+                        | Loading => {Js.log("Loading"); "Loading" |> ste }
+                      }
+                    }
+                    </span>
+                    </div>
                 }   
             )
         </AddPersonMutation>
