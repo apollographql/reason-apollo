@@ -27,7 +27,20 @@ type apolloLinkErrorResponse = {. "networkError": option(networkError)};
 
 module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 
-type apolloError;
+type graphqlError = {
+  .
+  "message": string,
+  "locations": Js.Nullable.t(array(string)),
+  "path": Js.Nullable.t(array(string)),
+  "nodes": Js.Nullable.t(array(string)),
+};
+
+type apolloError = {
+  .
+  "message": string,
+  "graphQLErrors": Js.Nullable.t(array(string)),
+  "networkError": Js.Nullable.t(string)
+};
 
 type apolloOptions = {
     .

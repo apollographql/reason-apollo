@@ -7,8 +7,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
     type response =
       | Loading
       | Error(apolloError)
-      | Data(Config.t)
-      | NoData;
+      | Data(Config.t);
 
     type renderPropObj = {
       result: response,
@@ -46,7 +45,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       | (true, _, _) => Loading
       | (false, Some(response), _) => Data(Config.parse(response))
       | (false, _, Some(error)) => Error(error)
-      | (false, None, None) => NoData
+      | (false, None, None) => Error({"message": "No data", "graphQLErrors": Js.Nullable.null, "networkError": Js.Nullable.null})
       };
     
     let convertJsInputToReason = (apolloData: renderPropObjJS) => {

@@ -26,7 +26,6 @@ let make = _children => {
             <h1> ("Persons: " |> ste) </h1>
             (
               switch (result) {
-              | NoData => "No Data" |> ste
               | Error(e) => {
                 Js.log(e);
                 "Something Went Wrong" |> ste                
