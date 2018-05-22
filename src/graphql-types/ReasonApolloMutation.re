@@ -2,7 +2,7 @@ open ReasonApolloTypes;
 
 module MutationFactory = (Config:Config) => {
     external cast : string => {. "data": Js.Json.t, "loading": bool} = "%identity";
-    [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+    [@bs.module "graphql-tag"] external gql : ReasonApolloTypes.gql = "default";
     [@bs.module "react-apollo"] external mutationComponent: ReasonReact.reactClass = "Mutation";
 
     let graphqlMutationAST = [@bs] gql(Config.query);
