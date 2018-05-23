@@ -18,18 +18,14 @@ module GetPersonQuery = ReasonApollo.CreateQuery(GetPerson);
 
 let component = ReasonReact.statelessComponent("Query");
 
-let make = _children => {
+let make = (~id, _children) => {
   ...component,
   render: _self => {
-    /* pick a valid id from list returned from GetPersons query here
-       "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
-       */
-    let getPersonQuery = GetPerson.make(~id="cjdgbi6d136a90157kpqef72m", ());
+    let getPersonQuery = GetPerson.make(~id, ());
     <GetPersonQuery variables=getPersonQuery##variables>
       ...(
            ({result}) =>
              <div>
-               <h1> ("Get Person: " |> ste) </h1>
                (
                  switch (result) {
                  | Error(e) =>

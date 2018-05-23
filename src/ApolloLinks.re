@@ -24,11 +24,11 @@ let createHttpLink = (
 ) => {
     createHttpLink({
       "uri": uri,
-      "includeExtensions": Js.Nullable.from_opt(includeExtensions),
-      "fetch": Js.Nullable.from_opt(fetch),
-      "headers": Js.Nullable.from_opt(headers),
-      "credentials": Js.Nullable.from_opt(credentials),
-      "fetchOptions": Js.Nullable.from_opt(fetchOptions)
+      "includeExtensions": Js.Nullable.fromOption(includeExtensions),
+      "fetch": Js.Nullable.fromOption(fetch),
+      "headers": Js.Nullable.fromOption(headers),
+      "credentials": Js.Nullable.fromOption(credentials),
+      "fetchOptions": Js.Nullable.fromOption(fetchOptions)
     });
 };
 
