@@ -1,4 +1,4 @@
-let ste = ReasonReact.stringToElement;
+let ste = ReasonReact.string;
 
 module DeletePerson = [%graphql
   {|
@@ -31,15 +31,15 @@ let make = _children => {
                    mutation(
                      ~variables=deletePersonMutation##variables,
                      ~refetchQueries=[|"getAllPersons"|],
-                     ()
+                     (),
                    )
                    |> ignore;
                    Js.log("SEND");
                  }
                )>
-               ("Delete a person" |> ReasonReact.stringToElement)
+               ("Delete a person" |> ReasonReact.string)
              </button>
          )
-    </DeletePersonMutation>
-  }
+    </DeletePersonMutation>;
+  },
 };
