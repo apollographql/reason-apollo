@@ -25,20 +25,28 @@ let make = _children => {
     <DeletePersonMutation>
       ...(
            (mutation, _) =>
-             <button
-               onClick=(
-                 (_) => {
-                   mutation(
-                     ~variables=deletePersonMutation##variables,
-                     ~refetchQueries=[|"getAllPersons"|],
-                     (),
-                   )
-                   |> ignore;
-                   Js.log("SEND");
-                 }
-               )>
-               ("Delete a person" |> ReasonReact.string)
-             </button>
+             <div>
+               <h1> ("Delete a Person By Id" |> ste) </h1>
+               <p>
+                 (
+                   "Pick and Id from above and put it in DeletePerson.re" |> ste
+                 )
+               </p>
+               <button
+                 onClick=(
+                   (_) => {
+                     mutation(
+                       ~variables=deletePersonMutation##variables,
+                       ~refetchQueries=[|"getAllPersons"|],
+                       (),
+                     )
+                     |> ignore;
+                     Js.log("SEND");
+                   }
+                 )>
+                 ("Delete a person" |> ReasonReact.string)
+               </button>
+             </div>
          )
     </DeletePersonMutation>;
   },
