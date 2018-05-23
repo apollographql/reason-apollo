@@ -27,8 +27,8 @@ module MutationFactory = (Config: Config) => {
   };
   type renderPropObjJS = {
     .
-    "loading": Js.boolean,
-    "called": Js.boolean,
+    "loading": bool,
+    "called": bool,
     "data": Js.Nullable.t(Js.Json.t),
     "error": Js.Nullable.t(apolloError),
     "networkStatus": int,

@@ -19,7 +19,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
   };
   type renderPropObjJS = {
     .
-    "loading": Js.boolean,
+    "loading": bool,
     "data": Js.Nullable.t(Js.Json.t),
     "error": Js.Nullable.t(apolloError),
     "refetch":
