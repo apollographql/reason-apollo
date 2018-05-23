@@ -1,6 +1,6 @@
 {
   "name": "reason-apollo",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "MIT",
   "sideEffects": "false",
   "description": "Using Apollo client 2 with Reason",
