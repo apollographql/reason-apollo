@@ -64,7 +64,7 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       },
       loading: apolloData##loading |> Js.to_bool,
       refetch: variables =>
-        apolloData##refetch(variables |> Js.Nullable.from_opt)
+        apolloData##refetch(variables |> Js.Nullable.fromOption)
         |> Js.Promise.then_(data => data |> apolloDataToVariant |> Js.Promise.resolve),
       fetchMore: (~variables) =>
         apolloData##fetchMore({"variables": variables, "query": graphqlQueryAST}),
@@ -87,19 +87,19 @@ module Get = (Config:ReasonApolloTypes.Config) => {
       ~props=Js.Nullable.(
         {
           "query": graphqlQueryAST,
-          "variables": variables |> from_opt,
-          "pollInterval": pollInterval |> from_opt,
+          "variables": variables |> fromOption,
+          "pollInterval": pollInterval |> fromOption,
           "notifyOnNetworkStatusChange": notifyOnNetworkStatusChange 
             |> Js.Option.map([@bs] (b) => Js.Boolean.to_js_boolean(b)) 
-            |> from_opt,
-          "fetchPolicy": fetchPolicy |> from_opt,
-          "errorPolicy": errorPolicy |> from_opt,
+            |> fromOption,
+          "fetchPolicy": fetchPolicy |> fromOption,
+          "errorPolicy": errorPolicy |> fromOption,
           "ssr": ssr
             |> Js.Option.map([@bs] (b) => Js.Boolean.to_js_boolean(b)) 
-            |> from_opt,
-          "displayName": displayName |> from_opt,
-          "delay": delay |> from_opt,
-          "context": context |> from_opt
+            |> fromOption,
+          "displayName": displayName |> fromOption,
+          "delay": delay |> fromOption,
+          "context": context |> fromOption
         }
       ),
       apolloData => apolloData |> convertJsInputToReason |> children

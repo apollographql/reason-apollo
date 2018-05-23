@@ -92,9 +92,9 @@ module MutationFactory = (Config:Config) => {
       ~props=Js.Nullable.(
         {
           "mutation": graphqlMutationAST,
-          "variables": variables |> from_opt,
-          "onError": onError |> from_opt,
-          "onCompleted": onCompleted |> from_opt
+          "variables": variables |> fromOption,
+          "onError": onError |> fromOption,
+          "onCompleted": onCompleted |> fromOption
         }
       ),
       (mutation, apolloData) =>
