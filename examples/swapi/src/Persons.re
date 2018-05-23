@@ -35,6 +35,8 @@ let make = _children => {
                    |> Array.mapi((index, person) =>
                         <div key=(index |> string_of_int)>
                           (person##name |> ste)
+                          <br />
+                          <p> ("ID: " ++ person##id |> ste) </p>
                         </div>
                       )
                    |> ReasonReact.array
