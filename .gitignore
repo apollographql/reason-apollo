@@ -25,3 +25,4 @@ lib
 **/*.swp
 
 .bsb.lock
+schema.graphql
