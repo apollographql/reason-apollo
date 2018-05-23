@@ -1,4 +1,4 @@
-let ste = ReasonReact.stringToElement;
+let ste = ReasonReact.string;
 
 module DeletePerson = [%graphql
   {|
@@ -21,7 +21,7 @@ let make = _children => {
        "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
        */
     let deletePersonMutation =
-      DeletePerson.make(~id="cjgattirazy8v0107nh3hu8dz", ());
+      DeletePerson.make(~id="cjg9xgyacrv6c0162dmhzgi51", ());
     <DeletePersonMutation>
       ...(
            (mutation, _) =>
@@ -31,15 +31,15 @@ let make = _children => {
                    mutation(
                      ~variables=deletePersonMutation##variables,
                      ~refetchQueries=[|"getAllPersons"|],
-                     ()
+                     (),
                    )
                    |> ignore;
                    Js.log("SEND");
                  }
                )>
-               ("Delete a person" |> ReasonReact.stringToElement)
+               ("Delete a person" |> ReasonReact.string)
              </button>
          )
-    </DeletePersonMutation>
-  }
+    </DeletePersonMutation>;
+  },
 };

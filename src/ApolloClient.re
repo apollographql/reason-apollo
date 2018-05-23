@@ -13,7 +13,7 @@ type fetch;
 type linkOptions = {
   .
   "uri": string,
-  "includeExtensions": Js.Nullable.t(Js.boolean),
+  "includeExtensions": Js.Nullable.t(bool),
   "fetch": Js.Nullable.t(fetch),
   "headers": Js.Nullable.t(Js.Json.t),
   "credentials": Js.Nullable.t(string),
@@ -29,8 +29,8 @@ external createApolloClientJS : 'a => generatedApolloClient =
   (
     ~link: apolloLink,
     ~cache: apolloCache,
-    ~ssrMode: Js.boolean=?,
+    ~ssrMode: bool=?,
     ~ssrForceFetchDelay: int=?,
-    ~connectToDevTools: Js.boolean=?,
-    ~queryDeduplication: Js.boolean=?
+    ~connectToDevTools: bool=?,
+    ~queryDeduplication: bool=?
   ) => _ = "";

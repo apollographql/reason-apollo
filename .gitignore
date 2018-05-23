@@ -22,5 +22,9 @@ node_modules/
 lib
 *.bs.js
 
+<<<<<<< HEAD
 **/*.swp
 
+=======
+examples/swapi/.bsb.lock
+>>>>>>> 681326a2bd4ddc5c4ae9f039ed1aa18087037139

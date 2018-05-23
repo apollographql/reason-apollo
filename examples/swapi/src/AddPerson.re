@@ -1,4 +1,4 @@
-let ste = ReasonReact.stringToElement;
+let ste = ReasonReact.string;
 
 module AddPerson = [%graphql {|
     mutation addPerson($age: Int!, $name: String!) {
@@ -24,6 +24,7 @@ let make = (_children) => {
                     <button onClick=((_) => {
                         mutation(~variables=addPersonMutation##variables, ~refetchQueries=[|"getAllPersons"|], ()) |> ignore;
                         Js.log("SEND");
+<<<<<<< HEAD
                     })> 
                       ("Add a person" |> ste) 
                     </button>
@@ -38,6 +39,9 @@ let make = (_children) => {
                     }
                     </span>
                     </div>
+=======
+                    })> ("Add a person" |> ReasonReact.string) </button>
+>>>>>>> 681326a2bd4ddc5c4ae9f039ed1aa18087037139
                 }   
             )
         </AddPersonMutation>
