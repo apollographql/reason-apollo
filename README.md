@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/reason-apollo.svg)](https://badge.fury.io/js/reason-apollo)
 [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 
-Easily use the Apollo Client 2 with Reason
+React-apollo with Reason
 
 ## Install and setup
 
