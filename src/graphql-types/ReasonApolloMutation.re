@@ -47,7 +47,7 @@ module MutationFactory = (Config: Config) => {
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##loading |> Js.to_bool,
+        apolloData##loading,
         apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
         apolloData##error |> Js.Nullable.toOption,
       ) {
@@ -68,7 +68,7 @@ module MutationFactory = (Config: Config) => {
         }
       },
     error: apolloData##error |> Js.Nullable.toOption,
-    loading: apolloData##loading |> Js.to_bool,
+    loading: apolloData##loading,
     networkStatus: apolloData##networkStatus,
   };
   let make =

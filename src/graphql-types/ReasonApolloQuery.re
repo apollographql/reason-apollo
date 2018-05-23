@@ -34,7 +34,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##loading |> Js.to_bool,
+        apolloData##loading,
         apolloData##data |> Js.Nullable.toOption,
         apolloData##error |> Js.Nullable.toOption,
       ) {
@@ -64,7 +64,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       | Some(error) => Some(error)
       | None => None
       },
-    loading: apolloData##loading |> Js.to_bool,
+    loading: apolloData##loading,
     refetch: variables =>
       apolloData##refetch(variables |> Js.Nullable.fromOption)
       |> Js.Promise.then_(data =>
