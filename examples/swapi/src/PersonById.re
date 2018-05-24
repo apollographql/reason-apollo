@@ -5,11 +5,6 @@ type action =
 
 type state = {id: string};
 
-let handleClick = event =>
-  if (! ReactEventRe.Mouse.defaultPrevented(event)) {
-    ReactEventRe.Mouse.preventDefault(event);
-  };
-
 let reducer = (action, state) =>
   switch (action) {
   | ChangeId(id) => ReasonReact.Update({...state, id})
