@@ -21,10 +21,10 @@ let make = _children => {
        "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
        */
     let deletePersonMutation =
-      DeletePerson.make(~id="cjhj3pms2lzxt0110e1m8jh22", ());
+      DeletePerson.make(~id="cjhhv0i51k5lf0160xszwdaps", ());
     <DeletePersonMutation>
       ...(
-           (mutation, _) =>
+           (mutation, {result}) =>
              <div>
                <h1> ("Delete a Person By Id" |> ste) </h1>
                <p>
@@ -46,6 +46,24 @@ let make = _children => {
                  )>
                  ("Delete a person" |> ReasonReact.string)
                </button>
+               <span>
+                 (
+                   switch (result) {
+                   | NotCalled =>
+                     Js.log("Not called");
+                     "" |> ste;
+                   | Data(d) =>
+                     Js.log2("data", d);
+                     "Person has been deleted" |> ste;
+                   | Error(e) =>
+                     Js.log2("error", e);
+                     "ERROR" |> ste;
+                   | Loading =>
+                     Js.log("Loading");
+                     "Loading" |> ste;
+                   }
+                 )
+               </span>
              </div>
          )
     </DeletePersonMutation>;
