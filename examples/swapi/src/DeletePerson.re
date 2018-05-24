@@ -21,7 +21,7 @@ let make = _children => {
        "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
        */
     let deletePersonMutation =
-      DeletePerson.make(~id="cjgattirazy8v0107nh3hu8dz", ());
+      DeletePerson.make(~id="cjhj3pms2lzxt0110e1m8jh22", ());
     <DeletePersonMutation>
       ...(
            (mutation, _) =>
