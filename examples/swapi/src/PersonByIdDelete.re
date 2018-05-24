@@ -29,6 +29,7 @@ let make = _children => {
     <div>
       <form>
         <h1> ("Delete Selected Person By Id" |> ste) </h1>
+        <p> ("Select an ID from above and paste it into box" |> ste) </p>
         <input
           autoFocus=true
           placeholder="Delete this id"
