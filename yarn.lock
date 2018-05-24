@@ -312,9 +312,9 @@ graphql-tag@^2.9.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.9.2.tgz#2f60a5a981375f430bf1e6e95992427dc18af686"
 
-graphql_ppx@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/graphql_ppx/-/graphql_ppx-0.2.0.tgz#8b55470ebf034651af2114bc52fe0352c92e06fe"
+graphql_ppx@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/graphql_ppx/-/graphql_ppx-0.2.3.tgz#d7bd39876518b0b183b1e472b2898cb11cdf7aff"
   dependencies:
     request "^2.82.0"
     yargs "^11.0.0"
