@@ -99,12 +99,10 @@ module Get = (Config: ReasonApolloTypes.Config) => {
             "variables": variables |> fromOption,
             "pollInterval": pollInterval |> fromOption,
             "notifyOnNetworkStatusChange":
-              notifyOnNetworkStatusChange
-              |> Js.Option.map((. b) => b)
-              |> fromOption,
+              notifyOnNetworkStatusChange |> fromOption,
             "fetchPolicy": fetchPolicy |> fromOption,
             "errorPolicy": errorPolicy |> fromOption,
-            "ssr": ssr |> Js.Option.map((. b) => b) |> fromOption,
+            "ssr": ssr |> fromOption,
             "displayName": displayName |> fromOption,
             "delay": delay |> fromOption,
             "context": context |> fromOption,

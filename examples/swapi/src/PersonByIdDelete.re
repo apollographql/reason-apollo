@@ -39,6 +39,6 @@ let make = _children => {
           required=true
         />
       </form>
-      <DeleteButton id=self.state.id />
+      <DeletePersonButton id=self.state.id />
     </div>,
 };
