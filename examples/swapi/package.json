@@ -7,7 +7,7 @@
     "clean": "bsb -clean-world",
     "webpack": "webpack-dev-server",
     "format": "refmt",
-    "get-schema": "yarn send-introspection-query http://swapi.apis.guru/"
+    "get-schema": "yarn send-introspection-query https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn""
   },
   "keywords": ["BuckleScript"],
   "author": "",
