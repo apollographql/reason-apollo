@@ -8,13 +8,33 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     | Loading
     | Error(apolloError)
     | Data(Config.t);
+  type updateQueryOptions = {
+    .
+    "fetchMoreResult": option(Js.Json.t),
+    "variables": Js.Json.t,
+  };
+  type updateQueryOptionsJS = {
+    .
+    "fetchMoreResult": Js.Nullable.t(Js.Json.t),
+    "variables": Js.Json.t,
+  };
+  type updateQuery = (Js.Json.t, updateQueryOptions) => Js.Json.t;
+  type updateQueryJS = (Js.Json.t, updateQueryOptionsJS) => Js.Json.t;
+  type fetchMoreOptions = {
+    .
+    "query": queryString,
+    "variables": Js.Json.t,
+    "updateQuery": Js.Nullable.t(updateQueryJS),
+  };
   type renderPropObj = {
     result: response,
     data: option(Config.t),
     error: option(apolloError),
     loading: bool,
     refetch: option(Js.Json.t) => Js.Promise.t(response),
-    fetchMore: (~variables: Js.Json.t) => Js.Promise.t(unit),
+    fetchMore:
+      (~updateQuery: updateQuery=?, ~variables: Js.Json.t) =>
+      Js.Promise.t(unit),
     networkStatus: int,
   };
   type renderPropObjJS = {
@@ -28,7 +48,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       ),
     "networkStatus": int,
     "variables": Js.Null_undefined.t(Js.Json.t),
-    "fetchMore": [@bs.meth] (apolloOptions => Js.Promise.t(unit)),
+    "fetchMore": [@bs.meth] (fetchMoreOptions => Js.Promise.t(unit)),
   };
   let graphqlQueryAST = gql(. Config.query);
   let apolloDataToVariant: renderPropObjJS => response =
@@ -70,10 +90,32 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       |> Js.Promise.then_(data =>
            data |> apolloDataToVariant |> Js.Promise.resolve
          ),
-    fetchMore: (~variables) =>
+    fetchMore: (~updateQuery=?, ~variables) =>
       apolloData##fetchMore({
         "variables": variables,
         "query": graphqlQueryAST,
+        "updateQuery":
+          (
+            switch (updateQuery) {
+            | Some(updateQuery) =>
+              Some(
+                (
+                  (previousResult, fetchMoreResult) =>
+                    updateQuery(
+                      previousResult,
+                      {
+                        "variables": fetchMoreResult##variables,
+                        "fetchMoreResult":
+                          fetchMoreResult##fetchMoreResult
+                          |> Js.Nullable.toOption,
+                      },
+                    )
+                ),
+              )
+            | None => None
+            }
+          )
+          |> Js.Nullable.fromOption,
       }),
     networkStatus: apolloData##networkStatus,
   };
