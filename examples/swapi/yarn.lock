@@ -1092,9 +1092,9 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-bs-platform@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.1.3.tgz#95c70584735e2b50922f5347159d6d89180231f6"
+bs-platform@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.1.4.tgz#fe8495443b35aff73dfb61cba1e6d7b88311910b"
 
 buffer-from@^1.0.0:
   version "1.0.0"
@@ -2427,9 +2427,9 @@ graphql@^0.13.0:
   dependencies:
     iterall "1.1.x"
 
-graphql_ppx@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/graphql_ppx/-/graphql_ppx-0.2.0.tgz#8b55470ebf034651af2114bc52fe0352c92e06fe"
+graphql_ppx@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/graphql_ppx/-/graphql_ppx-0.2.3.tgz#d7bd39876518b0b183b1e472b2898cb11cdf7aff"
   dependencies:
     request "^2.82.0"
     yargs "^11.0.0"
