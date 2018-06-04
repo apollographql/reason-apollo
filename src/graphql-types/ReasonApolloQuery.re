@@ -100,13 +100,11 @@ module Get = (Config: ReasonApolloTypes.Config) => {
             "pollInterval": pollInterval |> fromOption,
             "notifyOnNetworkStatusChange":
               notifyOnNetworkStatusChange
-              |> Js.Option.map((. b) => Js.Boolean.to_js_boolean(b))
               |> fromOption,
             "fetchPolicy": fetchPolicy |> fromOption,
             "errorPolicy": errorPolicy |> fromOption,
             "ssr":
               ssr
-              |> Js.Option.map((. b) => Js.Boolean.to_js_boolean(b))
               |> fromOption,
             "displayName": displayName |> fromOption,
             "delay": delay |> fromOption,
