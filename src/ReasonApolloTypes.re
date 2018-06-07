@@ -38,7 +38,7 @@ type graphqlError = {
 type apolloError = {
   .
   "message": string,
-  "graphQLErrors": Js.Nullable.t(array(graphqlError)),
+  "graphQLErrors": Js.Nullable.t(array(Js.Json.t)),
   "networkError": Js.Nullable.t(string),
 };
 
