@@ -11,16 +11,19 @@ module Get = (Config: ReasonApolloTypes.Config) => {
   [@bs.deriving abstract]
   type updateQueryOptions = {
     [@bs.optional]
-    fetchMoreResult: Js.Json.t,
+    fetchMoreResult: Config.t,
+    [@bs.optional]
     variables: Js.Json.t,
   };
-  type updateQuery = (Js.Json.t, updateQueryOptions) => Js.Json.t;
+
+  type updateQueryT = (Config.t, updateQueryOptions) => Js.Json.t;
+
+  /* We dont accept a new query for now */
   [@bs.deriving abstract]
   type fetchMoreOptions = {
-    query: queryString,
-    variables: Js.Json.t,
     [@bs.optional]
-    updateQuery,
+    variables: Js.Json.t,
+    updateQuery: updateQueryT,
   };
   type renderPropObj = {
     result: response,
@@ -29,7 +32,8 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     loading: bool,
     refetch: option(Js.Json.t) => Js.Promise.t(response),
     fetchMore:
-      (~updateQuery: updateQuery, ~variables: Js.Json.t) => Js.Promise.t(unit),
+      (~variables: Js.Json.t=?, ~updateQuery: updateQueryT, unit) =>
+      Js.Promise.t(unit),
     networkStatus: int,
   };
   type renderPropObjJS = {
@@ -85,15 +89,8 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       |> Js.Promise.then_(data =>
            data |> apolloDataToVariant |> Js.Promise.resolve
          ),
-    fetchMore: (~updateQuery, ~variables) =>
-      apolloData##fetchMore(
-        fetchMoreOptions(
-          ~variables,
-          ~query=graphqlQueryAST,
-          ~updateQuery,
-          (),
-        ),
-      ),
+    fetchMore: (~variables=?, ~updateQuery, ()) =>
+      apolloData##fetchMore(fetchMoreOptions(~variables?, ~updateQuery, ())),
     networkStatus: apolloData##networkStatus,
   };
   let make =
