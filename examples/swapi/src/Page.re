@@ -10,5 +10,6 @@ let make = _children => {
       <GetPerson />
       <PersonById />
       <DeletePerson />
+      <SubscribeToPersons/>
     </div>,
 };
