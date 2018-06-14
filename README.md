@@ -189,10 +189,10 @@ At this time, reason object field names need to start lowercase. Therefore if yo
 }
 ```
 
-You will get a response object that looks like this which will throw an error:
+You will try and access the response object this way but it will throw an error:
 
 ```
-response##Link##title
+response##Link
 ```
 
 Instead, use an alias to modify the response:
@@ -207,5 +207,5 @@ Instead, use an alias to modify the response:
 
 Then you can access the object like this:
 ```
-response##link##title
+response##link
 ```
