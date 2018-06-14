@@ -189,7 +189,7 @@ At this time, reason object field names need to start lowercase. Therefore if yo
 }
 ```
 
-You will try and access the response object this way but it will throw an error:
+You will try to access the response object this way but it will throw an error:
 
 ```
 response##Link
