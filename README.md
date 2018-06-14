@@ -106,7 +106,7 @@ let instance = ReasonApollo.createApolloClient(
       ...(({result}) => {
         switch result {
            | Loading => <div> (ReasonReact.string("Loading")) </div>
-           | Error(error) => <div> (ReasonReact.string(error)) </div>
+           | Error(error) => <div> (ReasonReact.string(error##message)) </div>
            | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>
         }
       })
