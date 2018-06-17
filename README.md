@@ -166,39 +166,73 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
   })
 </ApolloConsumer>
 ```
-## FAQ
 
-### I've added the schema file, but my build fails saying it couldn't be found
+## Tips and Tricks
 
-In some cases, it seems like there are some differences between the provided `send-introspection-query`
-and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).
-If your build is failing, please make sure to try with the provided script. In your project root, run:
+### Use `@bsRecord` on response object
 
-```bash
-$ yarn send-introspection-query <url>
+The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benfits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
+
 ```
-### My response includes a field that starts with an upper case letter
+switch response##object {
+| Some(object) => {
+  switch object##nestedValue {
+  | Some(nestedValue) => nestedValue
+  | None => ""
+  }
+}
+| None => ""
+}
+```
 
-At this time, reason object field names need to start lowercase. Therefore if you have a request like this:
+Kind of funky, huh? Let's modify the response and convert it to a reason record.
+
+```
+type object = {
+  nestedValue: option(string)
+}
+
+
+module GetObject = [%graphql {|
+  object @bsRecord {
+    nestedValue
+  }
+ |}
+];
+```
+
+This time we can pattern match more precisely.
+
+```
+switch response##object {
+| Some({ nestedValue: Some(value) }) => value
+| Some({ nestedValue: None }) => ""
+| None => ""
+}
+```
+
+### Use an alias for irregular field names
+
+You might find yourself consuming an API with field names like `Field`. Currently, reason object field names are required to be camel case. Therefore if you have a request like this:
 ```
 {
-    Link {
+    Object {
       id
       title
     }
 }
 ```
 
-You will try to access the response object this way but it will throw an error:
+You will attempt to access the response object but it will throw an error:
 
 ```
-response##Link
+response##Object /* Does not work :( */
 ```
 
-Instead, use an alias to modify the response:
+Instead, use an `alias` to modify the response:
 ```
 {
-    link: Link {
+    object: Object {
       id
       title
     }
@@ -207,5 +241,17 @@ Instead, use an alias to modify the response:
 
 Then you can access the object like this:
 ```
-response##link
+response##object
+```
+
+## FAQ
+
+### I've added the schema file, but my build fails saying it couldn't be found?
+
+In some cases, it seems like there are some differences between the provided `send-introspection-query`
+and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).
+If your build is failing, please make sure to try with the provided script. In your project root, run:
+
+```bash
+$ yarn send-introspection-query <url>
 ```
