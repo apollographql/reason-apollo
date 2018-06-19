@@ -9,7 +9,9 @@
     "format": "refmt",
     "get-schema": "yarn send-introspection-query https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn"
   },
-  "keywords": ["BuckleScript"],
+  "keywords": [
+    "BuckleScript"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -29,7 +31,7 @@
   },
   "devDependencies": {
     "bs-platform": "^3.1.4",
-    "graphql_ppx": "^0.2.3",
+    "graphql_ppx": "^0.2.4",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.15",
     "webpack-dev-server": "^3.1.3"
