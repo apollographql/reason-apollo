@@ -26,3 +26,4 @@ lib
 
 .bsb.lock
 schema.graphql
+.DS_Store
