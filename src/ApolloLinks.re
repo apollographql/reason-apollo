@@ -9,6 +9,8 @@ open ReasonApolloTypes;
 /* Bind the onError method */
 [@bs.module "apollo-link-error"] external apolloLinkOnError : (apolloLinkErrorResponse => unit) => apolloLink = "onError";
 
+[@bs.module "apollo-link-ws"] [@bs.new] external apolloLinkWs: apolloLinkWsConfig => webSocketLink = "WebSocketLink";
+
 /**
  * CreateHttpLink
  * https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-http

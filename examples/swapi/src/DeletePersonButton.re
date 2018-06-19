@@ -10,41 +10,29 @@ module DeletePerson = [%graphql
 |}
 ];
 
-let component = ReasonReact.statelessComponent("DeletePerson");
-
 module DeletePersonMutation = ReasonApollo.CreateMutation(DeletePerson);
 
-let make = _children => {
+let component = ReasonReact.statelessComponent("DeletePersonButton");
+
+let make = (~id, _children) => {
   ...component,
   render: _self => {
-    /* pick a valid id from list returned from GetPersons query here
-       "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
-       */
-    let deletePersonMutation =
-      DeletePerson.make(~id="cjhhv0i51k5lf0160xszwdaps", ());
+    let deletePersonMutation = DeletePerson.make(~id, ());
     <DeletePersonMutation>
       ...(
            (mutation, {result}) =>
              <div>
-               <h1> ("Delete a Person By Id" |> ste) </h1>
-               <p>
-                 (
-                   "Pick and Id from above and put it in DeletePerson.re" |> ste
-                 )
-               </p>
                <button
                  onClick=(
-                   (_) => {
+                   (_) =>
                      mutation(
                        ~variables=deletePersonMutation##variables,
                        ~refetchQueries=[|"getAllPersons"|],
                        (),
                      )
-                     |> ignore;
-                     Js.log("SEND");
-                   }
+                     |> ignore
                  )>
-                 ("Delete a person" |> ReasonReact.string)
+                 ("Delete ID" |> ste)
                </button>
                <span>
                  (
@@ -54,7 +42,9 @@ let make = _children => {
                      "" |> ste;
                    | Data(d) =>
                      Js.log2("data", d);
-                     "Person has been deleted" |> ste;
+                     let person = d##deletePerson;
+                     Js.log2("deleted person", person);
+                     "Person with this ID has been deleted" |> ste;
                    | Error(e) =>
                      Js.log2("error", e);
                      "ERROR" |> ste;

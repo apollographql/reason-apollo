@@ -47,3 +47,22 @@ type apolloOptions = {
     "query": queryString,
     "variables": Js.Json.t,
 };
+
+/* 
+ apollo link ws
+ */
+
+type webSocketLink;
+
+[@bs.deriving abstract]
+type apolloLinkWsOptions = {
+  reconnect: bool
+};
+
+[@bs.deriving abstract] 
+type apolloLinkWsConfig = {
+  uri: string,
+  [@bs.optional] options: apolloLinkWsOptions
+};
+
+

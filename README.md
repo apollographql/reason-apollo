@@ -106,7 +106,7 @@ let instance = ReasonApollo.createApolloClient(
       ...(({result}) => {
         switch result {
            | Loading => <div> (ReasonReact.string("Loading")) </div>
-           | Error(error) => <div> (ReasonReact.string(error)) </div>
+           | Error(error) => <div> (ReasonReact.string(error##message)) </div>
            | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>
         }
       })
@@ -176,4 +176,36 @@ If your build is failing, please make sure to try with the provided script. In y
 
 ```bash
 $ yarn send-introspection-query <url>
+```
+### My response includes a field that starts with an upper case letter
+
+At this time, reason object field names need to start lowercase. Therefore if you have a request like this:
+```
+{
+    Link {
+      id
+      title
+    }
+}
+```
+
+You will try to access the response object this way but it will throw an error:
+
+```
+response##Link
+```
+
+Instead, use an alias to modify the response:
+```
+{
+    link: Link {
+      id
+      title
+    }
+}
+```
+
+Then you can access the object like this:
+```
+response##link
 ```
