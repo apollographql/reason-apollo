@@ -18,7 +18,7 @@ let make = (
   children  
 ) => {
   ...component,
-  render: (_self) => 
+  render: _self => 
   <PersonsSubscription>
     ...({result} => 
      switch result {
