@@ -24,7 +24,12 @@
     "graphql_ppx": "^0.2.3",
     "react-apollo": "^2.1.4"
   },
-  "keywords": ["Reason", "Apollo", "React", "GraphQL"],
+  "keywords": [
+    "Reason",
+    "Apollo",
+    "React",
+    "GraphQL"
+  ],
   "author": "Grégoire Van der Auwermeulen <gregoirevandera@gmail.com>",
   "devDependencies": {
     "graphql_ppx": "^0.2.3",
@@ -32,6 +37,7 @@
     "apollo-client": "^2.3.1",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
     "bs-platform": "^3.1.4",
     "graphql-tag": "^2.9.2",
     "react-apollo": "^2.1.3",
