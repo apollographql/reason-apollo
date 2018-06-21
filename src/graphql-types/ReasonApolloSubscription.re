@@ -76,6 +76,9 @@ module Get = (Config: ReasonApolloTypes.Config) => {
             "variables": variables |> fromOption
           }  
         ),
-      apolloData => apolloData |> convertJsInputToReason |> children
+      apolloData => {
+      Js.log2("subscription", apolloData);
+        apolloData |> convertJsInputToReason |> children
+      }
     );
 };

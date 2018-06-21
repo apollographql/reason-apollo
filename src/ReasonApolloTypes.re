@@ -52,17 +52,9 @@ type apolloOptions = {
  apollo link ws
  */
 
-type webSocketLink;
+type subscriptionTransportWS;
 
 [@bs.deriving abstract]
-type apolloLinkWsOptions = {
-  reconnect: bool
+type subscriptionClientOptionsT = {
+  [@bs.optional] reconnect: bool
 };
-
-[@bs.deriving abstract] 
-type apolloLinkWsConfig = {
-  uri: string,
-  [@bs.optional] options: apolloLinkWsOptions
-};
-
-
