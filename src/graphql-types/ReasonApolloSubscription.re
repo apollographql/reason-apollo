@@ -3,6 +3,8 @@ open ReasonApolloTypes;
 module Get = (Config: ReasonApolloTypes.Config) => {
   [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
   [@bs.module "react-apollo"] external subscriptionComponent: ReasonReact.reactClass = "Subscription";
+
+  let graphQLSubscriptionAST = gql(. Config.query);
   
   type response = 
     | Loading
@@ -23,7 +25,6 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     "error": Js.Nullable.t(apolloError)
   };
 
-  let graphQLSubscriptionAST = gql(. Config.query);
 
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>

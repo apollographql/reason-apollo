@@ -52,17 +52,22 @@ type apolloOptions = {
  apollo link ws
  */
 
-type webSocketLink;
 
 [@bs.deriving abstract]
-type apolloLinkWsOptions = {
-  reconnect: bool
+type webSocketLinkOptionsT = {
+  [@bs.optional] reconnect: bool
 };
 
-[@bs.deriving abstract] 
-type apolloLinkWsConfig = {
+[@bs.deriving abstract]
+type webSocketLinkT = {
   uri: string,
-  [@bs.optional] options: apolloLinkWsOptions
+  options: webSocketLinkOptionsT
 };
 
+type documentNodeT;
+
+type splitTest = {
+  .
+  "query": documentNodeT
+};
 

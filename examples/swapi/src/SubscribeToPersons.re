@@ -2,7 +2,8 @@ let component = ReasonReact.statelessComponent("SubscribeToPersons");
 
 module Persons = [%graphql
 {|
-  subscription subscribeToPerons {
+
+  subscription {
     person: Person {
       node {
         name
@@ -19,16 +20,24 @@ let make = (
 ) => {
   ...component,
   render: _self => 
-  <PersonsSubscription>
-    ...({result} => 
+  <div>
+    <h2> {"Person Subscription" |> ReasonReact.string} </h2>
+   <PersonsSubscription>
+    ...(({result}) => {
      switch result {
-      | Error(e) => "Something went wrong" |> ste
-      | Loading => "Loading" => ste
+      | Error(_e) => { Js.log(_e); "Something went wrong" |> ReasonReact.string}
+      | Loading => "Loading" |> ReasonReact.string
       | Data(response) => switch response##person {
-          | Some(person) => person##name
-          | None => "Person not found"
+          | Some(person) => 
+              switch person##node {
+                | Some(node) => node##name |> ReasonReact.string
+                | None => "No node found" |> ReasonReact.string
+              }
+          | None => "Persons not found" |> ReasonReact.string
         }
      }
+}
      )
-  </PeronsSubscription>
+  </PersonsSubscription>
+  </div>
 };
