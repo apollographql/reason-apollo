@@ -13,7 +13,7 @@ open ReasonApolloTypes;
 [@bs.module "apollo-link-context"] external apolloLinkSetContext : (unit => Js.t({..})) => apolloLink = "setContext";
 
 /* Bind the onError method */
-[@bs.module "apollo-link-error"] external apolloLinkOnError : (apolloLinkErrorResponse => unit) => apolloLink = "onError";
+[@bs.module "apollo-link-error"] external apolloLinkOnError : (errorResponse => unit) => apolloLink = "onError";
 
 /* bind apollo-link-ws */
 [@bs.module "apollo-link-ws"] [@bs.new] external webSocketLink : webSocketLinkT  => apolloLink = "WebSocketLink";
