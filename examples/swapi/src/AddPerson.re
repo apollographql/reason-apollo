@@ -41,9 +41,9 @@ let make = _children => {
                    switch (result) {
                    | NotCalled =>
                      "" |> ste;
-                   | Data(d) =>
+                   | Data(_) =>
                      "Person has been added" |> ste;
-                   | Error(e) =>
+                   | Error(_) =>
                      "ERROR" |> ste;
                    | Loading =>
                      "Loading" |> ste;

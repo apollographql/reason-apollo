@@ -1,46 +1,33 @@
 /* open ApolloLinks; */
 open ApolloInMemoryCache;
 
-type dataObject = {
-  .
-  "__typename": string,
-  "id": string
-};
-
 /* Create an InMemoryCache */
 let inMemoryCache =
   createInMemoryCache(());
 
+/*
+  OR with dataIdFromObject:
+
+  type dataObject = {
+    .
+    "__typename": string,
+    "id": string
+  };
+
+  createInMemoryCache(~dataIdFromObject=(obj: dataObject) => obj##id, ());
+*/
+
 /* Create an HTTP Link */
-let httpLink = ApolloLinks.createHttpLink(~uri="https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn", ());
+let httpLink = ApolloLinks.createHttpLink(~uri="https://api.graph.cool/simple/v1/cjdgba
+1jw4ggk0185ig4bhpsn", ());
 
 /* WebSocket client */
-/*let subscriptionClient = ApolloLinks.subscriptionClient(~uri="wss://subscriptions.graph.cool/v1/cjdgba1jw4ggk0185ig4bhpsn", ());*/
+let webSocketLink = ApolloLinks.webSocketLink(~uri="ws://localhost:8080/graphql", ~reconnect=true, ());
 
-
-type options = {
-  .
-  "reconnect": bool
-};
-
-type opt = {
-  .
-  "uri": string,
-  "options": options
-};
-
-let options = {
-  "reconnect": true
-};
-
-let opt = { "uri": "wss://subscriptions.graph.cool/v1/cjdgba1jw4ggk0185ig4bhpsn", "options": options  };
-
-let webSocketLink = ApolloLinks.webSocketLink(opt);
-Js.log2("wslink", webSocketLink);
-
+/* based on test, execute left or right */
 let webSocketHttpLink = ApolloLinks.split(
   (operation) => {
-    let operationDefition = ApolloLinks.getMainDefinition(operation##query);
+    let operationDefition = ApolloUtilities.getMainDefinition(operation##query);
     operationDefition##kind == "OperationDefinition" && operationDefition##operation == "subscription";
   },
   webSocketLink,

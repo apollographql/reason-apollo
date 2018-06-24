@@ -4,57 +4,27 @@ open ReasonApolloTypes;
 [@bs.module "apollo-link"] external from : array(apolloLink) => apolloLink = "from";
 
 /* Bind the method split. Based on a test send left or right */
-type operationDefinitionNode = {
-  .
-  "kind": string,
-  "operation": string
-};
-
-type documentNodeT;
-
-type splitTest = {
-  .
-  "query": documentNodeT
-};
-
-
 [@bs.module "apollo-link"] external split : (splitTest => bool) => apolloLink => apolloLink => apolloLink = "split";
-
-/* Apollo utilities */
-[@bs.module "apollo-utilities"] external getMainDefinition: documentNodeT => operationDefinitionNode = "getMainDefinition";
 
 /* Bind the HttpLink class */
 [@bs.module "apollo-link-http"] [@bs.new] external createHttpLink : ApolloClient.linkOptions => apolloLink = "HttpLink";
+
 /* Bind the setContext method */
 [@bs.module "apollo-link-context"] external apolloLinkSetContext : (unit => Js.t({..})) => apolloLink = "setContext";
+
 /* Bind the onError method */
 [@bs.module "apollo-link-error"] external apolloLinkOnError : (apolloLinkErrorResponse => unit) => apolloLink = "onError";
 
-[@bs.module "subscriptions-transport-ws"] [@bs.new] external _subscriptionClient: string => subscriptionClientOptionsT => subscriptionTransportWS = "SubscriptionClient";
+/* bind apollo-link-ws */
+[@bs.module "apollo-link-ws"] [@bs.new] external webSocketLink : webSocketLinkT  => apolloLink = "WebSocketLink";
 
-type options = {
-  .
-  "reconnect": bool
-};
-
-type testT = {
-.
-"uri": string,
-"options": options
-};
-
-[@bs.module "apollo-link-ws"] [@bs.new] external webSocketLink : testT => apolloLink = "WebSocketLink";
-
-
-let subscriptionClient = (
+let webSocketLink = (
   ~uri,
   ~reconnect=?,
   ()
 ) => {
-  _subscriptionClient("wss://subscriptions.graph.cool/v1/cjdgba1jw4ggk0185ig4bhpsn", subscriptionClientOptionsT(~reconnect=?reconnect, ()));
+  webSocketLink(webSocketLinkT(~uri=uri, ~options=webSocketLinkOptionsT(~reconnect=?reconnect, ())));
 }; 
-
-
 
 /**
  * CreateHttpLink

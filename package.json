@@ -24,8 +24,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "graphql_ppx": "^0.2.3",
-    "react-apollo": "^2.1.4",
-    "subscriptions-transport-ws": "^0.9.11"
+    "react-apollo": "^2.1.4"
   },
   "keywords": [
     "Reason",
@@ -44,8 +43,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "graphql_ppx": "^0.2.4",
-    "react-apollo": "^2.1.3",
-    "reason-react": "^0.4.1",
-    "subscriptions-transport-ws": "^0.9.11"
+    "react-apollo": "^2.1.6",
+    "reason-react": "^0.4.1"
   }
 }

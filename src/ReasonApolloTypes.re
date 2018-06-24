@@ -55,6 +55,20 @@ type apolloOptions = {
 type subscriptionTransportWS;
 
 [@bs.deriving abstract]
-type subscriptionClientOptionsT = {
+type webSocketLinkOptionsT = {
   [@bs.optional] reconnect: bool
 };
+
+[@bs.deriving abstract]
+type webSocketLinkT = {
+  uri: string,
+  options: webSocketLinkOptionsT
+};
+
+type documentNodeT;
+
+type splitTest = {
+  .
+  "query": documentNodeT
+};
+
