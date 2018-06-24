@@ -52,7 +52,6 @@ type apolloOptions = {
  apollo link ws
  */
 
-type subscriptionTransportWS;
 
 [@bs.deriving abstract]
 type webSocketLinkOptionsT = {
