@@ -70,4 +70,3 @@ type splitTest = {
   .
   "query": documentNodeT
 };
-
