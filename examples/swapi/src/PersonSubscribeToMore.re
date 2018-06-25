@@ -55,6 +55,18 @@ let make = _children => {
                         () => {
                           let unsub = subscribeToMore(
                             ~document=newPersonAST,
+                            ~updateQuery={(prev, next) => {
+                              Js.log2("prev", prev);
+                              let dic = Js.Dict.empty();
+                              let _ =
+                              Js.Dict.set(
+                                dic,
+                                "allPersons",
+                                Js.Json.array([||]),
+                              );
+                             let json = dic |> Js.Json.object_;
+                             json;
+                            }},
                             () 
                           );
                         }

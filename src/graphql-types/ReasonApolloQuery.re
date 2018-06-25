@@ -17,7 +17,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     variables: Js.Json.t,
   };
 
-  type updateQueryT = (Config.t, updateQueryOptions) => Js.Json.t;
+  type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
   type onErrorT;
 
   [@bs.deriving abstract] 
