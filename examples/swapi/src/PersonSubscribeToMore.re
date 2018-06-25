@@ -52,10 +52,12 @@ let make = _children => {
                     <ShowLivePersons 
                       persons={response##allPersons} 
                       getLiveData={
-                         subscribeToMore(
-                          ~document=newPersonAST,
-                          ()
-                        );
+                        () => {
+                          let unsub = subscribeToMore(
+                            ~document=newPersonAST,
+                            () 
+                          );
+                        }
                       }
                     />
                  }
