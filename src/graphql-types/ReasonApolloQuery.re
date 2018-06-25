@@ -9,13 +9,13 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     | Error(apolloError)
     | Data(Config.t);
   
-  type updateQueryOptions = {
+  type updateSubscriptionOptions = {
     .
-    "fetchMoreResult": Js.Nullable.t(Js.Json.t),
+    "subscriptionData": Js.Nullable.t(Js.Json.t),
     "variables": Js.Nullable.t(Js.Json.t),
   };
 
-  type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
+  type updateQueryT = (Js.Json.t, updateSubscriptionOptions) => Js.Json.t;
   type onErrorT;
 
   [@bs.deriving abstract] 
