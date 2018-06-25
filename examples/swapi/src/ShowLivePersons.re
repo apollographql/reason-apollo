@@ -4,12 +4,12 @@ let component = ReasonReact.statelessComponent("ShowLivePersons");
 
 let make = (
   ~persons,
-  ~subscribeToMore,
+  ~getLiveData,
   _children
 ) => {
   ...component,
   didMount: _self => {
-    subscribeToMore();
+    getLiveData();
   },
   render: _self => 
     persons 

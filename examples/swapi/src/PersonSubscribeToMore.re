@@ -1,3 +1,4 @@
+[@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
 
 let ste = ReasonReact.string;
 
@@ -30,6 +31,7 @@ module NewPerson = [%graphql
 ];
 
 let newPerson = NewPerson.make();
+let newPersonAST = gql(. newPerson##query);
 
 let component = ReasonReact.statelessComponent("Query");
 
@@ -49,9 +51,9 @@ let make = _children => {
                  | Data(response) => 
                     <ShowLivePersons 
                       persons={response##allPersons} 
-                      subscribeToMore={
-                        subscribeToMore(
-                          ~document=newPerson##query,
+                      getLiveData={
+                         subscribeToMore(
+                          ~document=newPersonAST,
                           ()
                         );
                       }

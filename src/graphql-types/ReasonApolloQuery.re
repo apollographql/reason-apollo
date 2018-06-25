@@ -19,11 +19,10 @@ module Get = (Config: ReasonApolloTypes.Config) => {
 
   type updateQueryT = (Config.t, updateQueryOptions) => Js.Json.t;
   type onErrorT;
-  type unsubscribeToMore;
 
   [@bs.deriving abstract] 
   type subscribeToMoreOptions = {
-    document: documentNodeT,
+    document: queryString,
     [@bs.optional] variables: Js.Json.t,
     [@bs.optional] updateQuery: updateQueryT,
     [@bs.optional] onError: onErrorT 
@@ -37,7 +36,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     refetch: option(Js.Json.t) => Js.Promise.t(response),
     fetchMore: (~variables: Js.Json.t) => Js.Promise.t(unit),
     networkStatus: int,
-    subscribeToMore: (~document: documentNodeT, ~variables: Js.Json.t=?, ~updateQuery: updateQueryT=?, ~onError: onErrorT=?, unit) => unsubscribeToMore => unit
+    subscribeToMore: (~document: queryString, ~variables: Js.Json.t=?, ~updateQuery: updateQueryT=?, ~onError: onErrorT=?, unit) => unit => unit
   };
 
   [@bs.deriving abstract]
@@ -49,7 +48,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     networkStatus: int,
     variables: Js.Null_undefined.t(Js.Json.t),
     fetchMore: apolloOptions => Js.Promise.t(unit),
-    subscribeToMore: subscribeToMoreOptions => unsubscribeToMore => unit,
+    subscribeToMore: subscribeToMoreOptions => unit => unit,
   };
 
   let graphqlQueryAST = gql(. Config.query);
