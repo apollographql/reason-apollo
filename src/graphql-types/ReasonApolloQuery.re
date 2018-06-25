@@ -9,12 +9,10 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     | Error(apolloError)
     | Data(Config.t);
   
-  [@bs.deriving abstract]
   type updateQueryOptions = {
-    [@bs.optional]
-    fetchMoreResult: Config.t,
-    [@bs.optional]
-    variables: Js.Json.t,
+    .
+    "fetchMoreResult": Js.Nullable.t(Js.Json.t),
+    "variables": Js.Nullable.t(Js.Json.t),
   };
 
   type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
