@@ -171,7 +171,7 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 ### Use `@bsRecord` on response object
 
-The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benfits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
+The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
 
 ```
 switch response##object {
