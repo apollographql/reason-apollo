@@ -48,16 +48,9 @@ let make = _children => {
                          _ =>
                            fetchMore(
                              ~updateQuery=
-                               (a, b) => {
-                                 let dic = Js.Dict.empty();
-                                 let _ =
-                                   Js.Dict.set(
-                                     dic,
-                                     "allPersons",
-                                     Js.Json.array([||]),
-                                   );
-                                 let json = dic |> Js.Json.object_;
-                                 json;
+                               (prev, _next) => {
+                                  /* Update Apollo Store with [@bs.raw {||}] for now, since the type comming in is a generic Js.Json.t for now*/
+                                  prev;
                                },
                              (),
                            )
