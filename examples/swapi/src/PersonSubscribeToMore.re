@@ -45,7 +45,7 @@ let make = _children => {
                <h1> ("Persons: " |> ste) </h1>
                (
                  switch (result) {
-                 | Error(e) =>
+                 | Error(_e) =>
                    "Something Went Wrong" |> ste;
                  | Loading => "Loading" |> ste
                  | Data(response) => 
@@ -53,19 +53,19 @@ let make = _children => {
                       persons={response##allPersons} 
                       getLiveData={
                         () => {
-                          let unsub = subscribeToMore(
+                          let _unsub = subscribeToMore(
                             ~document=newPersonAST,
                             ~updateQuery={(prev, next) => {
-                              Js.log2("prev", prev);
-                              let dic = Js.Dict.empty();
-                              let _ =
-                              Js.Dict.set(
-                                dic,
-                                "allPersons",
-                                Js.Json.array([||]),
-                              );
-                             let json = dic |> Js.Json.object_;
-                             json;
+                              let addNewMessageJS = [%bs.raw {|
+                                function(prev, next) {
+                                  if(!next.subscriptionData.data || !next.subscriptionData.data.person)
+                                    return prev;
+                                  return Object.assign({}, prev, {
+                                    messages: prev.allPersons.concat(next.subscriptionData.data.person)
+                                  });
+                                }
+                              |}];
+                              addNewMessageJS(prev, next);                              
                             }},
                             () 
                           );

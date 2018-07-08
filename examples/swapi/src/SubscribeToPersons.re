@@ -15,9 +15,7 @@ module Persons = [%graphql
 
 module PersonsSubscription = ReasonApollo.CreateSubscription(Persons);
 
-let make = (
-  children  
-) => {
+let make = _children => {
   ...component,
   render: _self => 
   <div>
