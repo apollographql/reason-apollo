@@ -54,7 +54,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       (~variables: Js.Json.t=?, ~updateQuery: updateQueryT, unit) =>
       Js.Promise.t(unit),
     networkStatus: int,
-    subscribeToMore: (~document: queryString, ~variables: Js.Json.t=?, ~updateQuery: updateQueryT=?, ~onError: onErrorT=?, unit) => unit => unit
+    subscribeToMore: (~document: queryString, ~variables: Js.Json.t=?, ~updateQuery: updateQuerySubscriptionT=?, ~onError: onErrorT=?, unit) => unit => unit
   };
 
   [@bs.deriving abstract]
@@ -65,8 +65,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     refetch: Js.Null_undefined.t(Js.Json.t) => Js.Promise.t(renderPropObjJS),
     networkStatus: int,
     variables: Js.Null_undefined.t(Js.Json.t),
-    fetchMore: apolloOptions => Js.Promise.t(unit),
-    fetchMore: [@bs.meth] (fetchMoreOptions => Js.Promise.t(unit)),
+    fetchMore: fetchMoreOptions => Js.Promise.t(unit),
     subscribeToMore: subscribeToMoreOptions => unit => unit,
   };
 

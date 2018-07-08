@@ -7,7 +7,7 @@ type state = {id: string};
 
 let reducer = (action, state) =>
   switch (action) {
-  | ChangeId(id) => ReasonReact.Update({...state, id})
+  | ChangeId(id) => ReasonReact.Update({state, id})
   };
 
 let initialState = () => {id: ""};
