@@ -8,15 +8,16 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     | Loading
     | Error(apolloError)
     | Data(Config.t);
+
   [@bs.deriving abstract]
   type updateQueryOptions = {
     [@bs.optional]
-    fetchMoreResult: Config.t,
+    fetchMoreResult: Js.Json.t,
     [@bs.optional]
     variables: Js.Json.t,
   };
 
-  type updateQueryT = (Config.t, updateQueryOptions) => Js.Json.t;
+  type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
 
   /* We dont accept a new query for now */
   [@bs.deriving abstract]
@@ -25,6 +26,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     variables: Js.Json.t,
     updateQuery: updateQueryT,
   };
+
   type renderPropObj = {
     result: response,
     data: option(Config.t),
