@@ -21,7 +21,7 @@ let make = _children => {
   render: _self =>
     <GetAllPersonsQuery>
       ...(
-           ({result}) =>
+           ({result, fetchMore}) =>
              <div>
                <h1> ("Persons: " |> ste) </h1>
                (
@@ -31,15 +31,34 @@ let make = _children => {
                    "Something Went Wrong" |> ste;
                  | Loading => "Loading" |> ste
                  | Data(response) =>
-                   response##allPersons
-                   |> Array.mapi((index, person) =>
-                        <div key=(index |> string_of_int)>
-                          (person##name |> ste)
-                          <br />
-                          <p> ("ID: " ++ person##id |> ste) </p>
-                        </div>
-                      )
-                   |> ReasonReact.array
+                   <div>
+                     (
+                       response##allPersons
+                       |> Array.mapi((index, person) =>
+                            <div key=(index |> string_of_int)>
+                              (person##name |> ste)
+                              <br />
+                              <p> ("ID: " ++ person##id |> ste) </p>
+                            </div>
+                          )
+                       |> ReasonReact.array
+                     )
+                     <button
+                       onClick=(
+                         _ =>
+                           fetchMore(
+                             ~updateQuery=
+                               (prev, _next) => {
+                                  /* Update Apollo Store with [@bs.raw {||}] for now, since the type comming in is a generic Js.Json.t for now*/
+                                  prev;
+                               },
+                             (),
+                           )
+                           |> ignore
+                       )>
+                       ("fetchMore" |> ReasonReact.string)
+                     </button>
+                   </div>
                  }
                )
              </div>
