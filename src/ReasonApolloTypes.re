@@ -23,7 +23,7 @@ type apolloCache;
 type networkError = {. "statusCode": int};
 
 /* TODO: define missing keys */
-type apolloLinkErrorResponse = {. "networkError": option(networkError)};
+type apolloLinkErrorResponse = {. "networkError": Js.Nullable.t(networkError)};
 
 module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 
