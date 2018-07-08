@@ -106,7 +106,7 @@ let instance = ReasonApollo.createApolloClient(
       ...(({result}) => {
         switch result {
            | Loading => <div> (ReasonReact.string("Loading")) </div>
-           | Error(error) => <div> (ReasonReact.string(error)) </div>
+           | Error(error) => <div> (ReasonReact.string(error##message)) </div>
            | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>
         }
       })
@@ -166,9 +166,87 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
   })
 </ApolloConsumer>
 ```
+
+## Tips and Tricks
+
+### Use `@bsRecord` on response object
+
+The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
+
+```
+switch response##object {
+| Some(object) => {
+  switch object##nestedValue {
+  | Some(nestedValue) => nestedValue
+  | None => ""
+  }
+}
+| None => ""
+}
+```
+
+Kind of funky, huh? Let's modify the response and convert it to a reason record.
+
+```
+type object = {
+  nestedValue: option(string)
+}
+
+
+module GetObject = [%graphql {|
+  object @bsRecord {
+    nestedValue
+  }
+ |}
+];
+```
+
+This time we can pattern match more precisely.
+
+```
+switch response##object {
+| Some({ nestedValue: Some(value) }) => value
+| Some({ nestedValue: None }) => ""
+| None => ""
+}
+```
+
+### Use an alias for irregular field names
+
+You might find yourself consuming an API with field names like `Field`. Currently, reason object field names are required to be camel case. Therefore if you have a request like this:
+```
+{
+    Object {
+      id
+      title
+    }
+}
+```
+
+You will attempt to access the response object but it will throw an error:
+
+```
+response##Object /* Does not work :( */
+```
+
+Instead, use an `alias` to modify the response:
+```
+{
+    object: Object {
+      id
+      title
+    }
+}
+```
+
+Then you can access the object like this:
+```
+response##object
+```
+
 ## FAQ
 
-### I've added the schema file, but my build fails saying it couldn't be found
+### I've added the schema file, but my build fails saying it couldn't be found?
 
 In some cases, it seems like there are some differences between the provided `send-introspection-query`
 and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).

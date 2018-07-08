@@ -28,16 +28,17 @@ let make = _children => {
   render: self =>
     <div>
       <form>
-        <h1> ("Get Person By Id" |> ste) </h1>
+        <h1> ("Delete Selected Person By Id" |> ste) </h1>
+        <p> ("Select an ID from above and paste it into box" |> ste) </p>
         <input
           autoFocus=true
-          placeholder="Get this id"
+          placeholder="Delete this id"
           _type="text"
           value=self.state.id
           onChange=(onIdInputChange(self))
           required=true
         />
-        <GetPersonById id=self.state.id />
       </form>
+      <DeletePersonButton id=self.state.id />
     </div>,
 };

@@ -2,12 +2,29 @@ open ReasonApolloTypes;
 
 /* Bind the method `from`, used to compose links together */
 [@bs.module "apollo-link"] external from : array(apolloLink) => apolloLink = "from";
+
+/* Bind the method split. Based on a test send left or right */
+[@bs.module "apollo-link"] external split : (splitTest => bool) => apolloLink => apolloLink => apolloLink = "split";
+
 /* Bind the HttpLink class */
 [@bs.module "apollo-link-http"] [@bs.new] external createHttpLink : ApolloClient.linkOptions => apolloLink = "HttpLink";
+
 /* Bind the setContext method */
 [@bs.module "apollo-link-context"] external apolloLinkSetContext : (unit => Js.t({..})) => apolloLink = "setContext";
+
 /* Bind the onError method */
-[@bs.module "apollo-link-error"] external apolloLinkOnError : (apolloLinkErrorResponse => unit) => apolloLink = "onError";
+[@bs.module "apollo-link-error"] external apolloLinkOnError : (errorResponse => unit) => apolloLink = "onError";
+
+/* bind apollo-link-ws */
+[@bs.module "apollo-link-ws"] [@bs.new] external webSocketLink : webSocketLinkT  => apolloLink = "WebSocketLink";
+
+let webSocketLink = (
+  ~uri,
+  ~reconnect=?,
+  ()
+) => {
+  webSocketLink(webSocketLinkT(~uri=uri, ~options=webSocketLinkOptionsT(~reconnect=?reconnect, ())));
+}; 
 
 /**
  * CreateHttpLink
@@ -49,3 +66,4 @@ let createErrorLink = (errorHandler) => {
   /* Instanciate a new error link object */
   apolloLinkOnError(errorHandler);
 };
+
