@@ -8,6 +8,24 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     | Loading
     | Error(apolloError)
     | Data(Config.t);
+  
+  type updateSubscriptionOptions = {
+    .
+    "subscriptionData": Js.Nullable.t(Js.Json.t),
+    "variables": Js.Nullable.t(Js.Json.t),
+  };
+
+  type updateQueryT = (Js.Json.t, updateSubscriptionOptions) => Js.Json.t;
+  type onErrorT;
+
+  [@bs.deriving abstract] 
+  type subscribeToMoreOptions = {
+    document: queryString,
+    [@bs.optional] variables: Js.Json.t,
+    [@bs.optional] updateQuery: updateQueryT,
+    [@bs.optional] onError: onErrorT 
+  };
+
   type renderPropObj = {
     result: response,
     data: option(Config.t),
@@ -16,27 +34,28 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     refetch: option(Js.Json.t) => Js.Promise.t(response),
     fetchMore: (~variables: Js.Json.t) => Js.Promise.t(unit),
     networkStatus: int,
+    subscribeToMore: (~document: queryString, ~variables: Js.Json.t=?, ~updateQuery: updateQueryT=?, ~onError: onErrorT=?, unit) => unit => unit
   };
+
+  [@bs.deriving abstract]
   type renderPropObjJS = {
-    .
-    "loading": bool,
-    "data": Js.Nullable.t(Js.Json.t),
-    "error": Js.Nullable.t(apolloError),
-    "refetch":
-      [@bs.meth] (
-        Js.Null_undefined.t(Js.Json.t) => Js.Promise.t(renderPropObjJS)
-      ),
-    "networkStatus": int,
-    "variables": Js.Null_undefined.t(Js.Json.t),
-    "fetchMore": [@bs.meth] (apolloOptions => Js.Promise.t(unit)),
+    loading: bool,
+    data: Js.Nullable.t(Js.Json.t),
+    error: Js.Nullable.t(apolloError),
+    refetch: Js.Null_undefined.t(Js.Json.t) => Js.Promise.t(renderPropObjJS),
+    networkStatus: int,
+    variables: Js.Null_undefined.t(Js.Json.t),
+    fetchMore: apolloOptions => Js.Promise.t(unit),
+    subscribeToMore: subscribeToMoreOptions => unit => unit,
   };
+
   let graphqlQueryAST = gql(. Config.query);
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##loading,
-        apolloData##data |> Js.Nullable.toOption,
-        apolloData##error |> Js.Nullable.toOption,
+        apolloData |. loading,
+        apolloData |. data |> Js.Nullable.toOption,
+        apolloData |. error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
       | (false, Some(response), _) => Data(Config.parse(response))
@@ -48,10 +67,11 @@ module Get = (Config: ReasonApolloTypes.Config) => {
           "networkError": Js.Nullable.null,
         })
       };
+
   let convertJsInputToReason = (apolloData: renderPropObjJS) => {
     result: apolloData |> apolloDataToVariant,
     data:
-      switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
+      switch (apolloData |. data |> ReasonApolloUtils.getNonEmptyObj) {
       | None => None
       | Some(data) =>
         switch (Config.parse(data)) {
@@ -60,23 +80,32 @@ module Get = (Config: ReasonApolloTypes.Config) => {
         }
       },
     error:
-      switch (apolloData##error |> Js.Nullable.toOption) {
+      switch (apolloData |. error |> Js.Nullable.toOption) {
       | Some(error) => Some(error)
       | None => None
       },
-    loading: apolloData##loading,
+    loading: apolloData |. loading,
     refetch: variables =>
-      apolloData##refetch(variables |> Js.Nullable.fromOption)
+      apolloData |. refetch(variables |> Js.Nullable.fromOption)
       |> Js.Promise.then_(data =>
            data |> apolloDataToVariant |> Js.Promise.resolve
          ),
     fetchMore: (~variables) =>
-      apolloData##fetchMore({
+      apolloData |. fetchMore({
         "variables": variables,
         "query": graphqlQueryAST,
       }),
-    networkStatus: apolloData##networkStatus,
+    networkStatus: apolloData |.networkStatus,
+    subscribeToMore: (~document, ~variables=?, ~updateQuery=?, ~onError=?, ()) => 
+    apolloData |. subscribeToMore(subscribeToMoreOptions(
+      ~document,
+      ~variables?,
+      ~updateQuery?,
+      ~onError?,
+      ()
+    )),
   };
+
   let make =
       (
         ~variables: option(Js.Json.t)=?,
