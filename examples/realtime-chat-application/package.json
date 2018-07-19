@@ -22,16 +22,17 @@
     "subscriptions-transport-ws": "^0.9.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "start": "bsb -make-world -w",
+    "webpack": "webpack-dev-server",
     "get-schema": "yarn send-introspection-query https://boiling-bastion-96890.herokuapp.com/graphql"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
     "bs-platform": "^3.1.4",
     "graphql_ppx": "^0.2.4",
-    "reason-react": "^0.4.2"
+    "reason-react": "^0.4.2",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.4"
   }
 }
