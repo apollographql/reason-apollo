@@ -1,0 +1,18 @@
+{
+  "name": "reason-scripts",
+  "sources": ["src", "lib"],
+  "bs-dependencies": ["reason-react", "@glennsl/bs-jest", "bs-css", "reason-apollo"],
+  "reason": {
+    "react-jsx": 2
+  },
+  "bsc-flags": ["-bs-super-errors"],
+  "refmt": 3,
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "ppx-flags": [
+    "graphql_ppx/ppx"
+  ],
+  "suffix": ".bs.js"
+}
