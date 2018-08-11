@@ -55,7 +55,7 @@ module ReadFragment(Config : ReasonApolloTypes.Config) = {
     "fragment": ReasonApolloTypes.queryString,
   };
 
-  [@bs.send] external readFragment : (ApolloClient.generatedApolloClient, readFragmentObj) => Js.Json.t = "";
+  [@bs.send] external readFragment : (generatedApolloClient, readFragmentObj) => Js.Json.t = "";
 
   let readFragment = (client, id : string) =>
     readFragment(client, {"id": id, "fragment": gql(. Config.query)});
