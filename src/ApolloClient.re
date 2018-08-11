@@ -45,3 +45,18 @@ external apolloClientObjectParam :
   ) =>
   _ =
   "";
+
+module ReadFragment(Config : ReasonApolloTypes.Config) = {
+  [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+
+  type readFragmentObj = {
+    .
+    "id": string,
+    "fragment": ReasonApolloTypes.queryString,
+  };
+
+  [@bs.send] external readFragment : (ApolloClient.generatedApolloClient, readFragmentObj) => Js.Json.t = "";
+
+  let readFragment = (client, id : string) =>
+    readFragment(client, {"id": id, "fragment": gql(. Config.query)});
+};
