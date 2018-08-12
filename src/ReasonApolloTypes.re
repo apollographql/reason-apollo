@@ -92,3 +92,7 @@ type splitTest = {
   .
   "query": documentNodeT
 };
+
+module type ReadFragment {
+  let read: (ApolloClient.generatedApolloClient, string) => Js.Nullable.t(Js.Json.t);
+}

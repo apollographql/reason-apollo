@@ -57,7 +57,7 @@ module ReadFragment(Config : ReasonApolloTypes.Config) = {
 
   [@bs.send] external readFragment : (generatedApolloClient, readFragmentObj) => Js.Nullable.t(Js.Json.t) = "";
 
-  let readFragment = (client, id : string) => {
+  let read = (client, id : string) => {
     readFragment(client, {"id": id, "fragment": gql(. Config.query)}) |> Js.Nullable.toOption;
   };
 };
