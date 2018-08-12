@@ -46,6 +46,10 @@ external apolloClientObjectParam :
   _ =
   "";
 
+module type ReadFragment {
+  let read: (generatedApolloClient, string) => Js.Nullable.t(Js.Json.t)
+};
+
 module ReadFragment(Config : ReasonApolloTypes.Config) = {
   [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
 
