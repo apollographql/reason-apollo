@@ -47,13 +47,19 @@ external apolloClientObjectParam :
   "";
 
 module type ReadFragment = (Config : ReasonApolloTypes.Config) => {
-  let read : (generatedApolloClient, string) => option(Config.t);
+  let read : (
+    ~client: generatedApolloClient,
+    ~id: string,
+    ~fragmentName: string=?,
+    unit
+  ) => option(Config.t);
 };
 
 type readFragmentObj = {
   .
   "id": string,
   "fragment": ReasonApolloTypes.queryString,
+  "fragmentName": Js.Nullable.t(string),
 };
 
 [@bs.send] external readFragment : (generatedApolloClient, readFragmentObj) => Js.Nullable.t(Js.Json.t) = "";
@@ -61,9 +67,13 @@ type readFragmentObj = {
 module ReadFragment(Config : ReasonApolloTypes.Config) = {
   [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
 
-  let read = (client : generatedApolloClient, id : string) : option(Config.t) =>
+  let read = (~client, ~id, ~fragmentName=?, ()) : option(Config.t) =>
     client
-    |> readFragment(_, {"id": id, "fragment": gql(. Config.query)})
+    |> readFragment(_, {
+        "id": id,
+        "fragment": gql(. Config.query),
+        "fragmentName": Js.Nullable.fromOption(fragmentName),
+      })
     |> Js.Nullable.toOption
     |> (fragmentDataOption) =>
          switch(fragmentDataOption) {
