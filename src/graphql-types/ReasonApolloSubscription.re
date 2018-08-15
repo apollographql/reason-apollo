@@ -6,10 +6,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
 
   let graphQLSubscriptionAST = gql(. Config.query);
   
-  type response = 
-    | Loading
-    | Error(apolloError)
-    | Data(Config.t);
+  type response = subscriptionResponse(Config.t);
 
   type renderPropObj = {
     result: response,
