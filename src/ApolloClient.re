@@ -14,7 +14,7 @@ type mutationObj = {
 
 type generatedApolloClient = {
   .
-  "query": [@bs.meth] (queryObj => string),
+  "query": [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
   "mutate": [@bs.meth] (mutationObj => string),
 };
 
