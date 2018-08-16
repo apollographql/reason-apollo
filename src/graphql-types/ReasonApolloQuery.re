@@ -1,6 +1,5 @@
 open ReasonApolloTypes;
 
-
 [@bs.deriving abstract]
 type updateQueryOptions = {
   [@bs.optional]
@@ -10,15 +9,12 @@ type updateQueryOptions = {
 };
 
 type onErrorT;
-
 type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
-
 type updateSubscriptionOptions = {
   .
   "subscriptionData": Js.Nullable.t(Js.Json.t),
   "variables": Js.Nullable.t(Js.Json.t),
 };
-
 type updateQuerySubscriptionT = (Js.Json.t, updateSubscriptionOptions) => Js.Json.t;
 
 [@bs.deriving abstract]
