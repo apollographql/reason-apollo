@@ -13,11 +13,7 @@ module MutationFactory = (Config: Config) => {
   [@bs.module "react-apollo"]
   external mutationComponent : ReasonReact.reactClass = "Mutation";
   let graphqlMutationAST = gql(. Config.query);
-  type response =
-    | Loading
-    | Error(apolloError)
-    | Data(Config.t)
-    | NotCalled;
+  type response = mutationResponse(Config.t);
   type renderPropObj = {
     result: response,
     data: option(Config.t),
