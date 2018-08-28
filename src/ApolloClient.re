@@ -16,6 +16,7 @@ type generatedApolloClient = {
   .
   "query": [@bs.meth] (queryObj => string),
   "mutate": [@bs.meth] (mutationObj => string),
+  "resetStore": [@bs.meth] (unit => unit),
 };
 
 type fetch;
