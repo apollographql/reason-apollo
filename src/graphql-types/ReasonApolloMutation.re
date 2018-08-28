@@ -1,5 +1,15 @@
 open ReasonApolloTypes;
 
+type renderPropObjJS = {
+  .
+  "loading": bool,
+  "called": bool,
+  "data": Js.Nullable.t(Js.Json.t),
+  "error": Js.Nullable.t(apolloError),
+  "networkStatus": int,
+  "variables": Js.Null_undefined.t(Js.Json.t),
+};
+
 module MutationFactory = (Config: Config) => {
   external cast :
     string =>
@@ -20,15 +30,6 @@ module MutationFactory = (Config: Config) => {
     loading: bool,
     error: option(apolloError),
     networkStatus: int,
-  };
-  type renderPropObjJS = {
-    .
-    "loading": bool,
-    "called": bool,
-    "data": Js.Nullable.t(Js.Json.t),
-    "error": Js.Nullable.t(apolloError),
-    "networkStatus": int,
-    "variables": Js.Null_undefined.t(Js.Json.t),
   };
   type apolloMutation =
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?, unit) =>
