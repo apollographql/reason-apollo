@@ -70,6 +70,22 @@ type apolloOptions = {
     "variables": Js.Json.t,
 };
 
+type queryResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a);
+
+type mutationResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a)
+  | NotCalled;
+
+type subscriptionResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a);
+
 /* 
  apollo link ws
  */
