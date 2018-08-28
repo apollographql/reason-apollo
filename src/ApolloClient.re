@@ -16,6 +16,7 @@ type generatedApolloClient = {
   .
   "query": [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
   "mutate": [@bs.meth] (mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)),
+  "resetStore": [@bs.meth] (unit => unit),
 };
 
 type fetch;
