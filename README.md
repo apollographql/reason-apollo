@@ -15,7 +15,7 @@ yarn add reason-apollo
 yarn add --dev graphql_ppx
 
 # Add JS dependencies
-yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag
+yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag apollo-link-ws subscriptions-transport-ws
 ```
 
 #### bsconfig
@@ -173,7 +173,7 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
 
-```
+```reason
 switch response##object {
 | Some(object) => {
   switch object##nestedValue {
@@ -187,7 +187,7 @@ switch response##object {
 
 Kind of funky, huh? Let's modify the response and convert it to a reason record.
 
-```
+```reason
 type object = {
   nestedValue: option(string)
 }
@@ -203,7 +203,7 @@ module GetObject = [%graphql {|
 
 This time we can pattern match more precisely.
 
-```
+```reason
 switch response##object {
 | Some({ nestedValue: Some(value) }) => value
 | Some({ nestedValue: None }) => ""
@@ -214,7 +214,7 @@ switch response##object {
 ### Use an alias for irregular field names
 
 You might find yourself consuming an API with field names like `Field`. Currently, reason object field names are required to be camel case. Therefore if you have a request like this:
-```
+```reason
 {
     Object {
       id
@@ -225,12 +225,12 @@ You might find yourself consuming an API with field names like `Field`. Currentl
 
 You will attempt to access the response object but it will throw an error:
 
-```
+```reason
 response##Object /* Does not work :( */
 ```
 
 Instead, use an `alias` to modify the response:
-```
+```reason
 {
     object: Object {
       id
@@ -240,7 +240,7 @@ Instead, use an `alias` to modify the response:
 ```
 
 Then you can access the object like this:
-```
+```reason
 response##object
 ```
 
