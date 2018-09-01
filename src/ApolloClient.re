@@ -31,10 +31,10 @@ type linkOptions = {
 };
 
 [@bs.module "apollo-client"] [@bs.new]
-external createApolloClientJS : 'a => generatedApolloClient = "ApolloClient";
+external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
 
 [@bs.obj]
-external apolloClientObjectParam :
+external apolloClientObjectParam:
   (
     ~link: apolloLink,
     ~cache: apolloCache,
@@ -46,14 +46,18 @@ external apolloClientObjectParam :
   _ =
   "";
 
-module type ReadFragment = (Config : ReasonApolloTypes.Config) => {
-  let read : (
-    ~client: generatedApolloClient,
-    ~id: string,
-    ~fragmentName: string=?,
-    unit
-  ) => option(Config.t);
-};
+module type ReadFragment =
+  (Config: ReasonApolloTypes.Config) =>
+   {
+    let read:
+      (
+        ~client: generatedApolloClient,
+        ~id: string,
+        ~fragmentName: string=?,
+        unit
+      ) =>
+      option(Config.t);
+  };
 
 type readFragmentObj = {
   .
@@ -62,22 +66,30 @@ type readFragmentObj = {
   "fragmentName": Js.Nullable.t(string),
 };
 
-[@bs.send] external readFragment : (generatedApolloClient, readFragmentObj) => Js.Nullable.t(Js.Json.t) = "";
+[@bs.send]
+external readFragment:
+  (generatedApolloClient, readFragmentObj) => Js.Nullable.t(Js.Json.t) =
+  "";
 
-module ReadFragment(Config : ReasonApolloTypes.Config) = {
-  [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
+module ReadFragment = (Config: ReasonApolloTypes.Config) => {
+  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
 
-  let read = (~client, ~id, ~fragmentName=?, ()) : option(Config.t) =>
+  let read = (~client, ~id, ~fragmentName=?, ()): option(Config.t) =>
     client
-    |> readFragment(_, {
-        "id": id,
-        "fragment": gql(. Config.query),
-        "fragmentName": Js.Nullable.fromOption(fragmentName),
-      })
+    |> readFragment(
+         _,
+         {
+           "id": id,
+           "fragment": gql(. Config.query),
+           "fragmentName": Js.Nullable.fromOption(fragmentName),
+         },
+       )
     |> Js.Nullable.toOption
-    |> (fragmentDataOption) =>
-         switch(fragmentDataOption) {
-         | None => None
-         | Some(fragmentData) => Some(fragmentData |> Config.parse)
-         };
+    |> (
+      fragmentDataOption =>
+        switch (fragmentDataOption) {
+        | None => None
+        | Some(fragmentData) => Some(fragmentData |> Config.parse)
+        }
+    );
 };
