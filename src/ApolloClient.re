@@ -51,13 +51,15 @@ module ReadQuery = (Config: ReasonApolloTypes.Config) => {
   [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
   type readQueryOptions = {
     .
-    "query": queryString,
+    "query": ReasonApolloTypes.queryString,
     "variables": Js.Nullable.t(Js.Json.t),
   };
-  [@bs.send]
-  external readQuery: (generatedApolloClient, readQueryOptions) => Config.t =
-    "";
   type response = option(Config.t);
+  [@bs.send]
+  external readQuery:
+    (ApolloClient.generatedApolloClient, readQueryOptions) =>
+    Js.Nullable.t(Js.Json.t) =
+    "";
 
   let graphqlQueryAST = gql(. Config.query);
   let apolloDataToRecord: Js.Nullable.t(Js.Json.t) => response =
@@ -71,7 +73,8 @@ module ReadQuery = (Config: ReasonApolloTypes.Config) => {
         "query": graphqlQueryAST,
         "variables": Js.Nullable.fromOption(variables),
       },
-    );
+    )
+    ->apolloDataToRecord;
 };
 
 module WriteQuery = (Config: ReasonApolloTypes.Config) => {
