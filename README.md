@@ -244,6 +244,37 @@ Then you can access the object like this:
 response##object
 ```
 
+### Generic Error and Loading components
+
+You can create a generic error and Loading component and compose them like this example:
+```reason
+
+module QueryView = {
+  let component = ReasonReact.statelessComponent(__MODULE__);
+
+  let make =
+      (
+        ~result: ReasonApolloTypes.queryResponse('a),
+        ~accessData: 'a => option('b),
+        ~render: ('b, 'c) => ReasonReact.reactElement,
+        ~onLoadMore: ('b, 'unit) => unit=(_, ()) => (),
+        _children,
+      ) => {
+    ...component,
+    render: _self =>
+      switch (result) {
+      | Error(error) => <Error />
+      | Loading => ReasonReact.null
+      | Data(response) =>
+        switch (accessData(response)) {
+        | Some(data) => render(data, onLoadMore(data))
+        | _ => <Error error="" />
+        }
+      },
+  };
+};
+```
+
 ## FAQ
 
 ### I've added the schema file, but my build fails saying it couldn't be found?
