@@ -1558,6 +1558,94 @@
           "possibleTypes": null
         },
         {
+          "inputFields": [
+            {
+              "name": "name",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "input",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "name": "InvokeFunctionInput",
+          "description": null,
+          "interfaces": null,
+          "enumValues": null,
+          "fields": null,
+          "kind": "INPUT_OBJECT",
+          "possibleTypes": null
+        },
+        {
+          "inputFields": null,
+          "name": "InvokeFunctionPayload",
+          "description": null,
+          "interfaces": [],
+          "enumValues": null,
+          "fields": [
+            {
+              "name": "result",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "name": "clientMutationId",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "kind": "OBJECT",
+          "possibleTypes": null
+        },
+        {
           "inputFields": null,
           "name": "Mutation",
           "description": null,
@@ -1942,6 +2030,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "User",
+                "ofType": null
+              }
+            },
+            {
+              "name": "invokeFunction",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InvokeFunctionInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "InvokeFunctionPayload",
                 "ofType": null
               }
             }
