@@ -4,6 +4,7 @@ type queryObj = {
   .
   "query": ReasonApolloTypes.queryString,
   "variables": Js.Json.t,
+  "fetchPolicy": option(fetchPolicy),
 };
 
 type mutationObj = {
@@ -14,8 +15,12 @@ type mutationObj = {
 
 type generatedApolloClient = {
   .
-  "query": [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
-  "mutate": [@bs.meth] (mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)),
+  "query":
+    [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
+  "mutate":
+    [@bs.meth] (
+      mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)
+    ),
   "resetStore": [@bs.meth] (unit => unit),
 };
 
@@ -32,10 +37,10 @@ type linkOptions = {
 };
 
 [@bs.module "apollo-client"] [@bs.new]
-external createApolloClientJS : 'a => generatedApolloClient = "ApolloClient";
+external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
 
 [@bs.obj]
-external apolloClientObjectParam :
+external apolloClientObjectParam:
   (
     ~link: apolloLink,
     ~cache: apolloCache,
