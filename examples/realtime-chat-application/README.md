@@ -12,19 +12,30 @@ https://graphqlbin.com/v2/WLPqS6 (We recommend using Chrome)
 - Paper, pen, redbull,...
 
 
-### TODO
+### SETUP
 
 #### GraphQL Playground
-
 Open the GraphQL playground in your browser https://graphqlbin.com/v2/WLPqS6 (Safari doesn't work)
-Add a user and grab it's id to make mutations
+Add a user, grab it's id, put the id into AddMessage.re to make mutations.
+(Don't assume endpoint has existing valid user id hardcoded in src)
+`
+mutation { 
+  addUser(name:"MyUser") {
+    id
+    name
+  }
+}
+`
 
 #### Run the app
 `yarn`
 `yarn start`
 `yarn webpack`
 
+(note: the send text field seems to be unused and hard coded to send "HI")
+
 #### Setup GraphQL PPX
 Run the introspection query, so the ppx can typecheck based on the graphql_schema : 
 https://github.com/apollographql/reason-apollo#send-introspection-query
+
 

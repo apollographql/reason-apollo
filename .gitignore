@@ -5,6 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
+
 # Dependency directories
 node_modules/
 
@@ -23,7 +24,11 @@ lib
 *.bs.js
 
 **/*.swp
+**/.graphql_ppx_cache
 
 .bsb.lock
 schema.graphql
 .DS_Store
+
+# Editor
+**/.idea
