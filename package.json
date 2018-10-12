@@ -39,6 +39,7 @@
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
+    "apollo-upload-client": "^9.0.0",
     "bs-platform": "^4.0.5",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
