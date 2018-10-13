@@ -105,13 +105,3 @@ type webSocketLinkT = {
 type documentNodeT;
 
 type splitTest = {. "query": documentNodeT};
-
-[@bs.deriving jsConverter]
-type fetchPolicy = [
-  | [@bs.as "cache-first"] `CacheFirst
-  | [@bs.as "cache-and-network"] `CacheAndNetwork
-  | [@bs.as "network-only"] `NetworkOnly
-  | [@bs.as "cache-only"] `CacheOnly
-  | [@bs.as "no-cache"] `NoCache
-  | [@bs.as "standby"] `Standby
-];
