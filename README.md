@@ -33,14 +33,14 @@ Add `reason-apollo` to your `bs-dependencies` and
 ]
 ```
 
-#### send introspection query
+#### Send introspection query
 This will generate a `graphql_schema.json` which will be used to safely type your GraphQL queries/mutations.
 ```
 yarn send-introspection-query http://my-api.example.com/api
 ```
 
 ## Why reason-apollo?
-Watch it's usage in this video:  
+Watch its usage in this video:
 
 [![Watch reason-apollo usage here](https://i.ytimg.com/vi/yMqE37LqRLA/hqdefault.jpg?sqp=-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLD9rxIyXtckkxmGAxRn_Uv2mDcXcQ)](https://www.youtube.com/watch?v=yMqE37LqRLA)
 
