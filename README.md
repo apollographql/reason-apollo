@@ -33,127 +33,131 @@ Add `reason-apollo` to your `bs-dependencies` and
 ]
 ```
 
-#### send introspection query
+#### Send introspection query
 This will generate a `graphql_schema.json` which will be used to safely type your GraphQL queries/mutations.
 ```
 yarn send-introspection-query http://my-api.example.com/api
 ```
 
 ## Why reason-apollo?
-Watch it's usage in this video:  
+Watch its usage in this video:
 
 [![Watch reason-apollo usage here](https://i.ytimg.com/vi/yMqE37LqRLA/hqdefault.jpg?sqp=-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLD9rxIyXtckkxmGAxRn_Uv2mDcXcQ)](https://www.youtube.com/watch?v=yMqE37LqRLA)
 
-# Usage  
- 
- ## Create the Apollo Client
- 
- **Client.re**
- ```reason
+# Usage
 
- /* Create an InMemoryCache */
- let inMemoryCache = ApolloInMemoryCache.createInMemoryCache(());
+## Create the Apollo Client
+
+**Client.re**
+```reason
+/* Create an InMemoryCache */
+let inMemoryCache = ApolloInMemoryCache.createInMemoryCache();
 
 /* Create an HTTP Link */
 let httpLink =
   ApolloLinks.createHttpLink(~uri="http://localhost:3010/graphql", ());
 
-let instance = ReasonApollo.createApolloClient(
-  ~link=httpLink, 
-  ~cache=inMemoryCache, 
-  ()
+let instance =
+  ReasonApollo.createApolloClient(~link=httpLink, ~cache=inMemoryCache, ());
+```
+
+## ApolloProvider
+
+**Index.re**
+```reason
+/*
+   Enhance your application with the `ReasonApollo.Provider`
+   passing it your client instance
+ */
+ReactDOMRe.renderToElementWithId(
+  <ReasonApollo.Provider client=Client.instance>
+    <App />
+  </ReasonApollo.Provider>,
+  "index",
 );
+```
 
- ```
-  
-  ## ApolloProvider
+## Query
 
-  ***Index.re***
-  ```reason
+**MyComponent.re**
+```reason
+/* Create a GraphQL Query by using the graphql_ppx */
+module GetPokemon = [%graphql
+  {|
+  query getPokemon($name: String!){
+      pokemon(name: $name) {
+          name
+      }
+  }
+|}
+];
 
-    /* 
-      Enhance your application with the `ReasonApollo.Provider` 
-      passing it your client instance 
-    */
-    ReactDOMRe.renderToElementWithId(
-      <ReasonApollo.Provider client=Client.instance>
-          <App />
-      </ReasonApollo.Provider>
-    , "index");
+module GetPokemonQuery = ReasonApollo.CreateQuery(GetPokemon);
 
-  ```
-
-  ## Query
-  
-  **MyComponent.re**
-  ```reason
-  /* Create a GraphQL Query by using the graphql_ppx */ 
-  module GetPokemon = [%graphql {|
-    query getPokemon($name: String!){
-        pokemon(name: $name) {
-            name
-        }
-    }
-  |}]; 
-
-  module GetPokemonQuery = ReasonApollo.CreateQuery(GetPokemon);
-
-  let make = (_children) => {
+let make = _children => {
   /* ... */,
-  render: (_) => {
+  render: _ => {
     let pokemonQuery = GetPokemon.make(~name="Pikachu", ());
     <GetPokemonQuery variables=pokemonQuery##variables>
-      ...(({result}) => {
-        switch result {
-           | Loading => <div> (ReasonReact.string("Loading")) </div>
-           | Error(error) => <div> (ReasonReact.string(error##message)) </div>
-           | Data(response) => <div> (ReasonReact.string(response##pokemon##name)) </div>
-        }
-      })
-    </GetPokemonQuery>
+      ...{
+           ({result}) =>
+             switch (result) {
+             | Loading => <div> {ReasonReact.string("Loading")} </div>
+             | Error(error) =>
+               <div> {ReasonReact.string(error##message)} </div>
+             | Data(response) =>
+               <div> {ReasonReact.string(response##pokemon##name)} </div>
+             }
+         }
+    </GetPokemonQuery>;
+  },
+};
+```
+
+## Mutation
+
+**MyMutation.re**
+```reason
+module AddPokemon = [%graphql
+  {|
+  mutation addPokemon($name: String!) {
+      addPokemon(name: $name) {
+          name
+      }
   }
-  }
-  ```
+|}
+];
 
-  ## Mutation
-  
-  **MyMutation.re**
-  ```reason
-  module AddPokemon = [%graphql {|
-    mutation addPokemon($name: String!) {
-        addPokemon(name: $name) {
-            name
-        }
-    }
-  |}];
+module AddPokemonMutation = ReasonApollo.CreateMutation(AddPokemon);
 
-  module AddPokemonMutation = ReasonApollo.CreateMutation(AddPokemon);
-
-  let make = (_children) => {
+let make = _children => {
   /* ... */,
-  render: (_) => {  
+  render: _ =>
     <AddPokemonMutation>
-      ...((
-        mutation /* Mutation to call */, 
-        _ /* Result of your mutation */
-      ) => {
-        let newPokemon = AddPokemon.make(~name="Bob", ());
-        <div>
-          <button onClick=((_mouseEvent) => {
-              mutation(
-                 ~variables=newPokemon##variables, 
-                 ~refetchQueries=[|"getAllPokemons"|], 
-                 ()
-              ) |> ignore;
-            })> 
-            (ReasonReact.string("Add Pokemon")) 
-          </button>
-        </div>
-      })
-    </AddPokemonMutation>
-  }
-  }
-  ```
+      ...{
+           (mutation /* Mutation to call */, _) => {
+             /* Result of your mutation */
+
+             let newPokemon = AddPokemon.make(~name="Bob", ());
+             <div>
+               <button
+                 onClick={
+                   _mouseEvent =>
+                     mutation(
+                       ~variables=newPokemon##variables,
+                       ~refetchQueries=[|"getAllPokemons"|],
+                       (),
+                     )
+                     |> ignore
+                 }>
+                 {ReasonReact.string("Add Pokemon")}
+               </button>
+             </div>;
+           }
+         }
+    </AddPokemonMutation>,
+};
+```
 
 ## ApolloConsumer
 
@@ -161,10 +165,8 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 ```reason
 <ApolloConsumer>
-  ...((apolloClient) => {
-    /* We have access to the client! */
-  })
-</ApolloConsumer>
+  ...{apolloClient => {/* We have access to the client! */}}
+</ApolloConsumer>;
 ```
 
 ## Tips and Tricks
@@ -216,26 +218,26 @@ switch response##object {
 You might find yourself consuming an API with field names like `Field`. Currently, reason object field names are required to be camel case. Therefore if you have a request like this:
 ```reason
 {
-    Object {
-      id
-      title
-    }
+  Object {
+    id
+    title
+  }
 }
 ```
 
 You will attempt to access the response object but it will throw an error:
 
 ```reason
-response##Object /* Does not work :( */
+response##Object; /* Does not work :( */
 ```
 
 Instead, use an `alias` to modify the response:
 ```reason
 {
-    object: Object {
-      id
-      title
-    }
+  object: Object {
+    id
+    title
+  }
 }
 ```
 
@@ -248,7 +250,6 @@ response##object
 
 You can create a generic error and Loading component and compose them like this example:
 ```reason
-
 module QueryView = {
   let component = ReasonReact.statelessComponent(__MODULE__);
 
@@ -283,6 +284,6 @@ In some cases, it seems like there are some differences between the provided `se
 and output from tools you might be using to download the schema (such as `apollo-codegen` or `graphql-cli`).
 If your build is failing, please make sure to try with the provided script. In your project root, run:
 
-```bash
+```console
 $ yarn send-introspection-query <url>
 ```
