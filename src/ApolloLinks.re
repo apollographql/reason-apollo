@@ -18,6 +18,11 @@ open ReasonApolloTypes;
 /* bind apollo-link-ws */
 [@bs.module "apollo-link-ws"] [@bs.new] external webSocketLink : webSocketLinkT  => apolloLink = "WebSocketLink";
 
+/* Bind createUploadLink function from apollo upload link */
+[@bs.module "apollo-upload-client"]
+external createUploadLink: ApolloClient.uploadLinkOptions => apolloLink =
+  "createUploadLink";
+
 let webSocketLink = (
   ~uri,
   ~reconnect=?,
@@ -50,6 +55,31 @@ let createHttpLink = (
 };
 
 /**
+ * CreateUploadLink
+ * https://github.com/jaydenseric/apollo-upload-client#function-createuploadlink
+ */
+let createUploadLink =
+    (
+      ~uri=?,
+      ~fetch=?,
+      ~fetchOptions=?,
+      ~credentials=?,
+      ~headers=?,
+      ~includeExtensions=?,
+      (),
+    ) =>
+  createUploadLink(
+    Js.Nullable.{
+      "uri": fromOption(uri),
+      "fetch": fromOption(fetch),
+      "fetchOptions": fromOption(fetchOptions),
+      "credentials": fromOption(credentials),
+      "headers": fromOption(headers),
+      "includeExtensions": fromOption(includeExtensions),
+    },
+  );
+
+/**
  * CreateContextLink
  * https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-context
  */
@@ -66,4 +96,3 @@ let createErrorLink = (errorHandler) => {
   /* Instanciate a new error link object */
   apolloLinkOnError(errorHandler);
 };
-

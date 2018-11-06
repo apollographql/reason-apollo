@@ -36,6 +36,16 @@ type linkOptions = {
   "fetchOptions": Js.Nullable.t(Js.Json.t),
 };
 
+type uploadLinkOptions = {
+  .
+  "uri": Js.Nullable.t(string),
+  "fetch": Js.Nullable.t(fetch),
+  "fetchOptions": Js.Nullable.t(Js.t({.})),
+  "credentials": Js.Nullable.t(string),
+  "headers": Js.Nullable.t(Js.Json.t),
+  "includeExtensions": Js.Nullable.t(bool),
+};
+
 [@bs.module "apollo-client"] [@bs.new]
 external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
 
