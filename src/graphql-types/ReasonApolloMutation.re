@@ -33,7 +33,7 @@ module MutationFactory = (Config: Config) => {
   };
   type apolloMutation =
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?, unit) =>
-    Js.Promise.t(executionResult);
+    Js.Promise.t(renderPropObjJS);
   [@bs.obj]
   external makeMutateParams :
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?) => _ =
@@ -68,15 +68,6 @@ module MutationFactory = (Config: Config) => {
     loading: apolloData##loading,
     networkStatus: apolloData##networkStatus,
   };
-  let convertExecutionResultToReason = (executionResult: executionResult) =>
-      switch (
-        executionResult##data |> ReasonApolloUtils.getNonEmptyObj,
-        executionResult##errors |> Js.Nullable.toOption,
-      ) {
-      | (Some(data), _) => Data(Config.parse(data))
-      | (_, Some(errors)) => Errors(errors)
-      | (None, None) => EmptyResponse
-      };
   let make =
       (
         ~variables: option(Js.Json.t)=?,
