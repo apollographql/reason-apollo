@@ -82,23 +82,24 @@ ReactDOMRe.renderToElementWithId(
 **MyQuery.re**
 ```reason
 /* Create a GraphQL Query by using the graphql_ppx */
-module GetPokemon = [%graphql
+module GetUserName = [%graphql
   {|
-  query getPokemon($name: String!){
-      pokemon(name: $name) {
+  query getUserName($id: ID!){
+      user(id: $ID) {
+          id
           name
       }
   }
 |}
 ];
 
-module GetPokemonQuery = ReasonApollo.CreateQuery(GetPokemon);
+module GetUserNameQuery = ReasonApollo.CreateQuery(GetUserName);
 
 let make = _children => {
   /* ... */,
   render: _ => {
-    let pokemonQuery = GetPokemon.make(~name="Pikachu", ());
-    <GetPokemonQuery variables=pokemonQuery##variables>
+    let userNameQuery = GetUserName.make(~id="42", ());
+    <GetUserNameQuery variables=userNameQuery##variables>
       ...{
            ({result}) =>
              switch (result) {
@@ -106,10 +107,10 @@ let make = _children => {
              | Error(error) =>
                <div> {ReasonReact.string(error##message)} </div>
              | Data(response) =>
-               <div> {ReasonReact.string(response##pokemon##name)} </div>
+               <div> {ReasonReact.string(response##user##name)} </div>
              }
          }
-    </GetPokemonQuery>;
+    </GetUserNameQuery>;
   },
 };
 ```
@@ -118,44 +119,43 @@ let make = _children => {
 
 **MyMutation.re**
 ```reason
-module AddPokemon = [%graphql
+module AddUser = [%graphql
   {|
-  mutation addPokemon($name: String!) {
-      addPokemon(name: $name) {
+  mutation addUser($name: String!) {
+      addUser(name: $name) {
+          id
           name
       }
   }
 |}
 ];
 
-module AddPokemonMutation = ReasonApollo.CreateMutation(AddPokemon);
+module AddUserMutation = ReasonApollo.CreateMutation(AddUser);
 
 let make = _children => {
   /* ... */,
   render: _ =>
-    <AddPokemonMutation>
+    <AddUserMutation>
       ...{
-           (mutation /* Mutation to call */, _) => {
-             /* Result of your mutation */
-
-             let newPokemon = AddPokemon.make(~name="Bob", ());
+           (mutation /* Mutation to call */, _ /* Result of your mutation */) => {
+             let addNewUserQuery = AddUser.make(~name="Bob", ());
              <div>
                <button
                  onClick={
                    _mouseEvent =>
                      mutation(
-                       ~variables=newPokemon##variables,
-                       ~refetchQueries=[|"getAllPokemons"|],
+                       ~variables=addNewUserQuery##variables,
+                       ~refetchQueries=[|"getAllUsers"|],
                        (),
                      )
                      |> ignore
                  }>
-                 {ReasonReact.string("Add Pokemon")}
+                 {ReasonReact.string("Add User")}
                </button>
              </div>;
            }
          }
-    </AddPokemonMutation>,
+    </AddUserMutation>,
 };
 ```
 
@@ -163,27 +163,21 @@ let make = _children => {
 
 **MySubscription.re**
 ```reason
-module NewNotification = [%graphql {|
-subscription messageAdded {
-  messageAdded {
+module UserAdded = [%graphql {|
+subscription userAdded {
+  userAdded {
     id
-    text
-    author {
-      id
-      name
-    }
+    name
   }
 }
 |}];
 
-module NewNotificationSub = ReasonApollo.CreateSubscription(NewNotification);
-
-let component = ReasonReact.statelessComponent("NewMessageNotification");
+module UserAddedSubscription = ReasonApollo.CreateSubscription(UserAdded);
 
 let make = _children => {
   ...component,
   render: _self => 
-    <NewNotificationSub>
+    <UserAddedSubscription>
       ...{
         ({result}) => {
           switch result {
@@ -197,7 +191,7 @@ let make = _children => {
           }
         }
       }
-    </NewNotificationSub>
+    </UserAddedSubscription>
 };
 ```
 
