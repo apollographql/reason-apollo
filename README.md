@@ -118,7 +118,7 @@ let make = _children => {
                 response##user
                 -> Belt.Option.flatMap(user => user##device)
                 -> Belt.Option.flatMap(device => device##brand)
-                -> Belt.Option.map(brand => brand##name)
+                -> Belt.Option.mapWithDefault("", brand => brand##name)
                } </div>
              }
          }
@@ -254,7 +254,7 @@ open Belt.Option;
 let deviceName = response##user
 -> flatMap(user => user##device)
 -> flatMap(device => device##brand)
--> map(brand => brand##name)
+-> mapWithDefault("", brand => brand##name)
 ```
 
 2. Use `@bsRecord`
