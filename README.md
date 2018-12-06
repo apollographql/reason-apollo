@@ -171,71 +171,94 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 ## Tips and Tricks
 
-### Use `get_in_ppx` to access deeply nested optional objects
-`npm install get_in_ppx`
-and in `bsconfig.json`
-`"ppx-flags": ["get_in_ppx/ppx"]`
+### access deeply nested optional objects
 
-With this ppx, instead of writing
+If for this query 
+```graphql
+query {
+  user {
+    device {
+      brand {
+        name
+      }
+    }
+  }
+}
+```
+you end up with that kind of code:
 ```reason
-let userName = switch response {
-  | None => None
-  | Some(response) => switch response.user {
-    | None => None
-    | Some(user) => switch user.name {
-      | None => None
-      | Some(name) => Some(name)
+let deviceName = switch (response##user) {
+  | None => ""
+  | Some(user) => switch (user##device) {
+    | None => ""
+    | Some(device) => switch (device##brand) {
+      | None => ""
+      | Some(brand) => brand##name
     }
   }
 };
 ```
-you can write
+1. Use `Belt`
+
 ```reason
-let userName = response#??user#?name;
+open Belt.Option;
+
+let deviceName = response##user
+|> map(user => user##device)
+|> map(device => device##brand)
+|> mapWithDefault(brand => brand##name, "")
 ```
 
-There's a [blogpost](https://jaredforsyth.com/posts/optional-attribute-access-in-reason/) from Jared Forsyth (author of this ppx) for more explanation.
+2. Use `@bsRecord`
 
-### Use `@bsRecord` on response object
-
-The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
+The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching, but you need to defined the record by yourself.
 
 ```reason
-switch response##object {
-| Some(object) => 
-  switch object##nestedValue {
-  | Some(nestedValue) => nestedValue
-  | None => ""
-}
-| None => ""
-}
-```
+type brand = {
+  name: string
+};
 
-Kind of funky, huh? Let's modify the response and convert it to a reason record.
+type device = {
+  brand: option(brand)
+};
 
-```reason
-type object = {
-  nestedValue: option(string)
-}
+type user = {
+  device: option(device)
+};
 
+type response = user;
 
-module GetObject = [%graphql {|
-  object @bsRecord {
-    nestedValue
+query {
+  user @bsRecord {
+    device @bsRecord {
+      brand @bsRecord {
+        name
+      }
+    }
   }
- |}
-];
+}
 ```
 
 This time we can pattern match more precisely.
 
 ```reason
-switch response##object {
-| Some({ nestedValue: Some(value) }) => value
-| Some({ nestedValue: None }) => ""
-| None => ""
+let deviceName = switch response##user {
+| Some({ device: Some({brand: { name }}) }) => name
+| _ => ""
 }
 ```
+
+3. Use `get_in_ppx` 
+
+`npm install get_in_ppx`  
+and in `bsconfig.json`  
+`"ppx-flags": ["get_in_ppx/ppx"]`  
+you can write  
+```reason
+let deviceName = response##user#??device#??brand#?name;
+```
+
+There's a [blogpost](https://jaredforsyth.com/posts/optional-attribute-access-in-reason/) from Jared Forsyth (author of this ppx) for more explanation.
 
 ### Use an alias for irregular field names
 
