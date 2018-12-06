@@ -116,9 +116,9 @@ let make = _children => {
                <div> {
                 /* Handles a deeply nested optional response */
                 response##user
-                |> Belt.Option.map(user => user##device)
-                |> Belt.Option.map(device => device##brand)
-                |> Belt.Option.mapWithDefault(brand => brand##name, "")
+                -> Belt.Option.flatMap(user => user##device)
+                -> Belt.Option.flatMap(device => device##brand)
+                -> Belt.Option.map(brand => brand##name)
                } </div>
              }
          }
@@ -252,9 +252,9 @@ let deviceName = switch (response##user) {
 open Belt.Option;
 
 let deviceName = response##user
-|> map(user => user##device)
-|> map(device => device##brand)
-|> mapWithDefault(brand => brand##name, "")
+-> flatMap(user => user##device)
+-> flatMap(device => device##brand)
+-> map(brand => brand##name)
 ```
 
 2. Use `@bsRecord`
