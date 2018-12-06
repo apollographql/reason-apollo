@@ -87,7 +87,13 @@ module GetUserName = [%graphql
   query getUserName($id: ID!){
       user(id: $ID) {
           id
-          name
+          device {
+            id
+            brand {
+              id
+              name
+            }
+          }
       }
   }
 |}
@@ -107,7 +113,13 @@ let make = _children => {
              | Error(error) =>
                <div> {ReasonReact.string(error##message)} </div>
              | Data(response) =>
-               <div> {ReasonReact.string(response##user##name)} </div>
+               <div> {
+                /* Handles a deeply nested optional response */
+                response##user
+                |> Belt.Option.map(user => user##device)
+                |> Belt.Option.map(device => device##brand)
+                |> Belt.Option.mapWithDefault(brand => brand##name, "")
+               } </div>
              }
          }
     </GetUserNameQuery>;
