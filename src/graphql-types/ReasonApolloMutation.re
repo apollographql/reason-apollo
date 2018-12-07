@@ -34,6 +34,7 @@ module MutationFactory = (Config: Config) => {
   type apolloMutation =
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?, unit) =>
     Js.Promise.t(executionResponse(Config.t));
+
   [@bs.obj]
   external makeMutateParams:
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?) => _ =

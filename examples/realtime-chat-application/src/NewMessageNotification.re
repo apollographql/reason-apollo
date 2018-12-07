@@ -27,8 +27,8 @@ let make = _children => {
             | Error(_error) => <div/>
             | Data(_response) =>
              <audio autoPlay=true>
-              <source src="notification.ogg" _type="audio/ogg" />
-              <source src="notification.mp3" _type="audio/mpeg" />
+              <source src="notification.ogg" type_="audio/ogg" />
+              <source src="notification.mp3" type_="audio/mpeg" />
             </audio>
           }
         }

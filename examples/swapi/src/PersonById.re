@@ -32,7 +32,7 @@ let make = _children => {
         <input
           autoFocus=true
           placeholder="Get this id"
-          _type="text"
+          type_="text"
           value=self.state.id
           onChange=(onIdInputChange(self))
           required=true
