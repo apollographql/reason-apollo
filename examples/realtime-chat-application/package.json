@@ -3,23 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "apollo-cache-inmemory": "^1.2.10",
-    "apollo-client": "^2.4.2",
-    "apollo-link": "^1.2.3",
-    "apollo-link-context": "^1.0.9",
-    "apollo-link-error": "^1.1.1",
-    "apollo-link-http": "^1.5.5",
-    "apollo-link-ws": "^1.0.9",
-    "apollo-utilities": "^1.0.21",
     "bs-css": "^7.2.0",
-    "graphql": "^14.0.2",
-    "graphql-tag": "^2.10.0",
     "react": "^16.5.2",
-    "react-apollo": "^2.2.4",
     "react-dom": "^16.5.2",
-    "reason-apollo": "0.14.1",
-    "reason-scripts": "0.9.0",
-    "subscriptions-transport-ws": "^0.9.15"
+    "reason-apollo": "../../",
+    "reason-scripts": "0.9.0"
   },
   "scripts": {
     "start": "bsb -make-world -w",
