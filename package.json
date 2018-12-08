@@ -8,12 +8,6 @@
     "type": "git",
     "url": "https://github.com/apollographql/reason-apollo"
   },
-  "scripts": {
-    "build": "bsb -make-world",
-    "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "peerDependencies": {
     "apollo-cache-inmemory": "^1.2.1",
     "apollo-client": "^2.3.1",
@@ -45,8 +39,28 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "graphql_ppx": "^0.2.4",
+    "husky": "^1.2.0",
+    "lint-staged": "^8.1.0",
     "react-apollo": "^2.1.6",
     "reason-react": "^0.5.3"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "lint-staged": {
+    "*.re": [
+      "bsrefmt --in-place",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "lint-staged": "lint-staged",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
