@@ -33,14 +33,28 @@ module MutationFactory = (Config: Config) => {
   };
   type apolloMutation =
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?, unit) =>
-    Js.Promise.t(renderPropObjJS);
+    Js.Promise.t(executionResponse(Config.t));
+
   [@bs.obj]
   external makeMutateParams:
     (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?) => _ =
     "";
+
+  let convertExecutionResultToReason = (executionResult: executionResult) =>
+    switch (
+      executionResult##data |> ReasonApolloUtils.getNonEmptyObj,
+      executionResult##errors |> Js.Nullable.toOption,
+    ) {
+    | (Some(data), _) => Data(Config.parse(data))
+    | (_, Some(errors)) => Errors(errors)
+    | (None, None) => EmptyResponse
+    };
   let apolloMutationFactory =
       (~jsMutation, ~variables=?, ~refetchQueries=?, ()) =>
-    jsMutation(makeMutateParams(~variables?, ~refetchQueries?));
+    jsMutation(makeMutateParams(~variables?, ~refetchQueries?))
+    |> Js.Promise.(
+         then_(response => resolve(convertExecutionResultToReason(response)))
+       );
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
