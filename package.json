@@ -47,7 +47,7 @@
   "dependencies": {},
   "lint-staged": {
     "*.re": [
-      "refmt --in-place",
+      "bsrefmt --in-place",
       "git add"
     ]
   },
