@@ -13,9 +13,6 @@ yarn add reason-apollo
 
 # Add graphql_ppx
 yarn add --dev graphql_ppx
-
-# Add JS dependencies
-yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag apollo-link-ws apollo-upload-client subscriptions-transport-ws
 ```
 
 #### bsconfig
