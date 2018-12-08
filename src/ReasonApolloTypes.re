@@ -48,7 +48,7 @@ type subscription;
 
 type errorResponse = {
   . 
-  "graphqlError": Js.Nullable.t(Js.Array.t(graphqlError)),
+  "graphQLErrors": Js.Nullable.t(Js.Array.t(graphqlError)),
   "networkError": Js.Nullable.t(networkError),
   "response": Js.Nullable.t(executionResult),
   "operation": operation ,

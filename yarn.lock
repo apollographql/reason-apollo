@@ -71,6 +71,12 @@ apollo-link-http-common@^0.2.4:
   dependencies:
     apollo-link "^1.2.2"
 
+apollo-link-http-common@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/apollo-link-http-common/-/apollo-link-http-common-0.2.5.tgz#d094beb7971523203359bf830bfbfa7b4e7c30ed"
+  dependencies:
+    apollo-link "^1.2.3"
+
 apollo-link-http@^1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/apollo-link-http/-/apollo-link-http-1.5.4.tgz#b80b7b4b342c655b6a5614624b076a36be368f43"
@@ -91,6 +97,21 @@ apollo-link@^1.0.0, apollo-link@^1.2.2:
     "@types/graphql" "0.12.6"
     apollo-utilities "^1.0.0"
     zen-observable-ts "^0.8.9"
+
+apollo-link@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.3.tgz#9bd8d5fe1d88d31dc91dae9ecc22474d451fb70d"
+  dependencies:
+    apollo-utilities "^1.0.0"
+    zen-observable-ts "^0.8.10"
+
+apollo-upload-client@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-9.0.0.tgz#94edaf116b70491f0a2d872a1746da7b788f9c0f"
+  dependencies:
+    apollo-link "^1.2.3"
+    apollo-link-http-common "^0.2.5"
+    extract-files "^4.0.0"
 
 apollo-utilities@1.0.20, apollo-utilities@^1.0.0, apollo-utilities@^1.0.20:
   version "1.0.20"
@@ -131,8 +152,8 @@ bcrypt-pbkdf@^1.0.0:
     tweetnacl "^0.14.3"
 
 bs-platform@^4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-4.0.5.tgz#d4fd9bbdd11765af5b75110a5655065ece05eed6"
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-4.0.7.tgz#1a0bbf0fef439fef5f1a88ba60d5ac8a6d73570c"
 
 camelcase@^4.1.0:
   version "4.1.0"
@@ -222,6 +243,10 @@ execa@^0.7.0:
 extend@~3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
+
+extract-files@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-4.0.0.tgz#a5bbcac16d753a7b7c74fbda1d4992424bfa5fa4"
 
 extsprintf@1.3.0:
   version "1.3.0"
@@ -793,6 +818,12 @@ yargs@^11.0.0:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
+
+zen-observable-ts@^0.8.10:
+  version "0.8.10"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.10.tgz#18e2ce1c89fe026e9621fd83cc05168228fce829"
+  dependencies:
+    zen-observable "^0.8.0"
 
 zen-observable-ts@^0.8.9:
   version "0.8.9"
