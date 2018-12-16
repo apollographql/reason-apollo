@@ -10,7 +10,7 @@ type renderPropObjJS = {
   "variables": Js.Null_undefined.t(Js.Json.t),
 };
 
-module MutationFactory = (Config: Config) => {
+module Make = (Config: Config) => {
   external cast:
     string =>
     {

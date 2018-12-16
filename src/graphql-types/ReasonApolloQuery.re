@@ -49,7 +49,7 @@ type renderPropObjJS = {
   subscribeToMore: (subscribeToMoreOptions, unit) => unit,
 };
 
-module Get = (Config: ReasonApolloTypes.Config) => {
+module Make = (Config: ReasonApolloTypes.Config) => {
   [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
   [@bs.module "react-apollo"]
   external queryComponent: ReasonReact.reactClass = "Query";
@@ -119,23 +119,25 @@ module Get = (Config: ReasonApolloTypes.Config) => {
            data |> apolloDataToVariant |> Js.Promise.resolve
          ),
     fetchMore: (~variables=?, ~updateQuery, ()) =>
-      apolloData
-      ->(fetchMoreGet(fetchMoreOptions(~variables?, ~updateQuery, ()))),
+      apolloData->(
+                    fetchMoreGet(
+                      fetchMoreOptions(~variables?, ~updateQuery, ()),
+                    )
+                  ),
     networkStatus: apolloData->networkStatusGet->Js.Nullable.toOption,
     subscribeToMore:
       (~document, ~variables=?, ~updateQuery=?, ~onError=?, ()) =>
-      apolloData
-      ->(
-          subscribeToMoreGet(
-            subscribeToMoreOptions(
-              ~document,
-              ~variables?,
-              ~updateQuery?,
-              ~onError?,
-              (),
-            ),
-          )
-        ),
+      apolloData->(
+                    subscribeToMoreGet(
+                      subscribeToMoreOptions(
+                        ~document,
+                        ~variables?,
+                        ~updateQuery?,
+                        ~onError?,
+                        (),
+                      ),
+                    )
+                  ),
   };
 
   let make =

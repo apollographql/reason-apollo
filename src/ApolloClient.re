@@ -14,8 +14,12 @@ type mutationObj = {
 
 type generatedApolloClient = {
   .
-  "query": [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
-  "mutate": [@bs.meth] (mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)),
+  "query":
+    [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
+  "mutate":
+    [@bs.meth] (
+      mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)
+    ),
   "resetStore": [@bs.meth] (unit => unit),
 };
 
@@ -42,10 +46,10 @@ type uploadLinkOptions = {
 };
 
 [@bs.module "apollo-client"] [@bs.new]
-external createApolloClientJS : 'a => generatedApolloClient = "ApolloClient";
+external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
 
 [@bs.obj]
-external apolloClientObjectParam :
+external apolloClientObjectParam:
   (
     ~link: apolloLink,
     ~cache: apolloCache,
@@ -67,8 +71,7 @@ module ReadQuery = (Config: ReasonApolloTypes.Config) => {
   type response = option(Config.t);
   [@bs.send]
   external readQuery:
-    (ApolloClient.generatedApolloClient, readQueryOptions) =>
-    Js.Nullable.t(Js.Json.t) =
+    (generatedApolloClient, readQueryOptions) => Js.Nullable.t(Js.Json.t) =
     "";
 
   let graphqlQueryAST = gql(. Config.query);
