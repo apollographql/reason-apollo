@@ -13,9 +13,6 @@ yarn add reason-apollo
 
 # Add graphql_ppx
 yarn add --dev graphql_ppx
-
-# Add JS dependencies
-yarn add react-apollo apollo-client apollo-cache-inmemory apollo-link apollo-link-context apollo-link-error apollo-link-http graphql graphql-tag apollo-link-ws apollo-upload-client subscriptions-transport-ws
 ```
 
 #### bsconfig
@@ -79,26 +76,33 @@ ReactDOMRe.renderToElementWithId(
 
 ## Query
 
-**MyComponent.re**
+**MyQuery.re**
 ```reason
 /* Create a GraphQL Query by using the graphql_ppx */
-module GetPokemon = [%graphql
+module GetUserName = [%graphql
   {|
-  query getPokemon($name: String!){
-      pokemon(name: $name) {
-          name
+  query getUserName($id: ID!){
+      user(id: $ID) {
+          id
+          device {
+            id
+            brand {
+              id
+              name
+            }
+          }
       }
   }
 |}
 ];
 
-module GetPokemonQuery = ReasonApollo.CreateQuery(GetPokemon);
+module GetUserNameQuery = ReasonApollo.CreateQuery(GetUserName);
 
 let make = _children => {
   /* ... */,
   render: _ => {
-    let pokemonQuery = GetPokemon.make(~name="Pikachu", ());
-    <GetPokemonQuery variables=pokemonQuery##variables>
+    let userNameQuery = GetUserName.make(~id="42", ());
+    <GetUserNameQuery variables=userNameQuery##variables>
       ...{
            ({result}) =>
              switch (result) {
@@ -106,10 +110,16 @@ let make = _children => {
              | Error(error) =>
                <div> {ReasonReact.string(error##message)} </div>
              | Data(response) =>
-               <div> {ReasonReact.string(response##pokemon##name)} </div>
+               <div> {
+                /* Handles a deeply nested optional response */
+                response##user
+                -> Belt.Option.flatMap(user => user##device)
+                -> Belt.Option.flatMap(device => device##brand)
+                -> Belt.Option.mapWithDefault("", brand => brand##name)
+               } </div>
              }
          }
-    </GetPokemonQuery>;
+    </GetUserNameQuery>;
   },
 };
 ```
@@ -118,44 +128,79 @@ let make = _children => {
 
 **MyMutation.re**
 ```reason
-module AddPokemon = [%graphql
+module AddUser = [%graphql
   {|
-  mutation addPokemon($name: String!) {
-      addPokemon(name: $name) {
+  mutation addUser($name: String!) {
+      addUser(name: $name) {
+          id
           name
       }
   }
 |}
 ];
 
-module AddPokemonMutation = ReasonApollo.CreateMutation(AddPokemon);
+module AddUserMutation = ReasonApollo.CreateMutation(AddUser);
 
 let make = _children => {
   /* ... */,
   render: _ =>
-    <AddPokemonMutation>
+    <AddUserMutation>
       ...{
-           (mutation /* Mutation to call */, _) => {
-             /* Result of your mutation */
-
-             let newPokemon = AddPokemon.make(~name="Bob", ());
+           (mutation /* Mutation to call */, _ /* Result of your mutation */) => {
+             let addNewUserQuery = AddUser.make(~name="Bob", ());
              <div>
                <button
                  onClick={
                    _mouseEvent =>
                      mutation(
-                       ~variables=newPokemon##variables,
-                       ~refetchQueries=[|"getAllPokemons"|],
+                       ~variables=addNewUserQuery##variables,
+                       ~refetchQueries=[|"getAllUsers"|],
                        (),
                      )
                      |> ignore
                  }>
-                 {ReasonReact.string("Add Pokemon")}
+                 {ReasonReact.string("Add User")}
                </button>
              </div>;
            }
          }
-    </AddPokemonMutation>,
+    </AddUserMutation>,
+};
+```
+
+## Subscription
+
+**MySubscription.re**
+```reason
+module UserAdded = [%graphql {|
+subscription userAdded {
+  userAdded {
+    id
+    name
+  }
+}
+|}];
+
+module UserAddedSubscription = ReasonApollo.CreateSubscription(UserAdded);
+
+let make = _children => {
+  ...component,
+  render: _self => 
+    <UserAddedSubscription>
+      ...{
+        ({result}) => {
+          switch result {
+            | Loading => <div> {ReasonReact.string("Loading")} </div>
+            | Error(error) => <div> {ReasonReact.string(error##message)} </div>
+            | Data(_response) =>
+             <audio autoPlay=true>
+              <source src="notification.ogg" type_="audio/ogg" />
+              <source src="notification.mp3" type_="audio/mpeg" />
+            </audio>
+          }
+        }
+      }
+    </UserAddedSubscription>
 };
 ```
 
@@ -171,47 +216,94 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 ## Tips and Tricks
 
-### Use `@bsRecord` on response object
+### access deeply nested optional objects
 
-The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching. For example, let's say I have a nested object of options. I would have to do something like this:
-
-```reason
-switch response##object {
-| Some(object) => {
-  switch object##nestedValue {
-  | Some(nestedValue) => nestedValue
-  | None => ""
+If for this query 
+```graphql
+query {
+  user {
+    device {
+      brand {
+        name
+      }
+    }
   }
-}
-| None => ""
 }
 ```
-
-Kind of funky, huh? Let's modify the response and convert it to a reason record.
+you end up with that kind of code:
+```reason
+let deviceName = switch (response##user) {
+  | None => ""
+  | Some(user) => switch (user##device) {
+    | None => ""
+    | Some(device) => switch (device##brand) {
+      | None => ""
+      | Some(brand) => brand##name
+    }
+  }
+};
+```
+1. Use `Belt`
 
 ```reason
-type object = {
-  nestedValue: option(string)
-}
+open Belt.Option;
 
+let deviceName = response##user
+-> flatMap(user => user##device)
+-> flatMap(device => device##brand)
+-> mapWithDefault("", brand => brand##name)
+```
 
-module GetObject = [%graphql {|
-  object @bsRecord {
-    nestedValue
+2. Use `@bsRecord`
+
+The `@bsRecord` modifier is an [extension](https://github.com/mhallin/graphql_ppx#record-conversion) of the graphql syntax for BuckleScipt/ReasonML. It allows you to convert a reason object to a reason record and reap the benefits of pattern matching, but you need to defined the record by yourself.
+
+```reason
+type brand = {
+  name: string
+};
+
+type device = {
+  brand: option(brand)
+};
+
+type user = {
+  device: option(device)
+};
+
+type response = user;
+
+query {
+  user @bsRecord {
+    device @bsRecord {
+      brand @bsRecord {
+        name
+      }
+    }
   }
- |}
-];
+}
 ```
 
 This time we can pattern match more precisely.
 
 ```reason
-switch response##object {
-| Some({ nestedValue: Some(value) }) => value
-| Some({ nestedValue: None }) => ""
-| None => ""
+let deviceName = switch response##user {
+| Some({ device: Some({brand: { name }}) }) => name
+| _ => ""
 }
 ```
+
+3. Use `get_in_ppx` 
+
+`npm install get_in_ppx`  
+and in `bsconfig.json`  
+`"ppx-flags": ["get_in_ppx/ppx"]`  
+you can write  
+```reason
+let deviceName = response##user#??device#??brand#?name;
+```
+
+There's a [blogpost](https://jaredforsyth.com/posts/optional-attribute-access-in-reason/) from Jared Forsyth (author of this ppx) for more explanation.
 
 ### Use an alias for irregular field names
 

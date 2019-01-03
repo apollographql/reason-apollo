@@ -43,13 +43,13 @@ type renderPropObjJS = {
   data: Js.Nullable.t(Js.Json.t),
   error: Js.Nullable.t(apolloError),
   refetch: Js.Null_undefined.t(Js.Json.t) => Js.Promise.t(renderPropObjJS),
-  networkStatus: int,
+  networkStatus: Js.Nullable.t(int),
   variables: Js.Null_undefined.t(Js.Json.t),
   fetchMore: fetchMoreOptions => Js.Promise.t(unit),
   subscribeToMore: (subscribeToMoreOptions, unit) => unit,
 };
 
-module Get = (Config: ReasonApolloTypes.Config) => {
+module Make = (Config: ReasonApolloTypes.Config) => {
   [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
   [@bs.module "react-apollo"]
   external queryComponent: ReasonReact.reactClass = "Query";
@@ -64,7 +64,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     fetchMore:
       (~variables: Js.Json.t=?, ~updateQuery: updateQueryT, unit) =>
       Js.Promise.t(unit),
-    networkStatus: int,
+    networkStatus: option(int),
     subscribeToMore:
       (
         ~document: queryString,
@@ -119,23 +119,25 @@ module Get = (Config: ReasonApolloTypes.Config) => {
            data |> apolloDataToVariant |> Js.Promise.resolve
          ),
     fetchMore: (~variables=?, ~updateQuery, ()) =>
-      apolloData
-      ->(fetchMoreGet(fetchMoreOptions(~variables?, ~updateQuery, ()))),
-    networkStatus: apolloData->networkStatusGet,
+      apolloData->(
+                    fetchMoreGet(
+                      fetchMoreOptions(~variables?, ~updateQuery, ()),
+                    )
+                  ),
+    networkStatus: apolloData->networkStatusGet->Js.Nullable.toOption,
     subscribeToMore:
       (~document, ~variables=?, ~updateQuery=?, ~onError=?, ()) =>
-      apolloData
-      ->(
-          subscribeToMoreGet(
-            subscribeToMoreOptions(
-              ~document,
-              ~variables?,
-              ~updateQuery?,
-              ~onError?,
-              (),
-            ),
-          )
-        ),
+      apolloData->(
+                    subscribeToMoreGet(
+                      subscribeToMoreOptions(
+                        ~document,
+                        ~variables?,
+                        ~updateQuery?,
+                        ~onError?,
+                        (),
+                      ),
+                    )
+                  ),
   };
 
   let make =

@@ -43,7 +43,7 @@ type operation = {. "query": queryString};
 type subscription;
 
 type errorResponse = {
-  . 
+  .
   "graphQLErrors": Js.Nullable.t(Js.Array.t(graphqlError)),
   "networkError": Js.Nullable.t(networkError),
   "response": Js.Nullable.t(executionResult),
@@ -86,6 +86,10 @@ type subscriptionResponse('a) =
   | Error(apolloError)
   | Data('a);
 
+type executionResponse('a) =
+  | Errors(array(graphqlError))
+  | EmptyResponse
+  | Data('a);
 /*
  apollo link ws
  */
