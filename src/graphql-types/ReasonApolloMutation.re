@@ -32,12 +32,22 @@ module Make = (Config: Config) => {
     networkStatus: option(int),
   };
   type apolloMutation =
-    (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?, unit) =>
+    (
+      ~variables: Js.Json.t=?,
+      ~refetchQueries: array(string)=?,
+      ~optimisticResponse: Config.t=?,
+      unit
+    ) =>
     Js.Promise.t(executionResponse(Config.t));
 
   [@bs.obj]
   external makeMutateParams:
-    (~variables: Js.Json.t=?, ~refetchQueries: array(string)=?) => _ =
+    (
+      ~variables: Js.Json.t=?,
+      ~refetchQueries: array(string)=?,
+      ~optimisticResponse: Config.t=?
+    ) =>
+    _ =
     "";
 
   let convertExecutionResultToReason = (executionResult: executionResult) =>
@@ -50,8 +60,16 @@ module Make = (Config: Config) => {
     | (None, None) => EmptyResponse
     };
   let apolloMutationFactory =
-      (~jsMutation, ~variables=?, ~refetchQueries=?, ()) =>
-    jsMutation(makeMutateParams(~variables?, ~refetchQueries?))
+      (
+        ~jsMutation,
+        ~variables=?,
+        ~refetchQueries=?,
+        ~optimisticResponse=?,
+        (),
+      ) =>
+    jsMutation(
+      makeMutateParams(~variables?, ~refetchQueries?, ~optimisticResponse?),
+    )
     |> Js.Promise.(
          then_(response => resolve(convertExecutionResultToReason(response)))
        );
