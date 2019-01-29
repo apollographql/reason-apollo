@@ -22,10 +22,13 @@ type apolloCache;
 
 type networkError = {. "statusCode": int};
 
+type apolloErrorExtensions = {. "code": Js.Nullable.t(string)};
 
 type graphqlError = {
   .
   "message": string,
+  "name": Js.Nullable.t(string),
+  "extensions": Js.Nullable.t(apolloErrorExtensions),
   "locations": Js.Nullable.t(array(string)),
   "path": Js.Nullable.t(array(string)),
   "nodes": Js.Nullable.t(array(string)),
@@ -60,7 +63,7 @@ module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 type apolloError = {
   .
   "message": string,
-  "graphQLErrors": Js.Nullable.t(array(string)),
+  "graphQLErrors": Js.Nullable.t(array(graphqlError)),
   "networkError": Js.Nullable.t(string)
 };
 
