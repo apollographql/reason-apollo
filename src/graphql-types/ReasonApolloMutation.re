@@ -36,6 +36,7 @@ module Make = (Config: Config) => {
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
       ~optimisticResponse: Config.t=?,
+      ~update: (ApolloClient.generatedApolloClient, Js.Json.t) => unit=?,
       unit
     ) =>
     Js.Promise.t(executionResponse(Config.t));
@@ -45,7 +46,8 @@ module Make = (Config: Config) => {
     (
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
-      ~optimisticResponse: Config.t=?
+      ~optimisticResponse: Config.t=?,
+      ~update: (ApolloClient.generatedApolloClient, Js.Json.t) => unit=?
     ) =>
     _ =
     "";
@@ -65,10 +67,16 @@ module Make = (Config: Config) => {
         ~variables=?,
         ~refetchQueries=?,
         ~optimisticResponse=?,
+        ~update=?,
         (),
       ) =>
     jsMutation(
-      makeMutateParams(~variables?, ~refetchQueries?, ~optimisticResponse?),
+      makeMutateParams(
+        ~variables?,
+        ~refetchQueries?,
+        ~optimisticResponse?,
+        ~update?,
+      ),
     )
     |> Js.Promise.(
          then_(response => resolve(convertExecutionResultToReason(response)))
