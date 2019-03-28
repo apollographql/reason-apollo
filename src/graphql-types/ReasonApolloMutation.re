@@ -111,7 +111,7 @@ module Make = (Config: Config) => {
   let make =
       (
         ~variables: option(Js.Json.t)=?,
-        ~onError: option(unit => unit)=?,
+        ~onError: option(apolloError => unit)=?,
         ~onCompleted: option(unit => unit)=?,
         children: (apolloMutation, renderPropObj) => ReasonReact.reactElement,
       ) =>
