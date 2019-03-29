@@ -1,14 +1,5 @@
 open ReasonApolloTypes;
-
-type renderPropObjJS = {
-  .
-  "loading": bool,
-  "called": bool,
-  "data": Js.Nullable.t(Js.Json.t),
-  "error": Js.Nullable.t(apolloError),
-  "networkStatus": Js.Nullable.t(int),
-  "variables": Js.Null_undefined.t(Js.Json.t),
-};
+open ReasonApolloMutationTypes;
 
 module Make = (Config: Config) => {
   external cast:
