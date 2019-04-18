@@ -16,11 +16,8 @@ module GetPerson = [%graphql
 
 module GetPersonQuery = ReasonApollo.CreateQuery(GetPerson);
 
-let component = ReasonReact.statelessComponent("Query");
-
+[@react.component]
 let make = _children => {
-  ...component,
-  render: _self => {
     /* pick a valid id from list returned from GetPersons query here
        "https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn" and pass it to ~id variable
        */
@@ -46,5 +43,4 @@ let make = _children => {
              </div>
          )
     </GetPersonQuery>;
-  },
 };

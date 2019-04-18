@@ -1,4 +1,3 @@
-let component = ReasonReact.statelessComponent("SubscribeToPersons");
 
 module Persons = [%graphql
 {|
@@ -15,9 +14,8 @@ module Persons = [%graphql
 
 module PersonsSubscription = ReasonApollo.CreateSubscription(Persons);
 
-let make = _children => {
-  ...component,
-  render: _self => 
+[@react.component]
+let make = () => {
   <div>
     <h2> {"Person Subscription" |> ReasonReact.string} </h2>
    <PersonsSubscription>

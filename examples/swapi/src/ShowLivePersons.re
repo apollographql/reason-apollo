@@ -1,17 +1,13 @@
 let ste = ReasonReact.string;
 
-let component = ReasonReact.statelessComponent("ShowLivePersons");
-
+[@react.component]
 let make = (
   ~persons,
   ~getLiveData,
-  _children
 ) => {
-  ...component,
-  didMount: _self => {
-    getLiveData();
-  },
-  render: _self => 
+    React.useEffect(() => {
+      getLiveData();
+    }, [])
     persons 
     |> Array.mapi((index, person) =>
       <div key=(index |> string_of_int)>

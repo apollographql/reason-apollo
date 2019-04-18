@@ -1,31 +1,12 @@
 let ste = ReasonReact.string;
 
-type action =
-  | ChangeId(string);
+let onIdInputChange = (setId, e) => setId(
+  ReactDOMRe.domElementToObj(ReactEventRe.Form.target(e))##value,
+);
 
-type state = {id: string};
-
-let reducer = (action, state) =>
-  switch (action) {
-  | ChangeId(id) => ReasonReact.Update({...state, id})
-  };
-
-let initialState = () => {id: ""};
-
-let onIdInputChange = ({ReasonReact.send}, e) =>
-  send(
-    ChangeId(
-      ReactDOMRe.domElementToObj(ReactEventRe.Form.target(e))##value,
-    ),
-  );
-
-let component = ReasonReact.reducerComponent("PersonById");
-
+[@react.component]
 let make = _children => {
-  ...component,
-  reducer,
-  initialState,
-  render: self =>
+    let (id, setId) = useState("");
     <div>
       <form>
         <h1> ("Delete Selected Person By Id" |> ste) </h1>
@@ -34,11 +15,11 @@ let make = _children => {
           autoFocus=true
           placeholder="Delete this id"
           type_="text"
-          value=self.state.id
-          onChange=(onIdInputChange(self))
+          value=id
+          onChange=(onIdInputChange(setId))
           required=true
         />
       </form>
-      <DeletePersonButton id=self.state.id />
-    </div>,
+      <DeletePersonButton id />
+    </div>
 };

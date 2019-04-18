@@ -1,31 +1,13 @@
 let ste = ReasonReact.string;
 
-type action =
-  | ChangeId(string);
+let onIdInputChange = (setId, e) => setId(
+    ReactDOMRe.domElementToObj(ReactEventRe.Form.target(e))##value
+);
 
-type state = {id: string};
 
-let reducer = (action, state) =>
-  switch (action) {
-  | ChangeId(id) => ReasonReact.Update({...state, id})
-  };
-
-let initialState = () => {id: ""};
-
-let onIdInputChange = ({ReasonReact.send}, e) =>
-  send(
-    ChangeId(
-      ReactDOMRe.domElementToObj(ReactEventRe.Form.target(e))##value,
-    ),
-  );
-
-let component = ReasonReact.reducerComponent("PersonById");
-
-let make = _children => {
-  ...component,
-  reducer,
-  initialState,
-  render: self =>
+[@react.component]
+let make = () => {
+    let (id, setId) = React.useState(() => "");
     <div>
       <form>
         <h1> ("Get Person By Id" |> ste) </h1>
@@ -33,11 +15,11 @@ let make = _children => {
           autoFocus=true
           placeholder="Get this id"
           type_="text"
-          value=self.state.id
-          onChange=(onIdInputChange(self))
+          value=id
+          onChange=(onIdInputChange(setId))
           required=true
         />
-        <GetPersonById id=self.state.id />
+        <GetPersonById id />
       </form>
-    </div>,
+    </div>
 };

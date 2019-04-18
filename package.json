@@ -20,7 +20,7 @@
   ],
   "author": "Grégoire Van der Auwermeulen <gregoirevandera@gmail.com>",
   "devDependencies": {
-    "bs-platform": "^4.0.7",
+    "bs-platform": "^5.0.3",
     "graphql_ppx": "^0.2.8",
     "husky": "^1.2.0",
     "lint-staged": "^8.1.0",

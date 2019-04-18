@@ -22,7 +22,7 @@
     "reason-react": "^0.5.3"
   },
   "devDependencies": {
-    "bs-platform": "^4.0.6",
+    "bs-platform": "^5.0.3",
     "graphql_ppx": "^0.2.4",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.1.2",

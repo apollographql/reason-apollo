@@ -11,13 +11,11 @@ module AddPerson = [%graphql
 |}
 ];
 
-let component = ReasonReact.statelessComponent("AddPerson");
 
 module AddPersonMutation = ReasonApollo.CreateMutation(AddPerson);
 
-let make = _children => {
-  ...component,
-  render: _self => {
+[@react.component]
+let make = () => {
     let addPersonMutation = AddPerson.make(~name="Bob", ~age=24, ());
     <AddPersonMutation>
       ...(
@@ -53,5 +51,4 @@ let make = _children => {
              </div>
          )
     </AddPersonMutation>;
-  },
 };

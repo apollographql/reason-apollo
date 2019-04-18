@@ -453,10 +453,10 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-bs-platform@^4.0.6:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-4.0.8.tgz#d7b1ee9b21efdb549669dff797f578e229bcbe20"
-  integrity sha512-pTsVLNQ/CNuYUYmhlxhQyuJSACFi7v1avhX5qx6TxzAR3jXjMvImz8WdT+zzzJyisY2TTjMvCrJwhefT3Dliqw==
+bs-platform@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-5.0.3.tgz#2b167603ef52574cb9534fabab702f6013715e6c"
+  integrity sha512-GAeypBebeDGTay5kJ3v5Z3Whp1Q4zQ0hAttflVtPG3zps88xDZnVAlS3JGIIBDmJFEMyNtv5947a/IWKvWXcPw==
 
 buffer-from@^1.0.0:
   version "1.0.0"
@@ -3077,7 +3077,7 @@ readdirp@^2.0.0:
     set-immediate-shim "^1.0.1"
 
 reason-apollo@../../:
-  version "0.14.2"
+  version "0.15.2"
   dependencies:
     apollo-cache-inmemory "1.3.11"
     apollo-client "2.4.7"
@@ -3087,6 +3087,7 @@ reason-apollo@../../:
     apollo-link-http "1.5.7"
     apollo-link-ws "1.0.8"
     apollo-upload-client "9.1.0"
+    apollo-utilities "1.0.26"
     graphql "14.0.2"
     graphql-tag "2.10.0"
     react-apollo "2.3.2"

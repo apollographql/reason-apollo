@@ -33,11 +33,8 @@ module NewPerson = [%graphql
 let newPerson = NewPerson.make();
 let newPersonAST = gql(. newPerson##query);
 
-let component = ReasonReact.statelessComponent("Query");
-
-let make = _children => {
-  ...component,
-  render: _self =>
+[@react.component]
+let make = () => {
     <GetAllPersonsQuery>
       ...(
            ({result, subscribeToMore}) =>
@@ -76,5 +73,5 @@ let make = _children => {
                )
              </div>
          )
-    </GetAllPersonsQuery>,
+    </GetAllPersonsQuery>
 };
