@@ -52,11 +52,8 @@ type renderPropObjJS = {
 module Make = (Config: ReasonApolloTypes.Config) => {
   open Js.Nullable;
 
-  [@bs.module] 
-  external gql: ReasonApolloTypes.gql = "graphql-tag";
-  
+  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
 
-  
   type response = queryResponse(Config.t);
 
   type renderPropObj = {
@@ -82,6 +79,7 @@ module Make = (Config: ReasonApolloTypes.Config) => {
   };
 
   let graphqlQueryAST = gql(. Config.query);
+
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
@@ -143,57 +141,80 @@ module Make = (Config: ReasonApolloTypes.Config) => {
                     )
                   ),
   };
-  
-  [@bs.module "react-apollo"][@react.component]
-  external queryComponent: (
-      ~query: option(graphqlQueryAST),
-      ~variables: option(variables),
-      ~pollInterval: option(pollInterval),
-      ~notifyOnNetworkStatusChange: option(notifyOnNetworkStatusChange),
-      ~fetchPolicy: option(fetchPolicy),
-      ~errorPolicy: option(errorPolicy),
-      ~ssr: option(ssr),
-      ~displayName: option(displayName),
-      ~skip: option(skip),
-      ~onCompleted: option(onCompleted),
-      ~onError: option(onError),
-      ~partialRefetch: option(partialRefetch),
-      ~delay: option(delay),
-      ~context: option(context),
-      ~children: renderPropObj => React.element
-    ) = "Query";
 
+  type variables = Js.Json.t;
+  type pollInterval = int;
+  type notifyOnNetworkStatusChange = bool;
+  type fetchPolicy = string;
+  type errorPolicy = string;
+  type ssr = bool;
+  type displayName = string;
+  type skip = bool;
+  type onCompleted = Js.Nullable.t(Js.Json.t) => unit;
+  type onError = apolloError => unit;
+  type partialRefetch = bool;
+  type delay = bool;
+  type context = Js.Json.t;
+  type children = renderPropObj => React.element;
+
+  module Query = {
+    [@bs.module "react-apollo"] [@react.component]
+    external make:
+      (
+        ~query: queryString,
+        ~variables: option(Js.Json.t)=?,
+        ~pollInterval: option(pollInterval)=?,
+        ~notifyOnNetworkStatusChange: option(notifyOnNetworkStatusChange)=?,
+        ~fetchPolicy: option(fetchPolicy)=?,
+        ~errorPolicy: option(errorPolicy)=?,
+        ~ssr: option(ssr)=?,
+        ~displayName: option(displayName)=?,
+        ~skip: option(skip)=?,
+        ~onCompleted: option(onCompleted)=?,
+        ~onError: option(onError)=?,
+        ~partialRefetch: option(partialRefetch)=?,
+        ~delay: option(delay)=?,
+        ~context: option(context)=?,
+        ~children: 'a => React.element
+      ) =>
+      React.element =
+      "Query";
+  };
+
+  [@react.component]
   let make =
       (
         ~variables: option(Js.Json.t)=?,
-        ~pollInterval: option(int)=?,
-        ~notifyOnNetworkStatusChange: option(bool)=?,
-        ~fetchPolicy: option(string)=?,
-        ~errorPolicy: option(string)=?,
-        ~ssr: option(bool)=?,
-        ~displayName: option(string)=?,
-        ~skip: option(bool)=?,
-        ~onCompleted: option(Js.Nullable.t(Js.Json.t) => unit)=?,
-        ~onError: option(apolloError => unit)=?,
-        ~partialRefetch: option(bool)=?,
-        ~delay: option(bool)=?,
-        ~context: option(Js.Json.t)=?,
+        ~pollInterval: option(pollInterval)=?,
+        ~notifyOnNetworkStatusChange: option(notifyOnNetworkStatusChange)=?,
+        ~fetchPolicy: option(fetchPolicy)=?,
+        ~errorPolicy: option(errorPolicy)=?,
+        ~ssr: option(ssr)=?,
+        ~displayName: option(displayName)=?,
+        ~skip: option(skip)=?,
+        ~onCompleted: option(onCompleted)=?,
+        ~onError: option(onError)=?,
+        ~partialRefetch: option(partialRefetch)=?,
+        ~delay: option(delay)=?,
+        ~context: option(context)=?,
         ~children: renderPropObj => React.element,
-      ) => queryComponent(
-              ~query=graphqlQueryAST
-              ~variables=(variables |> fromOption)
-              ~pollInterval=(pollInterval |> fromOption)    
-              ~notifyOnNetworkStatusChange=(notifyOnNetworkStatusChange |> fromOption)
-              ~fetchPolicy=(fetchPolicy |> fromOption)
-              ~errorPolicy=(errorPolicy |> fromOption)
-              ~ssr=(ssr |> fromOption)
-              ~displayName=(displayName |> fromOption)
-              ~skip=(skip |> fromOption)
-              ~onCompleted=(onCompleted |> fromOption)
-              ~onError=(onError |> fromOption)
-              ~partialRefetch=(partialRefetch |> fromOption)
-              ~delay=(delay |> fromOption)
-              ~context=(context |> fromOption)
-              ~children=(apolloData => apolloData |> convertJsInputToReason |> children)
-          )
+      ) => {
+    <Query
+      query=graphqlQueryAST
+      variables
+      pollInterval
+      notifyOnNetworkStatusChange
+      fetchPolicy
+      errorPolicy
+      ssr
+      displayName
+      skip
+      onCompleted
+      onError
+      partialRefetch
+      delay
+      context>
+      {apolloData => apolloData |> convertJsInputToReason |> children}
+    </Query>;
+  };
 };
