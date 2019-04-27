@@ -1,6 +1,6 @@
 [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
 
-let ste = ReasonReact.string;
+let ste = React.string;
 
 module GetAllPersons = [%graphql
   {|
@@ -16,16 +16,15 @@ module GetAllPersons = [%graphql
 
 module GetAllPersonsQuery = ReasonApollo.CreateQuery(GetAllPersons);
 
-
 module NewPerson = [%graphql
-{|
+  {|
 
   subscription {
     person: Person {
       node {
         name
       }
-    } 
+    }
   }
 |}
 ];
@@ -35,25 +34,24 @@ let newPersonAST = gql(. newPerson##query);
 
 [@react.component]
 let make = () => {
-    <GetAllPersonsQuery>
-      ...(
-           ({result, subscribeToMore}) =>
-             <div>
-               <h1> ("Persons: " |> ste) </h1>
-               (
-                 switch (result) {
-                 | Error(_e) =>
-                   "Something Went Wrong" |> ste;
-                 | Loading => "Loading" |> ste
-                 | Data(response) => 
-                    <ShowLivePersons 
-                      persons={response##allPersons} 
-                      getLiveData={
-                        () => {
-                          let _unsub = subscribeToMore(
-                            ~document=newPersonAST,
-                            ~updateQuery={(prev, next) => {
-                              let addNewMessageJS = [%bs.raw {|
+  <GetAllPersonsQuery>
+    ...{({result, subscribeToMore}) =>
+      <div>
+        <h1> {"Persons: " |> ste} </h1>
+        {switch (result) {
+         | Error(_e) => "Something Went Wrong" |> ste
+         | Loading => "Loading" |> ste
+         | Data(response) =>
+           <ShowLivePersons
+             persons={response##allPersons}
+             getLiveData={() => {
+               let _unsub =
+                 subscribeToMore(
+                   ~document=newPersonAST,
+                   ~updateQuery=
+                     (prev, next) =>
+                       %bs.raw
+                       {|
                                 function(prev, next) {
                                   if(!next.subscriptionData.data || !next.subscriptionData.data.person)
                                     return prev;
@@ -61,17 +59,14 @@ let make = () => {
                                     messages: prev.allPersons.concat(next.subscriptionData.data.person)
                                   });
                                 }
-                              |}];
-                              addNewMessageJS(prev, next);                              
-                            }},
-                            () 
-                          );
-                        }
-                      }
-                    />
-                 }
-               )
-             </div>
-         )
-    </GetAllPersonsQuery>
+                              |},
+                   (),
+                 );
+               ();
+             }}
+           />
+         }}
+      </div>
+    }
+  </GetAllPersonsQuery>;
 };
