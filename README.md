@@ -14,6 +14,7 @@ yarn add reason-apollo
 # Add graphql_ppx
 yarn add --dev graphql_ppx
 ```
+For JSX 3 support, `yarn add reason-apollo@alpha`
 
 #### bsconfig
 Add `reason-apollo` to your `bs-dependencies` and
