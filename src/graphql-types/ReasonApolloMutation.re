@@ -20,7 +20,7 @@ module Make = (Config: Config) => {
     } =
     "%identity";
 
-  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
+  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
   let graphqlMutationAST = gql(. Config.query);
   type response = mutationResponse(Config.t);
