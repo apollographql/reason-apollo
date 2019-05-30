@@ -1,4 +1,4 @@
-[@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
+[@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
 module Styles = {
   open Css;
@@ -62,7 +62,6 @@ let make = _children => {
                           function(prev, next) {
                             if(!next.subscriptionData.data || !next.subscriptionData.data.messageAdded)
                               return prev;
-
                             return Object.assign({}, prev, {
                               messages: prev.messages.concat(next.subscriptionData.data.messageAdded)
                             });
