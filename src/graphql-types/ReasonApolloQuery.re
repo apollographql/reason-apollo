@@ -80,7 +80,7 @@ module Make = (Config: ReasonApolloTypes.Config) => {
     apolloData =>
       switch (
         apolloData->loadingGet,
-        apolloData->dataGet |> Js.Nullable.toOption,
+        apolloData->dataGet |> ReasonApolloUtils.getNonEmptyObj,
         apolloData->errorGet |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
