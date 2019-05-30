@@ -1,7 +1,7 @@
 open ReasonApolloTypes;
 
 module Make = (Config: ReasonApolloTypes.Config) => {
-  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
+  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
   let graphQLSubscriptionAST = gql(. Config.query);
 
