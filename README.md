@@ -186,7 +186,7 @@ module UserAddedSubscription = ReasonApollo.CreateSubscription(UserAdded);
 
 let make = _children => {
   ...component,
-  render: _self => 
+  render: _self =>
     <UserAddedSubscription>
       ...{
         ({result}) => {
@@ -219,7 +219,7 @@ If you simply want to have access to the ApolloClient, you can use the `ApolloCo
 
 ### access deeply nested optional objects
 
-If for this query 
+If for this query
 ```graphql
 query {
   user {
@@ -294,7 +294,7 @@ let deviceName = switch response##user {
 }
 ```
 
-3. Use `get_in_ppx` 
+3. Use `get_in_ppx`
 
 `npm install get_in_ppx`  
 and in `bsconfig.json`  
@@ -350,7 +350,7 @@ module QueryView = {
       (
         ~result: ReasonApolloTypes.queryResponse('a),
         ~accessData: 'a => option('b),
-        ~render: ('b, 'c) => ReasonReact.reactElement,
+        ~render: ('b, 'c) => React.element,
         ~onLoadMore: ('b, 'unit) => unit=(_, ()) => (),
         _children,
       ) => {

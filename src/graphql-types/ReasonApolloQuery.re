@@ -46,13 +46,12 @@ type renderPropObjJS = {
   networkStatus: Js.Nullable.t(int),
   variables: Js.Null_undefined.t(Js.Json.t),
   fetchMore: fetchMoreOptions => Js.Promise.t(unit),
-  subscribeToMore: (subscribeToMoreOptions, unit) => unit,
+  subscribeToMore: subscribeToMoreOptions => unit,
 };
 
 module Make = (Config: ReasonApolloTypes.Config) => {
-  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
-  [@bs.module "react-apollo"]
-  external queryComponent: ReasonReact.reactClass = "Query";
+  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
+
   type response = queryResponse(Config.t);
 
   type renderPropObj = {
@@ -71,7 +70,6 @@ module Make = (Config: ReasonApolloTypes.Config) => {
         ~variables: Js.Json.t=?,
         ~updateQuery: updateQuerySubscriptionT=?,
         ~onError: onErrorT=?,
-        unit,
         unit
       ) =>
       unit,
@@ -140,6 +138,31 @@ module Make = (Config: ReasonApolloTypes.Config) => {
                   ),
   };
 
+  module JsQuery = {
+    [@bs.module "react-apollo"] [@react.component]
+    external make:
+      (
+        ~query: ReasonApolloTypes.queryString,
+        ~variables: option(Js.Json.t)=?,
+        ~pollInterval: option(int)=?,
+        ~notifyOnNetworkStatusChange: option(bool)=?,
+        ~fetchPolicy: option(string)=?,
+        ~errorPolicy: option(string)=?,
+        ~ssr: option(bool)=?,
+        ~displayName: option(string)=?,
+        ~skip: option(bool)=?,
+        ~onCompleted: option(Js.Nullable.t(Js.Json.t) => unit)=?,
+        ~onError: option(apolloError => unit)=?,
+        ~partialRefetch: option(bool)=?,
+        ~delay: option(bool)=?,
+        ~context: option(Js.Json.t)=?,
+        ~children: renderPropObjJS => React.element
+      ) =>
+      React.element =
+      "Query";
+  };
+
+  [@react.component]
   let make =
       (
         ~variables: option(Js.Json.t)=?,
@@ -155,29 +178,23 @@ module Make = (Config: ReasonApolloTypes.Config) => {
         ~partialRefetch: option(bool)=?,
         ~delay: option(bool)=?,
         ~context: option(Js.Json.t)=?,
-        children: renderPropObj => ReasonReact.reactElement,
+        ~children: renderPropObj => React.element,
       ) =>
-    ReasonReact.wrapJsForReason(
-      ~reactClass=queryComponent,
-      ~props=
-        Js.Nullable.{
-          "query": graphqlQueryAST,
-          "variables": variables |> fromOption,
-          "pollInterval": pollInterval |> fromOption,
-          "notifyOnNetworkStatusChange":
-            notifyOnNetworkStatusChange |> fromOption,
-          "fetchPolicy": fetchPolicy |> fromOption,
-          "errorPolicy": errorPolicy |> fromOption,
-          "ssr": ssr |> fromOption,
-          "displayName": displayName |> fromOption,
-          "skip": skip |> fromOption,
-          "onCompleted": onCompleted |> fromOption,
-          "onError": onError |> fromOption,
-          "partialRefetch": partialRefetch |> fromOption,
-          "delay": delay |> fromOption,
-          "context": context |> fromOption,
-        },
-      apolloData =>
-      apolloData |> convertJsInputToReason |> children
-    );
+    <JsQuery
+      query=graphqlQueryAST
+      variables
+      pollInterval
+      notifyOnNetworkStatusChange
+      fetchPolicy
+      errorPolicy
+      ssr
+      displayName
+      skip
+      onCompleted
+      onError
+      partialRefetch
+      delay
+      context>
+      {apolloData => apolloData |> convertJsInputToReason |> children}
+    </JsQuery>;
 };

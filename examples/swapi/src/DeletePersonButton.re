@@ -12,11 +12,8 @@ module DeletePerson = [%graphql
 
 module DeletePersonMutation = ReasonApollo.CreateMutation(DeletePerson);
 
-let component = ReasonReact.statelessComponent("DeletePersonButton");
-
-let make = (~id, _children) => {
-  ...component,
-  render: _self => {
+[@react.component]
+let make = (~id) => {
     let deletePersonMutation = DeletePerson.make(~id, ());
     <DeletePersonMutation>
       ...(
@@ -57,5 +54,4 @@ let make = (~id, _children) => {
              </div>
          )
     </DeletePersonMutation>;
-  },
 };

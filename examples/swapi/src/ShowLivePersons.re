@@ -1,24 +1,19 @@
-let ste = ReasonReact.string;
+let ste = React.string;
 
-let component = ReasonReact.statelessComponent("ShowLivePersons");
-
-let make = (
-  ~persons,
-  ~getLiveData,
-  _children
-) => {
-  ...component,
-  didMount: _self => {
+[@react.component]
+let make = (~persons, ~getLiveData) => {
+  React.useEffect0(() => {
     getLiveData();
-  },
-  render: _self => 
-    persons 
-    |> Array.mapi((index, person) =>
-      <div key=(index |> string_of_int)>
-      (person##name |> ste)
-      <br />
-      <p> ("ID: " ++ person##id |> ste) </p>
-      </div>
-    )
-    |> ReasonReact.array
+    /* Nothing to clean */
+    None;
+  });
+  persons
+  |> Array.mapi((index, person) =>
+       <div key={index |> string_of_int}>
+         {person##name |> ste}
+         <br />
+         <p> {"ID: " ++ person##id |> ste} </p>
+       </div>
+     )
+  |> React.array;
 };

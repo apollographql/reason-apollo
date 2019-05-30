@@ -1,11 +1,12 @@
 open ApolloClient;
 
-[@bs.module "react-apollo"]
-  external apolloConsumer : ReasonReact.reactClass = "ApolloConsumer";
-  
-  let make = (children: generatedApolloClient => ReasonReact.reactElement) =>
-    ReasonReact.wrapJsForReason(
-      ~reactClass=apolloConsumer, 
-      ~props=Js.Obj.empty(), 
-      children
-    );
+module JsConsumer = {
+  [@bs.module "react-apollo"] [@react.component]
+  external make:
+    (~children: generatedApolloClient => React.element) => React.element =
+    "ApolloConsumer";
+};
+
+[@react.component]
+let make = (~children: generatedApolloClient => React.element) =>
+  <JsConsumer> {client => children(client)} </JsConsumer>;

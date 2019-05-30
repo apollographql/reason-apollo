@@ -1,9 +1,7 @@
 open ReasonApolloTypes;
 
 module Make = (Config: ReasonApolloTypes.Config) => {
-  [@bs.module] external gql: ReasonApolloTypes.gql = "graphql-tag";
-  [@bs.module "react-apollo"]
-  external subscriptionComponent: ReasonReact.reactClass = "Subscription";
+  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
   let graphQLSubscriptionAST = gql(. Config.query);
 
@@ -61,19 +59,25 @@ module Make = (Config: ReasonApolloTypes.Config) => {
       loading: apolloData##loading,
     };
 
+  module JsSubscription = {
+    [@bs.module "react-apollo"] [@react.component]
+    external make:
+      (
+        ~subscription: ReasonApolloTypes.queryString,
+        ~variables: option(Js.Json.t),
+        ~children: renderPropObjJS => ReasonReact.reactElement
+      ) =>
+      ReasonReact.reactElement =
+      "Subscription";
+  };
+
+  [@react.component]
   let make =
       (
         ~variables: option(Js.Json.t)=?,
-        children: renderPropObj => ReasonReact.reactElement,
+        ~children: renderPropObj => ReasonReact.reactElement,
       ) =>
-    ReasonReact.wrapJsForReason(
-      ~reactClass=subscriptionComponent,
-      ~props=
-        Js.Nullable.{
-          "subscription": graphQLSubscriptionAST,
-          "variables": variables |> fromOption,
-        },
-      apolloData =>
-      apolloData |> convertJsInputToReason |> children
-    );
+    <JsSubscription subscription=graphQLSubscriptionAST variables>
+      {apolloData => apolloData |> convertJsInputToReason |> children}
+    </JsSubscription>;
 };
