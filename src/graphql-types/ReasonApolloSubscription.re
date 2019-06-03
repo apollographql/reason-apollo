@@ -25,7 +25,7 @@ module Make = (Config: ReasonApolloTypes.Config) => {
     apolloData =>
       switch (
         apolloData##loading,
-        apolloData##data |> Js.Nullable.toOption,
+        apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
         apolloData##error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
