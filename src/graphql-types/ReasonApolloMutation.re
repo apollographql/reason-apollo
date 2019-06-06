@@ -116,7 +116,7 @@ module Make = (Config: Config) => {
         ~mutation: ReasonApolloTypes.queryString,
         ~variables: option(Js.Json.t)=?,
         ~onCompleted: option(unit => unit)=?,
-        ~onError: option(unit => unit)=?,
+        ~onError: option(apolloError => unit)=?,
         ~children: (
                      jsMutationParams => Js.Promise.t(executionResult),
                      renderPropObjJS
