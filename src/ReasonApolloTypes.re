@@ -8,7 +8,7 @@ type queryString;
  * query string to the standard GraphQL AST.
  * https://github.com/apollographql/graphql-tag
  */
-type gql = [@bs] (string => queryString);
+type gql = (. string) => queryString;
 
 /**
  * An abstract type to describe an Apollo Link object.
@@ -41,36 +41,37 @@ type executionResult = {
 };
 
 /* TODO define all types */
-type operation = {
-  .
-  "query": queryString
-};
+type operation = {. "query": queryString};
 
 /* TODO define subscription */
 type subscription;
 
 type errorResponse = {
-  . 
+  .
   "graphQLErrors": Js.Nullable.t(Js.Array.t(graphqlError)),
   "networkError": Js.Nullable.t(networkError),
   "response": Js.Nullable.t(executionResult),
-  "operation": operation ,
+  "operation": operation,
   "forward": operation => subscription,
 };
 
-module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
+module type Config = {
+  let query: string;
+  type t;
+  let parse: Js.Json.t => t;
+};
 
 type apolloError = {
   .
   "message": string,
   "graphQLErrors": Js.Nullable.t(array(graphqlError)),
-  "networkError": Js.Nullable.t(string)
+  "networkError": Js.Nullable.t(string),
 };
 
 type apolloOptions = {
-    .
-    "query": queryString,
-    "variables": Js.Json.t,
+  .
+  "query": queryString,
+  "variables": Js.Json.t,
 };
 
 type queryResponse('a) =
@@ -93,25 +94,24 @@ type executionResponse('a) =
   | Errors(array(graphqlError))
   | EmptyResponse
   | Data('a);
-/* 
+/*
  apollo link ws
  */
 
-
 [@bs.deriving abstract]
 type webSocketLinkOptionsT = {
-  [@bs.optional] reconnect: bool
+  [@bs.optional]
+  reconnect: bool,
+  [@bs.optional]
+  connectionParams: Js.Json.t,
 };
 
 [@bs.deriving abstract]
 type webSocketLinkT = {
   uri: string,
-  options: webSocketLinkOptionsT
+  options: webSocketLinkOptionsT,
 };
 
 type documentNodeT;
 
-type splitTest = {
-  .
-  "query": documentNodeT
-};
+type splitTest = {. "query": documentNodeT};
