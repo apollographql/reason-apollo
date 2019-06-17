@@ -1,14 +1,6 @@
 open ReasonApolloTypes;
 
-type renderPropObjJS = {
-  .
-  "loading": bool,
-  "called": bool,
-  "data": Js.Nullable.t(Js.Json.t),
-  "error": Js.Nullable.t(apolloError),
-  "networkStatus": Js.Nullable.t(int),
-  "variables": Js.Null_undefined.t(Js.Json.t),
-};
+type renderPropObjJS = mutationRenderPropObjJS;
 
 module Make = (Config: Config) => {
   external cast:
@@ -36,6 +28,7 @@ module Make = (Config: Config) => {
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
       ~optimisticResponse: Config.t=?,
+      ~update: (ApolloClient.generatedApolloClient, Config.t) => unit=?,
       unit
     ) =>
     Js.Promise.t(executionResponse(Config.t));
@@ -48,6 +41,8 @@ module Make = (Config: Config) => {
     refetchQueries: array(string),
     [@bs.optional]
     optimisticResponse: Config.t,
+    [@bs.optional]
+    update: (ApolloClient.generatedApolloClient, Config.t) => unit,
   };
 
   let convertExecutionResultToReason = (executionResult: executionResult) =>
@@ -66,6 +61,7 @@ module Make = (Config: Config) => {
         ~variables=?,
         ~refetchQueries=?,
         ~optimisticResponse=?,
+        ~update=?,
         (),
       ) =>
     jsMutation(
@@ -73,6 +69,7 @@ module Make = (Config: Config) => {
         ~variables?,
         ~refetchQueries?,
         ~optimisticResponse?,
+        ~update?,
         (),
       ),
     )
