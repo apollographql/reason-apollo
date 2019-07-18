@@ -1,36 +1,31 @@
 open ReasonApolloTypes;
 
-module Get = (Config: ReasonApolloTypes.Config) => {
-  [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
-  [@bs.module "react-apollo"] external subscriptionComponent: ReasonReact.reactClass = "Subscription";
+module Make = (Config: ReasonApolloTypes.Config) => {
+  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
   let graphQLSubscriptionAST = gql(. Config.query);
-  
-  type response = 
-    | Loading
-    | Error(apolloError)
-    | Data(Config.t);
+
+  type response = subscriptionResponse(Config.t);
 
   type renderPropObj = {
     result: response,
     data: option(Config.t),
     error: option(apolloError),
-    loading: bool
+    loading: bool,
   };
 
   type renderPropObjJS = {
     .
     "loading": bool,
     "data": Js.Nullable.t(Js.Json.t),
-    "error": Js.Nullable.t(apolloError)
+    "error": Js.Nullable.t(apolloError),
   };
-
 
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
         apolloData##loading,
-        apolloData##data |> Js.Nullable.toOption,
+        apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
         apolloData##error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
@@ -44,39 +39,45 @@ module Get = (Config: ReasonApolloTypes.Config) => {
         })
       };
 
-  let convertJsInputToReason: renderPropObjJS => renderPropObj 
-    = (apolloData) => {
-    result: apolloData |> apolloDataToVariant,
-    data:
-      switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
-      | None => None
-      | Some(data) =>
-        switch (Config.parse(data)) {
-        | parsedData => Some(parsedData)
-        | exception _ => None
-        }
-      },
-    error:
-      switch (apolloData##error |> Js.Nullable.toOption) {
-      | Some(error) => Some(error)
-      | None => None
-      },
-    loading: apolloData##loading,
+  let convertJsInputToReason: renderPropObjJS => renderPropObj =
+    apolloData => {
+      result: apolloData |> apolloDataToVariant,
+      data:
+        switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
+        | None => None
+        | Some(data) =>
+          switch (Config.parse(data)) {
+          | parsedData => Some(parsedData)
+          | exception _ => None
+          }
+        },
+      error:
+        switch (apolloData##error |> Js.Nullable.toOption) {
+        | Some(error) => Some(error)
+        | None => None
+        },
+      loading: apolloData##loading,
+    };
+
+  module JsSubscription = {
+    [@bs.module "react-apollo"] [@react.component]
+    external make:
+      (
+        ~subscription: ReasonApolloTypes.queryString,
+        ~variables: option(Js.Json.t),
+        ~children: renderPropObjJS => ReasonReact.reactElement
+      ) =>
+      ReasonReact.reactElement =
+      "Subscription";
   };
 
-  let make = (
-    ~variables: option(Js.Json.t)=?,
-    ~children: renderPropObj => ReasonReact.reactElement,
-    ) => 
-    ReasonReact.wrapJsForReason(
-      ~reactClass=subscriptionComponent,
-      ~props=
-        Js.Nullable.(
-          {
-            "subscription": graphQLSubscriptionAST,
-            "variables": variables |> fromOption
-          }  
-        ),
-      apolloData => apolloData |> convertJsInputToReason |> children
-    );
+  [@react.component]
+  let make =
+      (
+        ~variables: option(Js.Json.t)=?,
+        ~children: renderPropObj => ReasonReact.reactElement,
+      ) =>
+    <JsSubscription subscription=graphQLSubscriptionAST variables>
+      {apolloData => apolloData |> convertJsInputToReason |> children}
+    </JsSubscription>;
 };

@@ -14,7 +14,7 @@
   "bs-dependencies": ["reason-react"],
   "bsc-flags": ["-bs-super-errors"],
   "reason": {
-    "react-jsx": 2
+    "react-jsx": 3
   },
   "refmt": 3,
   "package-specs": [

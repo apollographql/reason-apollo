@@ -17,7 +17,7 @@ module Styles = {
 
 module AddMessage = [%graphql {|
   mutation addMessage {
-    addMessage(userId: "34450090-7d16-11e8-812a-b1747e68ae92", text: "HI") {
+    addMessage(userId: "e4315d20-fa78-11e8-877a-8f1cf822dad6", text: "HI") {
       id
     }
   }

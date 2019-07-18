@@ -4,7 +4,7 @@
   an issue! */
 {
   "name": "react-template",
-  "reason": { "react-jsx": 2 },
+  "reason": { "react-jsx": 3 },
   "sources": ["src", "lib"],
   "package-specs": [
     {
