@@ -1,4 +1,4 @@
-  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
+[@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
 let ste = React.string;
 
@@ -32,6 +32,18 @@ module NewPerson = [%graphql
 let newPerson = NewPerson.make();
 let newPersonAST = gql(. newPerson##query);
 
+let updateQuerySubscription: ReasonApolloQuery.updateQuerySubscriptionT = [%bs.raw
+  {|
+      function(prev, next) {
+        if(!next.subscriptionData.data || !next.subscriptionData.data.person)
+          return prev;
+        return Object.assign({}, prev, {
+          messages: prev.allPersons.concat(next.subscriptionData.data.person)
+        });
+      }
+  |}
+];
+
 [@react.component]
 let make = () => {
   <GetAllPersonsQuery>
@@ -44,26 +56,13 @@ let make = () => {
          | Data(response) =>
            <ShowLivePersons
              persons={response##allPersons}
-             getLiveData={() => {
-               let _unsub =
-                 subscribeToMore(
-                   ~document=newPersonAST,
-                   ~updateQuery=
-                     (prev, next) =>
-                       %bs.raw
-                       {|
-                                function(prev, next) {
-                                  if(!next.subscriptionData.data || !next.subscriptionData.data.person)
-                                    return prev;
-                                  return Object.assign({}, prev, {
-                                    messages: prev.allPersons.concat(next.subscriptionData.data.person)
-                                  });
-                                }
-                              |},
-                   (),
-                 );
-               ();
-             }}
+             getLiveData={() =>
+               subscribeToMore(
+                 ~document=newPersonAST,
+                 ~updateQuery=updateQuerySubscription,
+                 (),
+               )
+             }
            />
          }}
       </div>
