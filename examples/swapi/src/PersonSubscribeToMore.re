@@ -32,18 +32,6 @@ module NewPerson = [%graphql
 let newPerson = NewPerson.make();
 let newPersonAST = gql(. newPerson##query);
 
-let updateQuerySubscription: ReasonApolloQuery.updateQuerySubscriptionT = [%bs.raw
-  {|
-      function(prev, next) {
-        if(!next.subscriptionData.data || !next.subscriptionData.data.person)
-          return prev;
-        return Object.assign({}, prev, {
-          messages: prev.allPersons.concat(next.subscriptionData.data.person)
-        });
-      }
-  |}
-];
-
 [@react.component]
 let make = () => {
   <GetAllPersonsQuery>
@@ -56,13 +44,25 @@ let make = () => {
          | Data(response) =>
            <ShowLivePersons
              persons={response##allPersons}
-             getLiveData={() =>
-               subscribeToMore(
-                 ~document=newPersonAST,
-                 ~updateQuery=updateQuerySubscription,
-                 (),
-               )
-             }
+             getLiveData={() => {
+               let _unsub =
+                 subscribeToMore(
+                   ~document=newPersonAST,
+                   ~updateQuery=[%bs.raw
+                     {|
+                       function(prev, next) {
+                         if(!next.subscriptionData.data || !next.subscriptionData.data.person)
+                           return prev;
+                         return Object.assign({}, prev, {
+                           messages: prev.allPersons.concat(next.subscriptionData.data.person)
+                         });
+                       }
+                   |}
+                   ],
+                   (),
+                 );
+               ();
+             }}
            />
          }}
       </div>
