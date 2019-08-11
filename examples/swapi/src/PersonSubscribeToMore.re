@@ -1,4 +1,4 @@
-  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
+[@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
 let ste = React.string;
 
@@ -48,18 +48,17 @@ let make = () => {
                let _unsub =
                  subscribeToMore(
                    ~document=newPersonAST,
-                   ~updateQuery=
-                     (prev, next) =>
-                       %bs.raw
-                       {|
-                                function(prev, next) {
-                                  if(!next.subscriptionData.data || !next.subscriptionData.data.person)
-                                    return prev;
-                                  return Object.assign({}, prev, {
-                                    messages: prev.allPersons.concat(next.subscriptionData.data.person)
-                                  });
-                                }
-                              |},
+                   ~updateQuery=[%bs.raw
+                     {|
+                       function(prev, next) {
+                         if(!next.subscriptionData.data || !next.subscriptionData.data.person)
+                           return prev;
+                         return Object.assign({}, prev, {
+                           messages: prev.allPersons.concat(next.subscriptionData.data.person)
+                         });
+                       }
+                   |}
+                   ],
                    (),
                  );
                ();
