@@ -3,6 +3,12 @@
  */
 type queryString;
 
+type queryObj = {
+  .
+  "query": queryString,
+  "variables": Js.Json.t,
+};
+
 /**
  * The signature of the `graphql-tag/gql` function that transforms a GraphQL
  * query string to the standard GraphQL AST.
@@ -54,6 +60,10 @@ type errorResponse = {
   "operation": operation,
   "forward": operation => subscription,
 };
+
+type queriesToRefetch =
+  | QueryNames(array(string))
+  | QueryObjects(array(queryObj));
 
 module type Config = {
   let query: string;
