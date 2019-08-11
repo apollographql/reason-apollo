@@ -30,7 +30,7 @@ let make = () => {
           onClick={_ => {
             mutation(
               ~variables=deletePersonMutation##variables,
-              ~refetchQueries=[|"getAllPersons"|],
+              ~refetchQueries=_ => QueryNames([|"getAllPersons"|]),
               (),
             )
             |> ignore;
