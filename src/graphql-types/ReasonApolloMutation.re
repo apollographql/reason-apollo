@@ -114,9 +114,9 @@ module Make = (Config: Config) => {
     external make:
       (
         ~mutation: ReasonApolloTypes.queryString,
-        ~variables: option(Js.Json.t)=?,
-        ~onCompleted: option(unit => unit)=?,
-        ~onError: option(apolloError => unit)=?,
+        ~variables: Js.Json.t=?,
+        ~onCompleted: unit => unit=?,
+        ~onError: apolloError => unit=?,
         ~children: (
                      jsMutationParams => Js.Promise.t(executionResult),
                      renderPropObjJS
@@ -130,9 +130,9 @@ module Make = (Config: Config) => {
   [@react.component]
   let make =
       (
-        ~variables: option(Js.Json.t)=?,
-        ~onError: option(apolloError => unit)=?,
-        ~onCompleted: option(unit => unit)=?,
+        ~variables: Js.Json.t=?,
+        ~onError: apolloError => unit=?,
+        ~onCompleted: unit => unit=?,
         ~children: (apolloMutation, renderPropObj) => React.element,
       ) =>
     <JsMutation mutation=graphqlMutationAST variables onError onCompleted>
