@@ -115,3 +115,14 @@ type webSocketLinkT = {
 type documentNodeT;
 
 type splitTest = {. "query": documentNodeT};
+
+/** Mutation's renderPropObjJS is located here to prevent cyclical import issues */
+type mutationRenderPropObjJS = {
+  .
+  "loading": bool,
+  "called": bool,
+  "data": Js.Nullable.t(Js.Json.t),
+  "error": Js.Nullable.t(apolloError),
+  "networkStatus": Js.Nullable.t(int),
+  "variables": Js.Null_undefined.t(Js.Json.t),
+};
