@@ -8,28 +8,18 @@ type updateQueryOptions = {
 type onErrorT;
 type updateQueryT = (Js.Json.t, updateQueryOptions) => Js.Json.t;
 type updateSubscriptionOptions = {
-  subscriptionData: Js.Nullable.t(Js.Json.t),
-  variables: Js.Nullable.t(Js.Json.t),
+  subscriptionData: option(Js.Json.t),
+  variables: option(Js.Json.t),
 };
 type updateQuerySubscriptionT =
   (Js.Json.t, updateSubscriptionOptions) => Js.Json.t;
-[@bs.deriving abstract]
+
 type subscribeToMoreOptions = {
   document: queryString,
-  [@bs.optional]
-  variables: Js.Json.t,
-  [@bs.optional]
-  updateQuery: updateQuerySubscriptionT,
-  [@bs.optional]
-  onError: onErrorT,
+  variables: option(Js.Json.t),
+  updateQuery: option(updateQuerySubscriptionT),
+  onError: option(onErrorT),
 };
-// cant get this to work yet
-// type subscribeToMoreOptions = {
-//   document: queryString,
-//   variables: option(Js.Json.t),
-//   updateQuery: updateQuerySubscriptionT,
-//   onError: option(onErrorT),
-// };
 
 /* We dont accept a new query for now */
 
@@ -120,22 +110,15 @@ module Make = (Config: ReasonApolloTypes.Config) => {
       apolloData.fetchMore({variables, updateQuery}),
     networkStatus: apolloData.networkStatus->Js.Nullable.toOption,
     subscribeToMore:
-      (~document, ~variables=?, ~updateQuery=?, ~onError=?, ()) =>
-      apolloData.subscribeToMore(
-        subscribeToMoreOptions(
-          ~document,
-          ~variables?,
-          ~updateQuery?,
-          ~onError?,
-          (),
-        ),
-      ),
-    // cant get subcribeToMore to work yet
-    // subscribeToMore:
-    //   (~document, ~variables=?, ~updateQuery=?, ~onError=?, ()) => {
-    //   apolloData.subscribeToMore(({document, variables, updateQuery, onError}));
-    //   ()
-    // },
+      (
+        ~document: ReasonApolloTypes.queryString,
+        ~variables=?,
+        ~updateQuery=?,
+        ~onError=?,
+        (),
+      ) => {
+      apolloData.subscribeToMore({document, variables, updateQuery, onError});
+    },
   };
 
   module JsQuery = {
