@@ -25,19 +25,17 @@ type networkError = {. "statusCode": int};
 type apolloErrorExtensions = {. "code": Js.Nullable.t(string)};
 
 type graphqlError = {
-  .
-  "message": string,
-  "name": Js.Nullable.t(string),
-  "extensions": Js.Nullable.t(apolloErrorExtensions),
-  "locations": Js.Nullable.t(array(string)),
-  "path": Js.Nullable.t(array(string)),
-  "nodes": Js.Nullable.t(array(string)),
+  message: string,
+  name: Js.Nullable.t(string),
+  extensions: Js.Nullable.t(apolloErrorExtensions),
+  locations: Js.Nullable.t(array(string)),
+  path: Js.Nullable.t(array(string)),
+  nodes: Js.Nullable.t(array(string)),
 };
 
 type executionResult = {
-  .
-  "errors": Js.Nullable.t(Js.Array.t(graphqlError)),
-  "data": Js.Nullable.t(Js.Json.t),
+  errors: Js.Nullable.t(Js.Array.t(graphqlError)),
+  data: Js.Nullable.t(Js.Json.t),
 };
 
 /* TODO define all types */
@@ -47,12 +45,11 @@ type operation = {. "query": queryString};
 type subscription;
 
 type errorResponse = {
-  .
-  "graphQLErrors": Js.Nullable.t(Js.Array.t(graphqlError)),
-  "networkError": Js.Nullable.t(networkError),
-  "response": Js.Nullable.t(executionResult),
-  "operation": operation,
-  "forward": operation => subscription,
+  graphQLErrors: Js.Nullable.t(Js.Array.t(graphqlError)),
+  networkError: Js.Nullable.t(networkError),
+  response: Js.Nullable.t(executionResult),
+  operation,
+  forward: operation => subscription,
 };
 
 module type Config = {
@@ -62,16 +59,14 @@ module type Config = {
 };
 
 type apolloError = {
-  .
-  "message": string,
-  "graphQLErrors": Js.Nullable.t(array(graphqlError)),
-  "networkError": Js.Nullable.t(string),
+  message: string,
+  graphQLErrors: Js.Nullable.t(array(graphqlError)),
+  networkError: Js.Nullable.t(string),
 };
 
 type apolloOptions = {
-  .
-  "query": queryString,
-  "variables": Js.Json.t,
+  query: queryString,
+  variables: Js.Json.t,
 };
 
 type queryResponse('a) =

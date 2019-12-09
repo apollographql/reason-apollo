@@ -1,13 +1,12 @@
 open ReasonApolloTypes;
 
 type renderPropObjJS = {
-  .
-  "loading": bool,
-  "called": bool,
-  "data": Js.Nullable.t(Js.Json.t),
-  "error": Js.Nullable.t(apolloError),
-  "networkStatus": Js.Nullable.t(int),
-  "variables": Js.Null_undefined.t(Js.Json.t),
+  loading: bool,
+  called: bool,
+  data: Js.Nullable.t(Js.Json.t),
+  error: Js.Nullable.t(apolloError),
+  networkStatus: Js.Nullable.t(int),
+  variables: Js.Null_undefined.t(Js.Json.t),
 };
 
 module Make = (Config: Config) => {
@@ -20,7 +19,7 @@ module Make = (Config: Config) => {
     } =
     "%identity";
 
-  [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
+  [@bs.module "graphql-tag"] external gql: gql = "default";
 
   let graphqlMutationAST = gql(. Config.query);
   type response = mutationResponse(Config.t);
@@ -52,8 +51,8 @@ module Make = (Config: Config) => {
 
   let convertExecutionResultToReason = (executionResult: executionResult) =>
     switch (
-      executionResult##data |> ReasonApolloUtils.getNonEmptyObj,
-      executionResult##errors |> Js.Nullable.toOption,
+      executionResult.data |> ReasonApolloUtils.getNonEmptyObj,
+      executionResult.errors |> Js.Nullable.toOption,
     ) {
     | (Some(data), _) => Data(Config.parse(data))
     | (_, Some(errors)) => Errors(errors)
@@ -83,9 +82,9 @@ module Make = (Config: Config) => {
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##loading,
-        apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
-        apolloData##error |> Js.Nullable.toOption,
+        apolloData.loading,
+        apolloData.data |> ReasonApolloUtils.getNonEmptyObj,
+        apolloData.error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
       | (false, Some(data), _) => Data(Config.parse(data))
@@ -96,7 +95,7 @@ module Make = (Config: Config) => {
   let convertJsInputToReason = (apolloData: renderPropObjJS) => {
     result: apolloDataToReason(apolloData),
     data:
-      switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
+      switch (apolloData.data |> ReasonApolloUtils.getNonEmptyObj) {
       | None => None
       | Some(data) =>
         switch (Config.parse(data)) {
@@ -104,16 +103,16 @@ module Make = (Config: Config) => {
         | exception _ => None
         }
       },
-    error: apolloData##error |> Js.Nullable.toOption,
-    loading: apolloData##loading,
-    networkStatus: apolloData##networkStatus->Js.Nullable.toOption,
+    error: apolloData.error |> Js.Nullable.toOption,
+    loading: apolloData.loading,
+    networkStatus: apolloData.networkStatus->Js.Nullable.toOption,
   };
 
   module JsMutation = {
     [@bs.module "react-apollo"] [@react.component]
     external make:
       (
-        ~mutation: ReasonApolloTypes.queryString,
+        ~mutation: queryString,
         ~variables: Js.Json.t=?,
         ~onCompleted: unit => unit=?,
         ~onError: apolloError => unit=?,

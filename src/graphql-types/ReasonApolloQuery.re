@@ -88,9 +88,9 @@ module Make = (Config: ReasonApolloTypes.Config) => {
       | (false, _, Some(error)) => Error(error)
       | (false, None, None) =>
         Error({
-          "message": "No data",
-          "graphQLErrors": Js.Nullable.null,
-          "networkError": Js.Nullable.null,
+          message: "No data",
+          graphQLErrors: Js.Nullable.null,
+          networkError: Js.Nullable.null,
         })
       };
 
