@@ -4,7 +4,7 @@ type renderPropObjJS = {
   loading: bool,
   called: bool,
   data: Js.Nullable.t(Js.Json.t),
-  error: Js.Nullable.t(apolloError),
+  error: Js.Nullable.t(ReasonApolloTypes.apolloError),
   networkStatus: Js.Nullable.t(int),
   variables: Js.Null_undefined.t(Js.Json.t),
 };
@@ -39,14 +39,10 @@ module Make = (Config: Config) => {
     ) =>
     Js.Promise.t(executionResponse(Config.t));
 
-  [@bs.deriving abstract]
   type jsMutationParams = {
-    [@bs.optional]
-    variables: Js.Json.t,
-    [@bs.optional]
-    refetchQueries: array(string),
-    [@bs.optional]
-    optimisticResponse: Config.t,
+    variables: option(Js.Json.t),
+    refetchQueries: option(array(string)),
+    optimisticResponse: option(Config.t),
   };
 
   let convertExecutionResultToReason = (executionResult: executionResult) =>
@@ -67,14 +63,15 @@ module Make = (Config: Config) => {
         ~optimisticResponse=?,
         (),
       ) =>
-    jsMutation(
-      jsMutationParams(
-        ~variables?,
-        ~refetchQueries?,
-        ~optimisticResponse?,
-        (),
-      ),
-    )
+    jsMutation({variables, refetchQueries, optimisticResponse})
+    // jsMutation(
+    //   jsMutationParams(
+    //     ~variables?,
+    //     ~refetchQueries?,
+    //     ~optimisticResponse?,
+    //     (),
+    //   ),
+    // )
     |> Js.Promise.(
          then_(response => resolve(convertExecutionResultToReason(response)))
        );

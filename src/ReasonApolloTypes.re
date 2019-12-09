@@ -20,9 +20,9 @@ type apolloLink;
  */
 type apolloCache;
 
-type networkError = {. "statusCode": int};
+type networkError = {statusCode: int};
 
-type apolloErrorExtensions = {. "code": Js.Nullable.t(string)};
+type apolloErrorExtensions = {code: Js.Nullable.t(string)};
 
 type graphqlError = {
   message: string,
@@ -39,7 +39,7 @@ type executionResult = {
 };
 
 /* TODO define all types */
-type operation = {. "query": queryString};
+type operation = {query: queryString};
 
 /* TODO define subscription */
 type subscription;
@@ -93,15 +93,11 @@ type executionResponse('a) =
  apollo link ws
  */
 
-[@bs.deriving abstract]
 type webSocketLinkOptionsT = {
-  [@bs.optional]
   reconnect: bool,
-  [@bs.optional]
-  connectionParams: Js.Json.t,
+  connectionParams: option(Js.Json.t),
 };
 
-[@bs.deriving abstract]
 type webSocketLinkT = {
   uri: string,
   options: webSocketLinkOptionsT,
@@ -109,4 +105,4 @@ type webSocketLinkT = {
 
 type documentNodeT;
 
-type splitTest = {. "query": documentNodeT};
+type splitTest = {query: documentNodeT};

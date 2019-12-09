@@ -31,14 +31,13 @@ external webSocketLink: webSocketLinkT => apolloLink = "WebSocketLink";
 external createUploadLink: ApolloClient.uploadLinkOptions => apolloLink =
   "createUploadLink";
 
-let webSocketLink = (~uri, ~reconnect=?, ~connectionParams=?, ()) => {
-  webSocketLink(
-    webSocketLinkT(
-      ~uri,
-      ~options=webSocketLinkOptionsT(~reconnect?, ~connectionParams?, ()),
-    ),
-  );
-};
+// let webSocketLink = (~uri, ~reconnect=?, ~connectionParams=?, ()) => {
+//   uri,
+//   options: {
+//     reconnect,
+//     connectionParams,
+//   },
+// };
 
 /**
  * CreateHttpLink

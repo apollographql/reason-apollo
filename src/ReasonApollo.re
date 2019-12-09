@@ -12,14 +12,15 @@ let createApolloClient =
       ~connectToDevTools=?,
       ~queryDeduplication=?,
       (),
-    ) => {
-  link,
-  cache,
-  ssrMode,
-  ssrForceFetchDelay,
-  connectToDevTools,
-  queryDeduplication,
-};
+    ) =>
+  createApolloClientJS({
+    link,
+    cache,
+    ssrMode,
+    ssrForceFetchDelay,
+    connectToDevTools,
+    queryDeduplication,
+  });
 // let createApolloClient =
 //     (
 //       ~link,

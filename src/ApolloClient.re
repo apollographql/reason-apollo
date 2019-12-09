@@ -40,8 +40,17 @@ type uploadLinkOptions = {
   includeExtensions: Js.Nullable.t(bool),
 };
 
+type apolloClientObjectParam = {
+  link: apolloLink,
+  cache: apolloCache,
+  ssrMode: option(bool),
+  ssrForceFetchDelay: option(int),
+  connectToDevTools: option(bool),
+  queryDeduplication: option(bool),
+};
 [@bs.module "apollo-client"] [@bs.new]
-external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
+external createApolloClientJS: apolloClientObjectParam => generatedApolloClient =
+  "ApolloClient";
 
 [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
 
@@ -57,14 +66,14 @@ external createApolloClientJS: 'a => generatedApolloClient = "ApolloClient";
 //   ) =>
 //   _ =
 //   "";
-type apolloClientObjectParam = {
-  link: apolloLink,
-  cache: apolloCache,
-  ssrMode: option(bool),
-  ssrForceFetchDelay: option(int),
-  connectToDevTools: option(bool),
-  queryDeduplication: option(bool),
-};
+// type apolloClientObjectParam = {
+//   link: apolloLink,
+//   cache: apolloCache,
+//   ssrMode: option(bool),
+//   ssrForceFetchDelay: option(int),
+//   connectToDevTools: option(bool),
+//   queryDeduplication: option(bool),
+// };
 module ReadQuery = (Config: ReasonApolloTypes.Config) => {
   type readQueryOptions = {
     query: ReasonApolloTypes.queryString,
