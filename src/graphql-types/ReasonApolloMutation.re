@@ -1,5 +1,7 @@
 open ReasonApolloTypes;
 
+external toJsonUnsafe: 'a => Js.Json.t = "%identity";
+
 type renderPropObjJS = {
   .
   "loading": bool,
@@ -34,7 +36,7 @@ module Make = (Config: Config) => {
   type apolloMutation =
     (
       ~variables: Js.Json.t=?,
-      ~refetchQueries: array(string)=?,
+      ~refetchQueries: executionResult => ReasonApolloTypes.queriesToRefetch=?,
       ~optimisticResponse: Config.t=?,
       unit
     ) =>
@@ -45,7 +47,7 @@ module Make = (Config: Config) => {
     [@bs.optional]
     variables: Js.Json.t,
     [@bs.optional]
-    refetchQueries: array(string),
+    refetchQueries: executionResult => array(Js.Json.t),
     [@bs.optional]
     optimisticResponse: Config.t,
   };
@@ -60,6 +62,16 @@ module Make = (Config: Config) => {
     | (None, None) => EmptyResponse
     };
 
+  let convertToRefetchQueriesJs = (refetchQueries, executionResult) => {
+    let queriesToRefetch = refetchQueries(executionResult);
+
+    switch (queriesToRefetch) {
+    | QueryNames(names) => names->Belt.Array.map(str => Js.Json.string(str))
+    | QueryObjects(objects) =>
+      objects->Belt.Array.map(obj => toJsonUnsafe(obj))
+    };
+  };
+
   let apolloMutationFactory =
       (
         ~jsMutation,
@@ -67,11 +79,14 @@ module Make = (Config: Config) => {
         ~refetchQueries=?,
         ~optimisticResponse=?,
         (),
-      ) =>
+      ) => {
+    let refetchQueriesJs =
+      refetchQueries->Belt.Option.map(convertToRefetchQueriesJs);
+
     jsMutation(
       jsMutationParams(
         ~variables?,
-        ~refetchQueries?,
+        ~refetchQueries=?refetchQueriesJs,
         ~optimisticResponse?,
         (),
       ),
@@ -79,6 +94,7 @@ module Make = (Config: Config) => {
     |> Js.Promise.(
          then_(response => resolve(convertExecutionResultToReason(response)))
        );
+  };
 
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>

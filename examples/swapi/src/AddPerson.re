@@ -16,6 +16,12 @@ module AddPersonMutation = ReasonApollo.CreateMutation(AddPerson);
 [@react.component]
 let make = () => {
   let addPersonMutation = AddPerson.make(~name="Bob", ~age=24, ());
+  let getAllPersons = Persons.GetAllPersons.make();
+
+  let getAllPersonsQueryObj = {
+    "query": ApolloClient.gql(. getAllPersons##query),
+    "variables": getAllPersons##variables,
+  };
   <AddPersonMutation>
     ...{(mutation, {result}) =>
       <div>
@@ -23,7 +29,7 @@ let make = () => {
           onClick={_ =>
             mutation(
               ~variables=addPersonMutation##variables,
-              ~refetchQueries=[|"getAllPersons"|],
+              ~refetchQueries=_ => QueryObjects([|getAllPersonsQueryObj|]),
               (),
             )
             |> ignore
