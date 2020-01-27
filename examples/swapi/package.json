@@ -22,8 +22,8 @@
     "reason-react": "^0.7.0"
   },
   "devDependencies": {
-    "bs-platform": "^5.0.3",
-    "graphql_ppx": "^0.2.4",
+    "@baransu/graphql_ppx_re": "^0.4.6",
+    "bs-platform": "7.0.1",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.3"

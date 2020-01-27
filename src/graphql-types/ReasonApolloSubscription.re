@@ -15,27 +15,26 @@ module Make = (Config: ReasonApolloTypes.Config) => {
   };
 
   type renderPropObjJS = {
-    .
-    "loading": bool,
-    "data": Js.Nullable.t(Js.Json.t),
-    "error": Js.Nullable.t(apolloError),
+    loading: bool,
+    data: Js.Nullable.t(Js.Json.t),
+    error: Js.Nullable.t(apolloError),
   };
 
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##loading,
-        apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
-        apolloData##error |> Js.Nullable.toOption,
+        apolloData.loading,
+        apolloData.data |> ReasonApolloUtils.getNonEmptyObj,
+        apolloData.error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
       | (false, Some(response), _) => Data(Config.parse(response))
       | (false, _, Some(error)) => Error(error)
       | (false, None, None) =>
         Error({
-          "message": "No data",
-          "graphQLErrors": Js.Nullable.null,
-          "networkError": Js.Nullable.null,
+          message: "No data",
+          graphQLErrors: Js.Nullable.null,
+          networkError: Js.Nullable.null,
         })
       };
 
@@ -43,7 +42,7 @@ module Make = (Config: ReasonApolloTypes.Config) => {
     apolloData => {
       result: apolloData |> apolloDataToVariant,
       data:
-        switch (apolloData##data |> ReasonApolloUtils.getNonEmptyObj) {
+        switch (apolloData.data |> ReasonApolloUtils.getNonEmptyObj) {
         | None => None
         | Some(data) =>
           switch (Config.parse(data)) {
@@ -52,11 +51,11 @@ module Make = (Config: ReasonApolloTypes.Config) => {
           }
         },
       error:
-        switch (apolloData##error |> Js.Nullable.toOption) {
+        switch (apolloData.error |> Js.Nullable.toOption) {
         | Some(error) => Some(error)
         | None => None
         },
-      loading: apolloData##loading,
+      loading: apolloData.loading,
     };
 
   module JsSubscription = {

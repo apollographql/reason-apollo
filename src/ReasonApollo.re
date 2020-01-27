@@ -12,18 +12,36 @@ let createApolloClient =
       ~connectToDevTools=?,
       ~queryDeduplication=?,
       (),
-    ) => {
-  createApolloClientJS(
-    apolloClientObjectParam(
-      ~link,
-      ~cache,
-      ~ssrMode?,
-      ~ssrForceFetchDelay?,
-      ~connectToDevTools?,
-      ~queryDeduplication?,
-    ),
-  );
-};
+    ) =>
+  createApolloClientJS({
+    link,
+    cache,
+    ssrMode,
+    ssrForceFetchDelay,
+    connectToDevTools,
+    queryDeduplication,
+  });
+// let createApolloClient =
+//     (
+//       ~link,
+//       ~cache,
+//       ~ssrMode=?,
+//       ~ssrForceFetchDelay=?,
+//       ~connectToDevTools=?,
+//       ~queryDeduplication=?,
+//       (),
+//     ) => {
+//   createApolloClientJS(
+//     apolloClientObjectParam(
+//       ~link,
+//       ~cache,
+//       ~ssrMode?,
+//       ~ssrForceFetchDelay?,
+//       ~connectToDevTools?,
+//       ~queryDeduplication?,
+//     ),
+//   );
+// };
 
 /*
  * Expose a module to perform "query" operations for the given client

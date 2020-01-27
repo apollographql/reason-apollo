@@ -1,8 +1,9 @@
 type operationDefinitionNode = {
-  .
-  "kind": string,
-  "operation": string
+  kind: string,
+  operation: string,
 };
 
-[@bs.module "apollo-utilities"] external getMainDefinition: ReasonApolloTypes.documentNodeT => operationDefinitionNode = "getMainDefinition";
-
+[@bs.module "apollo-utilities"]
+external getMainDefinition:
+  ReasonApolloTypes.documentNodeT => operationDefinitionNode =
+  "getMainDefinition";
