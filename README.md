@@ -17,7 +17,7 @@ yarn add --dev graphql_ppx
 
 #### bsconfig
 Add `reason-apollo` to your `bs-dependencies` and
-`graphql_ppx/ppx` to your `ppx_flags`
+`graphql_ppx/ppx` to your `ppx-flags`
 
 **bsconfig.json**
 ```
