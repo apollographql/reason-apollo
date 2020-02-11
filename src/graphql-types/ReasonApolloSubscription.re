@@ -1,4 +1,6 @@
 open ReasonApolloTypes;
+/* Silence the warning about shadowing Error from Stdlib */
+[@ocaml.warning "-45"];
 
 module Make = (Config: ReasonApolloTypes.Config) => {
   [@bs.module "graphql-tag"] external gql: ReasonApolloTypes.gql = "default";
