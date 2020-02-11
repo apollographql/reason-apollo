@@ -1,4 +1,6 @@
 open ReasonApolloTypes;
+/* Silence the warning about shadowing Error from Stdlib */
+[@ocaml.warning "-45"];
 
 type updateQueryOptions = {
   fetchMoreResult: option(Js.Json.t),
@@ -148,36 +150,36 @@ module Make = (Config: ReasonApolloTypes.Config) => {
   [@react.component]
   let make =
       (
-        ~variables: Js.Json.t=?,
-        ~pollInterval: int=?,
-        ~notifyOnNetworkStatusChange: bool=?,
-        ~fetchPolicy: string=?,
-        ~errorPolicy: string=?,
-        ~ssr: bool=?,
-        ~displayName: string=?,
-        ~skip: bool=?,
-        ~onCompleted: Js.Nullable.t(Js.Json.t) => unit=?,
-        ~onError: apolloError => unit=?,
-        ~partialRefetch: bool=?,
-        ~delay: bool=?,
-        ~context: Js.Json.t=?,
+        ~variables: option(Js.Json.t)=?,
+        ~pollInterval: option(int)=?,
+        ~notifyOnNetworkStatusChange: option(bool)=?,
+        ~fetchPolicy: option(string)=?,
+        ~errorPolicy: option(string)=?,
+        ~ssr: option(bool)=?,
+        ~displayName: option(string)=?,
+        ~skip: option(bool)=?,
+        ~onCompleted: option(Js.Nullable.t(Js.Json.t) => unit)=?,
+        ~onError: option(apolloError => unit)=?,
+        ~partialRefetch: option(bool)=?,
+        ~delay: option(bool)=?,
+        ~context: option(Js.Json.t)=?,
         ~children: renderPropObj => React.element,
       ) =>
     <JsQuery
       query=graphqlQueryAST
-      variables
-      pollInterval
-      notifyOnNetworkStatusChange
-      fetchPolicy
-      errorPolicy
-      ssr
-      displayName
-      skip
-      onCompleted
-      onError
-      partialRefetch
-      delay
-      context>
+      ?variables
+      ?pollInterval
+      ?notifyOnNetworkStatusChange
+      ?fetchPolicy
+      ?errorPolicy
+      ?ssr
+      ?displayName
+      ?skip
+      ?onCompleted
+      ?onError
+      ?partialRefetch
+      ?delay
+      ?context>
       {apolloData => apolloData |> convertJsInputToReason |> children}
     </JsQuery>;
 };

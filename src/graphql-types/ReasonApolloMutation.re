@@ -1,4 +1,6 @@
 open ReasonApolloTypes;
+/* Silence the warning about shadowing Error from Stdlib */
+[@ocaml.warning "-45"];
 
 type renderPropObjJS = {
   loading: bool,
@@ -126,12 +128,12 @@ module Make = (Config: Config) => {
   [@react.component]
   let make =
       (
-        ~variables: Js.Json.t=?,
-        ~onError: apolloError => unit=?,
-        ~onCompleted: unit => unit=?,
+        ~variables: option(Js.Json.t)=?,
+        ~onError: option(apolloError => unit)=?,
+        ~onCompleted: option(unit => unit)=?,
         ~children: (apolloMutation, renderPropObj) => React.element,
       ) =>
-    <JsMutation mutation=graphqlMutationAST variables onError onCompleted>
+    <JsMutation mutation=graphqlMutationAST ?variables ?onError ?onCompleted>
       {(mutation, apolloData) =>
          children(
            apolloMutationFactory(~jsMutation=mutation),
