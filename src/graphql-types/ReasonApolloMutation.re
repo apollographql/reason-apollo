@@ -1,10 +1,10 @@
-open ReasonApolloTypes;
+open! ReasonApolloTypes;
 
 type renderPropObjJS = {
   loading: bool,
   called: bool,
   data: Js.Nullable.t(Js.Json.t),
-  error: Js.Nullable.t(ReasonApolloTypes.apolloError),
+  error: Js.Nullable.t(apolloError),
   networkStatus: Js.Nullable.t(int),
   variables: Js.Null_undefined.t(Js.Json.t),
 };
@@ -124,14 +124,8 @@ module Make = (Config: Config) => {
   };
 
   [@react.component]
-  let make =
-      (
-        ~variables: Js.Json.t=?,
-        ~onError: apolloError => unit=?,
-        ~onCompleted: unit => unit=?,
-        ~children: (apolloMutation, renderPropObj) => React.element,
-      ) =>
-    <JsMutation mutation=graphqlMutationAST variables onError onCompleted>
+  let make = (~variables=?, ~onError=?, ~onCompleted=?, ~children) =>
+    <JsMutation mutation=graphqlMutationAST ?variables ?onError ?onCompleted>
       {(mutation, apolloData) =>
          children(
            apolloMutationFactory(~jsMutation=mutation),
