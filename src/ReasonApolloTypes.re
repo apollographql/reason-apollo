@@ -106,3 +106,21 @@ type webSocketLinkT = {
 type documentNodeT;
 
 type splitTest = {query: documentNodeT};
+
+module FetchPolicy: {
+  type t;
+  let cacheFirst: t;
+  let networkOnly: t;
+  let cacheOnly: t;
+  let noCache: t;
+  let standby: t;
+  let cacheAndNetwork: t;
+} = {
+  type t = string;
+  let cacheFirst = "cache-first";
+  let networkOnly = "network-only";
+  let cacheOnly = "cache-only";
+  let noCache = "no-cache";
+  let standby = "standby";
+  let cacheAndNetwork = "cache-and-network";
+};
