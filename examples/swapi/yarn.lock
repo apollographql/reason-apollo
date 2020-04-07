@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@baransu/graphql_ppx_re@^0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@baransu/graphql_ppx_re/-/graphql_ppx_re-0.4.6.tgz#cd4e20a5c5496a665e08aca0f4dea78ecca2e0d7"
-  integrity sha512-BlVNBF4926NPdhODAdemGeCFsPw7HNWLo3o2kQM2kr+6XXrog86etwRN/2/4Xa8KUzqKWM2ohjJEbbZE/cIHyQ==
+"@baransu/graphql_ppx_re@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@baransu/graphql_ppx_re/-/graphql_ppx_re-0.7.1.tgz#8146a36a94d56e65692d74488e2bd6cbd4eb8dc9"
+  integrity sha512-S9RYUWk8IkFxjE1Xl5eohRgbHJP5nCWOD6J1hMV3hY+D43igDrILq1doAXJatYB82BxcsrBC9V+VeU2LtCxIDw==
 
 "@types/node@>=6":
   version "12.12.15"
@@ -442,10 +442,10 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
-bs-platform@7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.0.1.tgz#1d7b0ef6088b998dceee5db74a7cd8f01c20a3bd"
-  integrity sha512-UjStdtHhbtC/l6vKJ1XRDqrPk7rFf5PLYHtRX3akDXEYVnTbN36z0g4DEr5mU8S0N945e33HYts9x+i7hKKpZQ==
+bs-platform@^7.2.2:
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.2.2.tgz#76fdc63e4889458ae3d257a0132107a792f2309c"
+  integrity sha512-PWcFfN+jCTtT/rMaHDhKh+W9RUTpaRunmSF9vbLYcrJbpgCNW6aFKAY33u0P3mLxwuhshN3b4FxqGUBPj6exZQ==
 
 buffer-from@^1.0.0:
   version "1.0.0"
@@ -2849,7 +2849,7 @@ readdirp@^2.0.0:
     set-immediate-shim "^1.0.1"
 
 reason-apollo@../../:
-  version "0.18.0"
+  version "0.19.0"
   dependencies:
     apollo-cache-inmemory "^1.6.0"
     apollo-client "^2.6.3"

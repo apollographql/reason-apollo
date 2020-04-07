@@ -1,8 +1,5 @@
 let ste = React.string;
 
-let onIdInputChange = (setId, e) =>
-  setId(ReactDOMRe.domElementToObj(ReactEventRe.Form.target(e))##value);
-
 [@react.component]
 let make = () => {
   let (id, setId) = React.useState(() => "");
@@ -14,7 +11,10 @@ let make = () => {
         placeholder="Get this id"
         type_="text"
         value=id
-        onChange={onIdInputChange(setId)}
+        onChange={event => {
+          let id = ReactEvent.Form.target(event)##value;
+          setId(_ => id);
+        }}
         required=true
       />
       <GetPersonById id />
