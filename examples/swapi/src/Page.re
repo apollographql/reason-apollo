@@ -6,6 +6,7 @@ let make = () =>
     <AddPerson />
     <GetPerson />
     <PersonById />
+    <PersonByIdReadFragment />
     <PersonByIdDelete />
     <DeletePerson />
     <SubscribeToPersons />
