@@ -35,6 +35,7 @@ module Make = (Config: Config) => {
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
       ~optimisticResponse: Config.t=?,
+      ~context: Js.Json.t=?,
       unit
     ) =>
     Js.Promise.t(executionResponse(Config.t));
@@ -43,6 +44,7 @@ module Make = (Config: Config) => {
     variables: option(Js.Json.t),
     refetchQueries: option(array(string)),
     optimisticResponse: option(Config.t),
+    context: option(Js.Json.t),
   };
 
   let convertExecutionResultToReason = (executionResult: executionResult) =>
@@ -61,14 +63,16 @@ module Make = (Config: Config) => {
         ~variables=?,
         ~refetchQueries=?,
         ~optimisticResponse=?,
+        ~context=?,
         (),
       ) =>
-    jsMutation({variables, refetchQueries, optimisticResponse})
+    jsMutation({variables, refetchQueries, optimisticResponse, context})
     // jsMutation(
     //   jsMutationParams(
     //     ~variables?,
     //     ~refetchQueries?,
     //     ~optimisticResponse?,
+    //     ~context?,
     //     (),
     //   ),
     // )
