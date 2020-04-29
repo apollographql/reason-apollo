@@ -37,6 +37,7 @@ module Make:
         ~variables: Js.Json.t=?,
         ~refetchQueries: array(string)=?,
         ~optimisticResponse: Config.t=?,
+        ~context: Js.Json.t=?,
         unit
       ) =>
       Js.Promise.t(executionResponse(Config.t));
@@ -45,6 +46,7 @@ module Make:
       variables: option(Js.Json.t),
       refetchQueries: option(array(string)),
       optimisticResponse: option(Config.t),
+      context: option(Js.Json.t),
     };
 
     let convertExecutionResultToReason:
@@ -56,6 +58,7 @@ module Make:
         ~variables: Js.Json.t=?,
         ~refetchQueries: array(string)=?,
         ~optimisticResponse: Config.t=?,
+        ~context: Js.Json.t=?,
         unit
       ) =>
       Js.Promise.t(executionResponse(Config.t));
