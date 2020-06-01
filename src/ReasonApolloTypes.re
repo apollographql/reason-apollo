@@ -106,3 +106,25 @@ type webSocketLinkT = {
 type documentNodeT;
 
 type splitTest = {query: documentNodeT};
+
+/* ApolloClient defaulOptions */
+
+[@bs.deriving jsConverter]
+type errorPolicy = [ | `none | `ignore | `all];
+
+[@bs.deriving jsConverter]
+type fetchPolicy = [
+  | [@bs.as "cache-first"] `cacheFirst
+  | [@bs.as "network-only"] `networkOnly
+  | [@bs.as "cache-only"] `cacheOnly
+  | [@bs.as "no-cache"] `noCache
+  | `standby
+  | [@bs.as "cache-and-network"] `cacheAndNetwork
+];
+
+type apolloDefaultOption = {
+  fetchPolicy,
+  errorPolicy,
+};
+
+type defaultOptions = Js.Dict.t(Js.Dict.t(string));
