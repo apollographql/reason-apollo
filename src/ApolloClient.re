@@ -47,6 +47,7 @@ type apolloClientObjectParam = {
   ssrForceFetchDelay: option(int),
   connectToDevTools: option(bool),
   queryDeduplication: option(bool),
+  defaultOptions: option(defaultOptions),
 };
 [@bs.module "apollo-client"] [@bs.new]
 external createApolloClientJS: apolloClientObjectParam => generatedApolloClient =

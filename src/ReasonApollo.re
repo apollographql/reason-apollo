@@ -1,5 +1,31 @@
 open ApolloClient;
 
+let mapPolicies = (options, key, policies) => {
+  open ReasonApolloTypes;
+
+  let {errorPolicy, fetchPolicy} = policies;
+
+  Js.Dict.set(
+    options,
+    key,
+    Js.Dict.fromList([
+      ("errorPolicy", errorPolicyToJs(errorPolicy)),
+      ("fetchPolicy", fetchPolicyToJs(fetchPolicy)),
+    ]),
+  );
+};
+
+let makeDefaultOptions = (~mutate=?, ~query=?, ~watchQuery=?, ()) => {
+  let opts = Js.Dict.empty();
+
+  [("mutate", mutate), ("query", query), ("watchQuery", watchQuery)]
+  ->Belt.List.forEach(((key, policy)) =>
+      Belt.Option.map(policy, mapPolicies(opts, key))
+    );
+
+  opts;
+};
+
 /*
  * Expose a createApolloClient function that has to be passed to the ApolloProvider
  */
@@ -11,6 +37,7 @@ let createApolloClient =
       ~ssrForceFetchDelay=?,
       ~connectToDevTools=?,
       ~queryDeduplication=?,
+      ~defaultOptions=?,
       (),
     ) =>
   createApolloClientJS({
@@ -20,6 +47,7 @@ let createApolloClient =
     ssrForceFetchDelay,
     connectToDevTools,
     queryDeduplication,
+    defaultOptions,
   });
 // let createApolloClient =
 //     (
