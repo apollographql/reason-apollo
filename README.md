@@ -114,7 +114,7 @@ let make = () => {
     ...{({result}) =>
       switch (result) {
       | Loading => <div> {ReasonReact.string("Loading")} </div>
-      | Error(error) => <div> {ReasonReact.string(error##message)} </div>
+      | Error(error) => <div> {ReasonReact.string(error.message)} </div>
       | Data(response) =>
         <div>
           {/* Handles a deeply nested optional response */
