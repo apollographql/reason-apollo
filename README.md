@@ -13,23 +13,24 @@
 yarn add reason-apollo
 
 # Add graphql_ppx
-yarn add @baransu/graphql_ppx_re --dev
+yarn add @reasonml-community/graphql-ppx@next --dev
 ```
 
 #### bsconfig
 
 Add `reason-apollo` to your `bs-dependencies` and
-`@baransu/graphql_ppx_re/ppx` to your `ppx-flags`
+`@reasonml-community/graphql-ppx/ppx` to your `ppx-flags`
 
 **bsconfig.json**
 
 ```
 "bs-dependencies": [
   "reason-react",
-  "reason-apollo"
+  "reason-apollo",
+  "@reasonml-community/graphql-ppx"
 ],
 "ppx-flags": [
-  "@baransu/graphql_ppx_re/ppx"
+  "@reasonml-community/graphql-ppx/ppx"
 ]
 ```
 
