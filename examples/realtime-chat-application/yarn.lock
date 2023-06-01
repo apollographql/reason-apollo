@@ -7303,8 +7303,9 @@ qs@6.5.1:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
 
 qs@~6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.1.tgz#2bad97710a5b661c366b378b1e3a44a592ff45e6"
+  integrity sha512-LQy1Q1fcva/UsnP/6Iaa4lVeM49WiOitu2T4hZCyA/elLKu37L99qcBJk4VCCk+rdLvnMzfKyiN3SZTqdAZGSQ==
 
 qs@~6.5.1:
   version "6.5.2"
@@ -7537,7 +7538,7 @@ realpath-native@^1.0.0:
     util.promisify "^1.0.0"
 
 reason-apollo@../../:
-  version "0.19.0"
+  version "0.20.0"
   dependencies:
     apollo-cache-inmemory "^1.6.0"
     apollo-client "^2.6.3"
